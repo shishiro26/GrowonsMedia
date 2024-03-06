@@ -2,6 +2,7 @@ import { auth } from "@/auth";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
+import TotalMoney from "./TotalMoney";
 
 const BalanceCard = async () => {
   const session = await auth();
@@ -13,7 +14,9 @@ const BalanceCard = async () => {
           <Link href={`/money/record/${session?.user?.id}`}>Add money</Link>
         </Button>
       </div>
-      <p className="mt-3">₹1442.47</p>
+      <p className="mt-3">
+        <TotalMoney />
+      </p>
     </div>
   );
 };

@@ -22,19 +22,11 @@ const uploadPhotosToLocal = async (formData: any) => {
     .arrayBuffer()
     .then((data: WithImplicitCoercion<ArrayBuffer | SharedArrayBuffer>) => {
       const buffer = Buffer.from(data).toString("base64");
-      // const name = uuidv4();
-      // const ext = image.type.split("/")[1];
-
-      // const tempDir = os.tmpdir();
-      // const tempFilePath = path.join(tempDir, `${name}.${ext}`);
-
-      // fs.writeFileSync(tempFilePath, buffer);
-      // return { filePath: tempFilePath, fileName: `/${name}.${ext}` };
       return buffer;
     });
 };
 
-async function uploadPhotosToCloudinary(buffer: any) {
+async function uploadPhotosToCloudinary(buffer: string) {
   return cloudinary.uploader.upload(
     `data:image/png;base64,${buffer}`,
     {
@@ -52,6 +44,9 @@ export const AddMoney = async (formData: FormData) => {
   const file = await uploadPhotosToLocal(formData);
   const photos = await uploadPhotosToCloudinary(file);
 
+  const user = await getUserById(formData.get("userId")?.toString() ?? "");
+  const username = user?.name;
+
   try {
     await db.money.create({
       data: {
@@ -62,6 +57,7 @@ export const AddMoney = async (formData: FormData) => {
         upiid: formData.get("upiid")?.toString() ?? "",
         bankDetails: formData.get("bankDetails")?.toString(),
         userId: formData.get("userId")?.toString(),
+        name: username ?? "",
       },
     });
   } catch (err: any) {

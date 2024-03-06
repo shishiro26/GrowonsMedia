@@ -20,6 +20,7 @@ type TableProps = {
 };
 
 export async function MoneyTable({ userId, searchParams }: TableProps) {
+  console.log(searchParams, "searchParams.page");
   const currentPage = parseInt(searchParams.page);
 
   const pageSize = 10;
@@ -37,8 +38,6 @@ export async function MoneyTable({ userId, searchParams }: TableProps) {
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });
-
-  revalidatePath("/money/record");
 
   return (
     <>

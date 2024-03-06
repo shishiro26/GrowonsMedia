@@ -43,7 +43,7 @@ const AdminWallet = async () => {
       <TableBody>
         {invoices.map((invoice) => (
           <TableRow key={invoice.userId}>
-            <TableCell className="font-medium">{session?.user?.name}</TableCell>
+            <TableCell className="font-medium">{invoice.name}</TableCell>
             <TableCell>
               <div>{invoice.transactionId}</div>
             </TableCell>
