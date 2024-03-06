@@ -67,5 +67,5 @@ export const AddMoney = async (formData: FormData) => {
 
   revalidatePath("/money/record");
 
-  // return { success: "Money added!" };
+  return { success: "Money added!" };
 };
