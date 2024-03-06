@@ -21,23 +21,26 @@ const uploadPhotosToLocal = async (formData: any) => {
   return image
     .arrayBuffer()
     .then((data: WithImplicitCoercion<ArrayBuffer | SharedArrayBuffer>) => {
-      const buffer = Buffer.from(data);
-      const name = uuidv4();
-      const ext = image.type.split("/")[1];
+      const buffer = Buffer.from(data).toString("base64");
+      // const name = uuidv4();
+      // const ext = image.type.split("/")[1];
 
-      const tempDir = os.tmpdir();
-      const tempFilePath = path.join(tempDir, `${name}.${ext}`);
+      // const tempDir = os.tmpdir();
+      // const tempFilePath = path.join(tempDir, `${name}.${ext}`);
 
-      fs.writeFileSync(tempFilePath, buffer);
-      return { filePath: tempFilePath, fileName: `/${name}.${ext}` };
+      // fs.writeFileSync(tempFilePath, buffer);
+      // return { filePath: tempFilePath, fileName: `/${name}.${ext}` };
+      return buffer;
     });
 };
 
-async function uploadPhotosToCloudinary(file: any) {
+async function uploadPhotosToCloudinary(buffer: any) {
   return cloudinary.uploader.upload(
-    file.filePath,
+    `data:image/png;base64,${buffer}`,
     {
       folder: "GrowonsMedia",
+      resource_type: "raw",
+      type: "authenticated",
     },
     (err) => {
       return { error: err?.message };

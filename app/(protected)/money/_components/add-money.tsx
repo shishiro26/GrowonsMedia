@@ -49,10 +49,10 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
           toast.success(data?.success);
           form.reset();
         }
-        if (data?.error) {
-          toast.error(data?.error);
-          form.reset();
-        }
+        // if (data?.error) {
+        //   toast.error(data?.error);
+        //   form.reset();
+        // }
       });
     });
   }
