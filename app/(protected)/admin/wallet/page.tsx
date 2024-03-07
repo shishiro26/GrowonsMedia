@@ -1,6 +1,4 @@
-import { auth } from "@/auth";
 import { formatPrice } from "@/components/shared/formatPrice";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -12,9 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { db } from "@/lib/db";
-import Image from "next/image";
 import FormInvoice from "../_components/form-invoice";
-import { CopyIcon } from "@radix-ui/react-icons";
 import ImageDialog from "@/components/shared/Image-dialog";
 
 export const generateMetadata = () => {
@@ -28,7 +24,6 @@ const AdminWallet = async () => {
   const invoices = await db.money.findMany({
     where: { status: "PENDING" },
   });
-  const session = await auth();
   return (
     <Table className="mt-2">
       <TableCaption>A list of your recent invoices.</TableCaption>

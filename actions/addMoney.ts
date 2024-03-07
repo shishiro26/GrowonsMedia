@@ -55,7 +55,7 @@ export const AddMoney = async (formData: FormData) => {
         public_id: photos.public_id,
         transactionId: formData.get("transactionId")?.toString() ?? "",
         upiid: formData.get("upiid")?.toString() ?? "",
-        bankDetails: formData.get("bankDetails")?.toString(),
+        accountNumber: formData.get("accountNumber")?.toString(),
         userId: formData.get("userId")?.toString(),
         name: username ?? "",
       },

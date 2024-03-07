@@ -26,7 +26,7 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
       amount: "",
       transactionId: "",
       upiid: "",
-      bankDetails: "",
+      accountNumber: "",
       image: undefined,
     },
   });
@@ -49,10 +49,10 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
           toast.success(data?.success);
           form.reset();
         }
-        // if (data?.error) {
-        //   toast.error(data?.error);
-        //   form.reset();
-        // }
+        if (data?.error) {
+          toast.error(data?.error);
+          form.reset();
+        }
       });
     });
   }
@@ -101,7 +101,7 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
             />
             <FormField
               control={form.control}
-              name="bankDetails"
+              name="accountNumber"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>

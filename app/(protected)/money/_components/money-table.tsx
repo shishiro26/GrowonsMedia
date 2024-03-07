@@ -12,7 +12,6 @@ import PaginationBar from "./PaginationBar";
 import { formatPrice } from "@/components/shared/formatPrice";
 import BadgeStatus from "./BadgeStatus";
 import ImageDialog from "@/components/shared/Image-dialog";
-import { revalidatePath } from "next/cache";
 
 type TableProps = {
   searchParams: { page: string };
@@ -20,10 +19,10 @@ type TableProps = {
 };
 
 export async function MoneyTable({ userId, searchParams }: TableProps) {
-  console.log(searchParams, "searchParams.page");
+  console.log("page", searchParams.page);
   const currentPage = parseInt(searchParams.page);
 
-  const pageSize = 10;
+  const pageSize = 5;
   const totalItemCount = (
     await db.money.findMany({
       where: { userId: userId },
@@ -40,8 +39,8 @@ export async function MoneyTable({ userId, searchParams }: TableProps) {
   });
 
   return (
-    <>
-      <Table>
+    <section className="w-full">
+      <Table className="">
         <TableHeader>
           <TableRow>
             <TableHead>Account No</TableHead>
@@ -65,7 +64,7 @@ export async function MoneyTable({ userId, searchParams }: TableProps) {
         <TableBody>
           {invoices.map((invoice) => (
             <TableRow key={invoice.upiid}>
-              <TableCell>{invoice.bankDetails}</TableCell>
+              <TableCell>{invoice.accountNumber}</TableCell>
               <TableCell>{invoice.upiid}</TableCell>
               <TableCell>{invoice.transactionId}</TableCell>
               <TableCell>{formatPrice(Number(invoice.amount))}</TableCell>
@@ -95,6 +94,6 @@ export async function MoneyTable({ userId, searchParams }: TableProps) {
       {totalPages > 1 && (
         <PaginationBar totalPages={totalPages} currentPage={currentPage} />
       )}
-    </>
+    </section>
   );
 }

@@ -74,7 +74,7 @@ export const MoneySchema = z.object({
     message: "Amount must be greater than 0",
   }),
   upiid: z.string(),
-  bankDetails: z.string(),
+  accountNumber: z.string(),
   transactionId: z
     .string()
     .min(12, {

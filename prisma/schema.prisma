@@ -33,10 +33,10 @@ model Money {
   id            String      @id @default(uuid()) @map("_id")
   name          String
   amount        String?
-  upiid         String      @unique
-  bankDetails   String?
+  upiid         String
+  accountNumber String?
   transactionId String      @unique
-  public_id     String
+  public_id     String      @unique
   secure_url    String
   reason        String?
   status        MoneyStatus @default(PENDING)

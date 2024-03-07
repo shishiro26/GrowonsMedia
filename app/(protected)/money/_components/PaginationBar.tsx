@@ -18,22 +18,25 @@ const PaginationBar = ({ currentPage, totalPages }: PaginationBarProps) => {
   const maxPage = Math.min(totalPages, Math.max(currentPage + 4, 10));
   const minPage = Math.max(1, Math.min(currentPage - 5, maxPage - 9));
 
+  const numberedPageItems: JSX.Element[] = [];
+
+  for (let page = minPage; page <= maxPage; page++) {
+    numberedPageItems.push(
+      <PaginationItem key={page}>
+        <PaginationLink href={"?page=" + page}>{page}</PaginationLink>
+      </PaginationItem>
+    );
+  }
+
   return (
-    <Pagination>
+    <Pagination className="mt-1">
       <PaginationContent>
         {currentPage > 1 && (
           <PaginationItem>
             <PaginationPrevious href={"?page=" + (currentPage - 1)} />
           </PaginationItem>
         )}
-        {Array.from({ length: maxPage - minPage + 1 }, (_, index) => {
-          const page = minPage + index;
-          return (
-            <PaginationLink href={"?page=" + page} key={page}>
-              {page}
-            </PaginationLink>
-          );
-        })}
+        {numberedPageItems}
         {currentPage < totalPages && (
           <PaginationItem>
             <PaginationNext href={"?page=" + (currentPage + 1)} />
