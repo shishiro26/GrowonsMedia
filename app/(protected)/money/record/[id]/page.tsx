@@ -12,7 +12,12 @@ export const generateMetadata = () => {
   };
 };
 
-const page = async ({ params }: { params: { id: string } }) => {
+type RecordProps = {
+  params: { id: string };
+  searchParams: { page: string };
+};
+
+const page = async ({ params, searchParams }: RecordProps) => {
   const session = await auth();
   return (
     <section className="ml-2 mt-4 space-y-4">
@@ -29,10 +34,7 @@ const page = async ({ params }: { params: { id: string } }) => {
         </Link>
       </Button>
       <div>
-        <MoneyTable
-          userId={params.id.toString()}
-          searchParams={{ page: "1" }}
-        />
+        <MoneyTable userId={params.id.toString()} searchParams={searchParams} />
       </div>
     </section>
   );

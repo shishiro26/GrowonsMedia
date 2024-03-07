@@ -25,6 +25,7 @@ const page = ({ params }: { params: { id: string } }) => {
               height={150}
             />
           </div>
+
           <AddMoneyForm userId={params.id.toString()} />
         </div>
         <div className="md:w-[50%]">

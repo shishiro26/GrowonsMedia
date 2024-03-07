@@ -19,7 +19,6 @@ type TableProps = {
 };
 
 export async function MoneyTable({ userId, searchParams }: TableProps) {
-  console.log("page", searchParams.page);
   const currentPage = parseInt(searchParams.page);
 
   const pageSize = 5;

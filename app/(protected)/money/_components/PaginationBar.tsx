@@ -42,7 +42,7 @@ const PaginationBar = ({ currentPage, totalPages }: PaginationBarProps) => {
             <PaginationNext href={"?page=" + (currentPage + 1)} />
           </PaginationItem>
         )}
-      </PaginationContent>
+      </PaginationContent>  
     </Pagination>
   );
 };
