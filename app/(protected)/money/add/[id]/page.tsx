@@ -2,6 +2,7 @@ import React from "react";
 import Image from "next/image";
 import AddMoneyForm from "../../_components/add-money";
 import NewsNotices from "@/app/(protected)/_components/News-notices";
+import DownloadButton from "@/components/shared/download";
 
 export const generateMetadata = () => {
   return {
@@ -25,6 +26,7 @@ const page = ({ params }: { params: { id: string } }) => {
               height={150}
             />
           </div>
+          <DownloadButton imageLink={"/svgs/qrcode.webp"} />
 
           <AddMoneyForm userId={params.id.toString()} />
         </div>

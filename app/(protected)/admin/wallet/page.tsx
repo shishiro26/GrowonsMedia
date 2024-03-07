@@ -13,6 +13,7 @@ import { db } from "@/lib/db";
 import FormInvoice from "../_components/form-invoice";
 import ImageDialog from "@/components/shared/Image-dialog";
 import PaginationBar from "../../money/_components/PaginationBar";
+import CopyButton from "@/components/shared/copy-button";
 
 export const generateMetadata = () => {
   return {
@@ -60,7 +61,10 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
             <TableRow key={invoice.userId}>
               <TableCell className="font-medium">{invoice.name}</TableCell>
               <TableCell>
-                <div>{invoice.transactionId}</div>
+                <div className="flex gap-1 items-center">
+                  {invoice.transactionId}
+                  <CopyButton text={invoice.transactionId} />
+                </div>
               </TableCell>
               <TableCell>{formatPrice(Number(invoice.amount))}</TableCell>
               <TableCell>

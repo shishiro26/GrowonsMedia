@@ -36,7 +36,7 @@ export const SidebarItems = () => {
       <ul className={`${isDropdownOpen ? "block" : "hidden"} py-2 space-y-2`}>
         <li>
           <a
-            href="#"
+            href="/orders"
             className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
           >
             New Orders
@@ -44,7 +44,7 @@ export const SidebarItems = () => {
         </li>
         <li>
           <a
-            href="#"
+            href="/records"
             className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
           >
             records

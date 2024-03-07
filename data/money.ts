@@ -2,9 +2,9 @@ import { formatPrice } from "@/components/shared/formatPrice";
 import { db } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-export const getTotalMoney = async () => {
+export const getTotalMoney = async (userId: string) => {
   const invoices = await db.money.findMany({
-    where: { status: "SUCCESS" },
+    where: { status: "SUCCESS", userId: userId },
   });
 
   revalidatePath("/");

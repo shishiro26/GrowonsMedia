@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Image from "next/image";
+import DownloadButton from "./download";
 
 const ImageDialog = ({ imageLink }: { imageLink: string }) => {
   return (
@@ -25,7 +26,7 @@ const ImageDialog = ({ imageLink }: { imageLink: string }) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="mb-2">Invoice Image:</DialogTitle>
-          <DialogDescription>
+          <DialogDescription className="flex flex-col items-center gap-1">
             <Image
               src={imageLink}
               alt="INVOICE001"
@@ -35,6 +36,7 @@ const ImageDialog = ({ imageLink }: { imageLink: string }) => {
               objectFit="cover"
               priority
             />
+            <DownloadButton imageLink={imageLink} />
           </DialogDescription>
         </DialogHeader>
       </DialogContent>
