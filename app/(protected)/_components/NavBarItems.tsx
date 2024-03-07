@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 
-export const SidebarItems = () => {
+export const SidebarItems = ({ userId }: { userId: string }) => {
   const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -36,7 +36,7 @@ export const SidebarItems = () => {
       <ul className={`${isDropdownOpen ? "block" : "hidden"} py-2 space-y-2`}>
         <li>
           <a
-            href="/orders"
+            href={`/orders/${userId}`}
             className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
           >
             New Orders
@@ -44,7 +44,7 @@ export const SidebarItems = () => {
         </li>
         <li>
           <a
-            href="/records"
+            href={`/orders/records/${userId}`}
             className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
           >
             records

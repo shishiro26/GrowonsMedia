@@ -126,3 +126,25 @@ export const RejectInvoiceSchema = z.object({
   id: z.string(),
   reason: z.string().min(10, { message: "Minimum of 10 characters required" }),
 });
+
+export const OrderSchema = z.object({
+  product: z.string().min(1, { message: "Product is required!" }),
+  quantity: z
+    .number()
+    .finite({ message: "Quantity must be a number" })
+    .gt(0, { message: "Quantity must be greater than 0" }),
+});
+
+export const FeedbackSchema = z.object({
+  orderId: z
+    .string()
+    .min(10, {
+      message: "The Order Id must be at least 10 character long",
+    })
+    .max(10, {
+      message: "OrderId must not exceed 10 characters long",
+    }),
+  comment: z.string().min(1, {
+    message: "The Comment must be at least 10 character long",
+  }),
+});
