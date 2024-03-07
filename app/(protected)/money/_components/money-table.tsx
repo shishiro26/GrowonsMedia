@@ -19,7 +19,7 @@ type TableProps = {
 };
 
 export async function MoneyTable({ userId, searchParams }: TableProps) {
-  const currentPage = parseInt(searchParams.page);
+  const currentPage = parseInt(searchParams.page) || 1;
 
   const pageSize = 5;
   const totalItemCount = (
