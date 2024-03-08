@@ -23,7 +23,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Image from "next/image";
 
 const OrderForm = () => {
   const [error, setError] = useState<string | undefined>("");
@@ -46,9 +45,14 @@ const OrderForm = () => {
     });
   };
 
-  const handleAddMore = () => {
-    form.setValue("quantity", form.getValues("quantity") + 10);
-  };
+  const quantityOptions: JSX.Element[] = [];
+  for (let i = 1; i < 99; i++) {
+    quantityOptions.push(
+      <SelectItem value={String(i)} key={i}>
+        {i}
+      </SelectItem>
+    );
+  }
 
   return (
     <>
@@ -72,6 +76,7 @@ const OrderForm = () => {
                         <SelectValue placeholder="Select a product" />
                       </SelectTrigger>
                     </FormControl>
+                    <FormMessage />
                     <SelectContent>
                       <SelectItem value="fresh Leads">Fresh leads</SelectItem>
                       <SelectItem value="old Leads">Old leads</SelectItem>
@@ -91,18 +96,24 @@ const OrderForm = () => {
               name="quantity"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Quantity</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
+                  <div className="flex items-center gap-2">
+                    <FormLabel>Quantity</FormLabel>
+                    <Select
+                      onValueChange={(value) => field.onChange(Number(value))}
+                      defaultValue={String(field.value)}
+                    >
+                      <FormControl>
+                        <SelectTrigger className="w-[15%]">
+                          <SelectValue placeholder="Select a quantity" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <FormMessage />
+                      <SelectContent>{quantityOptions}</SelectContent>
+                    </Select>
+                  </div>
                 </FormItem>
               )}
             />
-            <Button onClick={handleAddMore} className="flex items-center gap-1">
-              <Image src={"/svgs/plus.svg"} alt="plus" width={20} height={20} />
-              Add More
-            </Button>
           </div>
           <FormError message={error} />
           <Button type="submit" disabled={isPending} className="w-full">
