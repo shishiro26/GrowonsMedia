@@ -16,11 +16,13 @@ const ProtectedLayout = async ({ children }: ProtectedLayoutProps) => {
   const session = await auth();
   return (
     <SessionProvider session={session}>
-      <div className={`${font.className} md:flex md:flex-row`}>
-        <Sidebar />
-        <div className="md:flex-1 m-1 w-full overflow-hidden">
-          <Toaster />
-          {children}
+      <div className="overflow-hidden h-full">
+        <div className={`${font.className} md:flex md:flex-row`}>
+          <Sidebar />
+          <div className="md:flex-1 m-1 w-full overflow-scroll">
+            <Toaster />
+            {children}
+          </div>
         </div>
       </div>
     </SessionProvider>

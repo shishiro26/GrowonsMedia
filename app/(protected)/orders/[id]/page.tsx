@@ -15,9 +15,6 @@ const page = () => {
       <h1 className="text-3xl mt-4 ml-2">Add order</h1>
       <div className="m-3">
         <OrderForm />
-        <div className="mt-4">
-          <Button>Add Product</Button>
-        </div>
       </div>
     </section>
   );

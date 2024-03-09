@@ -128,11 +128,16 @@ export const RejectInvoiceSchema = z.object({
 });
 
 export const OrderSchema = z.object({
-  product: z.string().min(1, { message: "Product is required!" }),
-  quantity: z
-    .number()
-    .finite({ message: "Quantity must be a number" })
-    .gt(0, { message: "Quantity must be greater than 0" }),
+  productName: z.string().min(1, { message: "Product is required!" }),
+  quantity: z.coerce.number(),
+  products: z
+    .array(
+      z.object({
+        name: z.string().min(1, { message: "Product Name is required" }),
+        quantity  : z.coerce.number(),
+      })
+    )
+    .nonempty({ message: "Product is required" }),
 });
 
 export const FeedbackSchema = z.object({

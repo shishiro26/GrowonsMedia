@@ -12,6 +12,7 @@ import PaginationBar from "./PaginationBar";
 import { formatPrice } from "@/components/shared/formatPrice";
 import BadgeStatus from "./BadgeStatus";
 import ImageDialog from "@/components/shared/Image-dialog";
+import ReasonDialog from "@/components/shared/ReasonDialog";
 
 type TableProps = {
   searchParams: { page: string };
@@ -68,7 +69,14 @@ export async function MoneyTable({ userId, searchParams }: TableProps) {
               <TableCell>{invoice.transactionId}</TableCell>
               <TableCell>{formatPrice(Number(invoice.amount))}</TableCell>
               <TableCell className="cursor-pointer">
-                <BadgeStatus status={invoice.status} />
+                {invoice.status === "FAILED" && invoice.reason !== null ? (
+                  <ReasonDialog
+                    status={invoice.status}
+                    reason={invoice.reason}
+                  />
+                ) : (
+                  <BadgeStatus status={invoice.status} />
+                )}
               </TableCell>
               <TableCell>
                 <ImageDialog imageLink={invoice.secure_url} />
