@@ -1,5 +1,4 @@
 "use client";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -43,6 +42,7 @@ const OrderForm = () => {
   const onSubmit = (values: FormValues) => {
     console.log(values);
   };
+  
 
   return (
     <div className="flex flex-col lg:flex-row md:justify-between gap-2">
@@ -94,41 +94,52 @@ const OrderForm = () => {
               </FormItem>
             )}
           />
-          <div className="">
-            {fields.map((item, index) => (
-              <div key={item.id}>
-                <div className="flex gap-x-3">
-                  <FormField
-                    control={form.control}
-                    name={`products.${index}.name`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Product Name</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-
-                  <FormField
-                    control={form.control}
-                    name={`products.${index}.quantity`}
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Quantity</FormLabel>
-                        <FormControl>
-                          <Input {...field} />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+          {fields.map((item, index) => (
+            <div key={item.id}>
+              <FormField
+                control={form.control}
+                name={`products.${index}.name`}
+                render={({ field }) => (
+                  <FormItem>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a product" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <FormMessage />
+                      <SelectContent>
+                        <SelectItem value="fresh Leads">Fresh leads</SelectItem>
+                        <SelectItem value="old Leads">Old leads</SelectItem>
+                        <SelectItem value="fresh Female Leads">
+                          Fresh female leads
+                        </SelectItem>
+                        <SelectItem value="apna app leads">
+                          App apna leads
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name={`products.${index}.quantity`}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Quantity</FormLabel>
+                    <FormControl>
+                      <Input type="number" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          ))}
           <div>
             <FormField
               control={form.control}
@@ -156,7 +167,7 @@ const OrderForm = () => {
               )}
             />
           </div>
-          <Button type="submit" className="!mt-0 w-full">
+          <Button type="submit" className="mt-0 w-full">
             Request Order
           </Button>
         </form>
@@ -164,25 +175,6 @@ const OrderForm = () => {
       <div className="flex-1 ml-2">
         <p>Total amount:</p>
         <h1 className="font-bold text-2xl">₹ 0.00</h1>
-        {fields.length > 0 && (
-          <div className="flex flex-col">
-            <h1 className="text-3xl mt-4 ml-2">Order List</h1>
-            <div className="m-3">
-              <div className="flex flex-col gap-y-2">
-                <div className="flex gap-x-3">
-                  <span className="w-1/2">Product Name</span>
-                  <span className="w-1/2">Quantity</span>
-                </div>
-                {fields.map((item, index) => (
-                  <div key={item.id} className="flex gap-x-3">
-                    <span className="w-1/2">{item.name}</span>
-                    <span className="w-1/2">{item.quantity}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );

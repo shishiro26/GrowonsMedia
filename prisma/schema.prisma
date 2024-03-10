@@ -57,3 +57,11 @@ model Order {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 }
+
+model Product {
+  id          String   @id @default(uuid()) @map("_id")
+  productName String   @unique
+  price       Int
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt
+}

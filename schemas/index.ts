@@ -127,17 +127,31 @@ export const RejectInvoiceSchema = z.object({
   reason: z.string().min(10, { message: "Minimum of 10 characters required" }),
 });
 
+export const ProductSchema = z.object({
+  productName: z.string().min(1, {
+    message: "Product name is required",
+  }),
+  price: z.coerce.number().min(1, {
+    message: "Price must be greater than 0",
+  }),
+});
+
 export const OrderSchema = z.object({
-  productName: z.string().min(1, { message: "Product is required!" }),
+  productName: z
+    .string()
+    .min(1, { message: "Product is required!" })
+    .toLowerCase(),
   quantity: z.coerce.number(),
   products: z
     .array(
       z.object({
         name: z.string().min(1, { message: "Product Name is required" }),
-        quantity  : z.coerce.number(),
+        quantity: z.coerce.number().min(1, {
+          message: "Quantity must be greater than 0",
+        }),
       })
     )
-    .nonempty({ message: "Product is required" }),
+    .optional(),
 });
 
 export const FeedbackSchema = z.object({

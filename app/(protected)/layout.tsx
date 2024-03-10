@@ -19,7 +19,7 @@ const ProtectedLayout = async ({ children }: ProtectedLayoutProps) => {
       <div className="overflow-hidden h-full">
         <div className={`${font.className} md:flex md:flex-row`}>
           <Sidebar />
-          <div className="md:flex-1 m-1 w-full overflow-scroll">
+          <div className="md:flex-1 m-1 w-full overflow-hidden">
             <Toaster />
             {children}
           </div>
