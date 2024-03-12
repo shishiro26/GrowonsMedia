@@ -1,9 +1,12 @@
 import * as z from "zod";
 
 export const LoginSchema = z.object({
-  username: z.string().min(10, {
-    message: "Enter valid email or number",
-  }),
+  username: z
+    .string()
+    .min(10, {
+      message: "Enter valid email or number",
+    })
+    .toLowerCase(),
   password: z.string().min(6, {
     message: "Minimum of 6 characters required",
   }),
@@ -11,12 +14,18 @@ export const LoginSchema = z.object({
 
 export const RegisterSchema = z
   .object({
-    name: z.string().min(4, {
-      message: "Minimum of 4 characters required",
-    }),
-    email: z.string().email({
-      message: "Email is required",
-    }),
+    name: z
+      .string()
+      .min(4, {
+        message: "Minimum of 4 characters required",
+      })
+      .toLowerCase(),
+    email: z
+      .string()
+      .email({
+        message: "Email is required",
+      })
+      .toLowerCase(),
     number: z
       .string()
       .min(10, {
@@ -128,32 +137,27 @@ export const RejectInvoiceSchema = z.object({
 });
 
 export const ProductSchema = z.object({
-  productName: z.string().min(1, {
-    message: "Product name is required",
-  }),
+  productName: z
+    .string()
+    .min(1, {
+      message: "Product name is required",
+    })
+    .toLowerCase(),
   price: z.coerce.number().min(1, {
     message: "Price must be greater than 0",
   }),
 });
 
 export const OrderSchema = z.object({
-  productName: z
-    .string()
-    .min(1, { message: "Product is required!" })
-    .toLowerCase(),
-  quantity: z.coerce.number(),
-  products: z
-    .array(
-      z.object({
-        name: z.string().min(1, { message: "Product Name is required" }),
-        quantity: z.coerce.number().min(1, {
-          message: "Quantity must be greater than 0",
-        }),
-      })
-    )
-    .optional(),
+  id: z.string(),
+  products: z.array(
+    z.object({
+      name: z.string().min(1, { message: "Product Name is required" }),
+      quantity: z.coerce.number().min(1, { message: "Quantity is required" }),
+    })
+  ),
+  price: z.coerce.number(),
 });
-
 export const FeedbackSchema = z.object({
   orderId: z
     .string()

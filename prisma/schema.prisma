@@ -18,6 +18,12 @@ enum MoneyStatus {
   FAILED
 }
 
+enum OrderStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
 model User {
   id        String   @id @default(uuid()) @map("_id")
   email     String   @unique
@@ -46,22 +52,21 @@ model Money {
   createdAt     DateTime    @default(now()) @map("created_at")
 }
 
-model Order {
-  id        String   @id @default(uuid()) @map("_id")
-  name      String
-  balance   Int
-  product   String
-  quantity  Int
-  User      User?    @relation(fields: [userId], references: [id])
-  userId    String?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-}
-
 model Product {
   id          String   @id @default(uuid()) @map("_id")
   productName String   @unique
   price       Int
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt
+  orderId     String?
+}
+
+model Order {
+  id        String      @id @default(uuid()) @map("_id")
+  userId    String?
+  user      User?       @relation(fields: [userId], references: [id])
+  products  Json
+  status    OrderStatus @default(PENDING)
+  createdAt DateTime    @default(now()) @map("created_at")
+  updatedAt DateTime    @updatedAt
 }
