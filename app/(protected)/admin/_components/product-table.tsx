@@ -19,15 +19,9 @@ const ProductTable = async ({
 }) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 4;
+  const pageSize = 3;
 
-  const totalItemCount = (
-    await db.product.findMany({
-      orderBy: {
-        createdAt: "desc",
-      },
-    })
-  ).length;
+  const totalItemCount = await db.product.count();
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
 

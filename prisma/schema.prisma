@@ -53,12 +53,13 @@ model Money {
 }
 
 model Product {
-  id          String   @id @default(uuid()) @map("_id")
-  productName String   @unique
+  id          String     @id @default(uuid()) @map("_id")
+  productName String     @unique
   price       Int
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt
   orderId     String?
+  feeback     Feedback[]
 }
 
 model Order {
@@ -72,4 +73,14 @@ model Order {
   status    OrderStatus @default(PENDING)
   createdAt DateTime    @default(now()) @map("created_at")
   updatedAt DateTime    @updatedAt
+}
+
+model Feedback {
+  id        String   @id @default(uuid()) @map("_id")
+  orderId   String
+  feedback   String
+  Product   Product? @relation(fields: [productId], references: [id])
+  productId String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
 }

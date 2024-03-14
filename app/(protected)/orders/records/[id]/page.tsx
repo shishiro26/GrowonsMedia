@@ -15,6 +15,12 @@ import {
 } from "@/components/ui/table";
 import { db } from "@/lib/db";
 
+export const generateMetadata = () => {
+  return {
+    title: "Client Order Records | GrowonsMedia",
+    description: "Client order Records",
+  };
+};
 const ClientRecords = async ({
   params,
   searchParams,
@@ -24,16 +30,9 @@ const ClientRecords = async ({
 }) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 8;
+  const pageSize = 7;
 
-  const totalItemCount = (
-    await db.order.findMany({
-      where: { userId: params.id },
-      orderBy: {
-        createdAt: "desc",
-      },
-    })
-  ).length;
+  const totalItemCount = await db.order.count();
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
 
@@ -85,8 +84,14 @@ const ClientRecords = async ({
                 </TableCell>
                 <TableCell>{formatPrice(order.amount)}</TableCell>
                 <TableCell className="flex flex-col">
-                  <span>{order.createdAt.toLocaleTimeString()}</span>
                   <span>{order.createdAt.toDateString()}</span>
+                  <span>
+                    {order.createdAt.toLocaleTimeString("en-IN", {
+                      timeZone: "Asia/Kolkata",
+                      hour12: false,
+                      timeZoneName: "shortGeneric",
+                    })}
+                  </span>
                 </TableCell>
               </TableRow>
             );

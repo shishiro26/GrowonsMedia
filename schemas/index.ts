@@ -167,7 +167,7 @@ export const FeedbackSchema = z.object({
     .max(10, {
       message: "OrderId must not exceed 10 characters long",
     }),
-  comment: z.string().min(1, {
+  feedback: z.string().min(1, {
     message: "The Comment must be at least 10 character long",
   }),
 });

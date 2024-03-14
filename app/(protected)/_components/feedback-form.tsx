@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { FeedbackSchema } from "@/schemas";
+import { FeedbackSchema, OrderSchema } from "@/schemas";
 import {
   Form,
   FormControl,
@@ -22,26 +22,48 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Image from "next/image";
 import { Textarea } from "@/components/ui/textarea";
-const FeedbackForm = () => {
+import { addFeedback } from "@/actions/feedback";
+import { toast } from "sonner";
+
+type Order = {
+  orderId: string;
+};
+
+type FeedbackFormProps = {
+  orders: Order[];
+};
+
+const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders }) => {
   const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof FeedbackSchema>>({
     resolver: zodResolver(FeedbackSchema),
     defaultValues: {
       orderId: "",
-      comment: "",
+      feedback: "",
     },
   });
 
   const onSubmit = (values: z.infer<typeof FeedbackSchema>) => {
     setError("");
-    setSuccess("");
     startTransition(() => {
-      console.log(values);
+      addFeedback(values).then((data) => {
+        if (data?.success) {
+          toast.success(data.success, {
+            action: {
+              label: "close",
+              onClick: () => console.log("Undo"),
+            },
+          });
+          form.reset();
+        }
+
+        if (data.error) {
+          setError(data?.error);
+        }
+      });
     });
   };
 
@@ -58,17 +80,25 @@ const FeedbackForm = () => {
                   <Select
                     onValueChange={field.onChange}
                     defaultValue={field.value}
+                    disabled={isPending}
                   >
                     <FormControl>
                       <SelectTrigger className="w-[100%] md:w-[50%]">
-                        <SelectValue placeholder="Select a order Id" />
+                        {orders.length === 0 ? (
+                          <SelectValue placeholder="No orders found" />
+                        ) : (
+                          <SelectValue placeholder="Select a order Id" />
+                        )}
                       </SelectTrigger>
                     </FormControl>
+                    <FormMessage />
                     <SelectContent>
-                      <SelectItem value="234567890">234567890</SelectItem>
-                      <SelectItem value="09876543234">09876543234</SelectItem>
-                      <SelectItem value="1234567890">1234567890</SelectItem>
-                      <SelectItem value="1234567890">1234567890</SelectItem>
+                      {orders.length !== 0 &&
+                        orders.map((order) => (
+                          <SelectItem key={order.orderId} value={order.orderId}>
+                            {order.orderId}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </FormItem>
@@ -76,15 +106,16 @@ const FeedbackForm = () => {
             />
             <FormField
               control={form.control}
-              name="comment"
+              name="feedback"
               render={({ field }) => (
                 <FormItem className="w-[100%]">
                   <FormLabel>Feedback</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Enter your comment"
+                      placeholder="Enter your feedback"
                       rows={15}
                       {...field}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
