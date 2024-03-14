@@ -21,9 +21,11 @@ import {
   FormControl,
   FormMessage,
   FormField,
+  FormLabel,
 } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import * as z from "zod";
-import { RejectInvoiceSchema } from "@/schemas";
+import { AcceptOrderSchema, RejectInvoiceSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 type InvoiceProps = {
@@ -33,11 +35,19 @@ type InvoiceProps = {
 const AdminOrderForm = ({ id }: InvoiceProps) => {
   const [isPending, startTransition] = useTransition();
 
-  const form = useForm<z.infer<typeof RejectInvoiceSchema>>({
+  const rejectForm = useForm<z.infer<typeof RejectInvoiceSchema>>({
     resolver: zodResolver(RejectInvoiceSchema),
     defaultValues: {
       id: id,
       reason: "",
+    },
+  });
+
+  const acceptForm = useForm<z.infer<typeof AcceptOrderSchema>>({
+    resolver: zodResolver(AcceptOrderSchema),
+    defaultValues: {
+      id: id,
+      file: undefined,
     },
   });
 
@@ -90,11 +100,39 @@ const AdminOrderForm = ({ id }: InvoiceProps) => {
   return (
     <div className="space-x-2 flex">
       <Dialog>
-        <DialogTrigger>
-          <Button onClick={handleAccept} disabled={isPending}>
-            Accept
-          </Button>
+        <DialogTrigger asChild>
+          <Button disabled={isPending}>Accept</Button>
         </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Accept the order :</DialogTitle>
+          </DialogHeader>
+          <Form {...acceptForm}>
+            <form onSubmit={acceptForm.handleSubmit(handleAccept)}>
+              <div>
+                <FormField
+                  control={acceptForm.control}
+                  name="file"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Attach the file below:</FormLabel>
+                      <FormControl>
+                        <Input
+                          autoComplete="off"
+                          disabled={isPending}
+                          placeholder="Attach the screenshot here"
+                          type="file"
+                          {...acceptForm.register("file")}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
       </Dialog>
       <Dialog>
         <DialogTrigger asChild>
@@ -105,11 +143,11 @@ const AdminOrderForm = ({ id }: InvoiceProps) => {
             <DialogTitle>Are you absolutely sure??</DialogTitle>
             <DialogDescription>This action cannot be undone.</DialogDescription>
           </DialogHeader>
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleReject)}>
+          <Form {...rejectForm}>
+            <form onSubmit={rejectForm.handleSubmit(handleReject)}>
               <div className="py-2">
                 <FormField
-                  control={form.control}
+                  control={rejectForm.control}
                   name="reason"
                   render={({ field }) => (
                     <FormItem>
