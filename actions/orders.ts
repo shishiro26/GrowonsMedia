@@ -12,19 +12,24 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
   try {
     const userTotalMoney = await getTotalMoney(values.id);
 
+    const orderId = Date.now() + Math.floor(Math.random() * 100000);
+
     if (userTotalMoney < price) {
       return { error: "Wallet money is insufficient" };
     }
 
     await db.order.create({
       data: {
-        products: {
-          connect: products.map((id) => ({ id })),
-        },
+        userId: id,
+        orderId: orderId.toString().slice(-10),
+        products: products.map((product) => ({
+          name: product.name,
+          quantity: product.quantity,
+        })),
+        amount: price,
       },
     });
 
-    console.log(values);
     return { success: "Order added successfully!" };
   } catch (error) {
     console.error("Error:", error);

@@ -63,6 +63,7 @@ const OrderForm = ({ id, products }: OrderProps) => {
       addOrder(values).then((data) => {
         if (data?.success) {
           toast.success(data.success);
+          form.reset();
         }
 
         if (data?.error) {
@@ -103,6 +104,7 @@ const OrderForm = ({ id, products }: OrderProps) => {
                   <FormItem>
                     <Select
                       onValueChange={field.onChange}
+                      disabled={isPending}
                       defaultValue={field.value}
                     >
                       <FormControl>
@@ -135,7 +137,7 @@ const OrderForm = ({ id, products }: OrderProps) => {
                   <FormItem>
                     <FormLabel>Quantity</FormLabel>
                     <FormControl>
-                      <Input type="number" {...field} />
+                      <Input type="number" disabled={isPending} {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -148,7 +150,7 @@ const OrderForm = ({ id, products }: OrderProps) => {
               control={form.control}
               name="products"
               render={() => (
-                <Button className={`mb-2`}>
+                <Button type="button" disabled={isPending} className={`mb-2`}>
                   <div className="flex items-center gap-x-3 mt-2 mb-2">
                     <label
                       htmlFor="Products"
@@ -177,7 +179,7 @@ const OrderForm = ({ id, products }: OrderProps) => {
               )}
             />
           </div>
-          <Button type="submit" className="mt-0 w-full">
+          <Button disabled={isPending} type="submit" className="mt-0 w-full">
             Request Order
           </Button>
         </form>

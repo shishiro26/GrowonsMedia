@@ -1,3 +1,8 @@
+import ViewProducts from "@/app/(protected)/_components/view-products";
+import BadgeStatus from "@/app/(protected)/money/_components/BadgeStatus";
+import PaginationBar from "@/app/(protected)/money/_components/PaginationBar";
+import { formatPrice } from "@/components/shared/formatPrice";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -8,84 +13,102 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { db } from "@/lib/db";
 
-const invoices = [
-  {
-    invoice: "INV001",
-    paymentStatus: "Paid",
-    totalAmount: "$250.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV002",
-    paymentStatus: "Pending",
-    totalAmount: "$150.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV003",
-    paymentStatus: "Unpaid",
-    totalAmount: "$350.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV004",
-    paymentStatus: "Paid",
-    totalAmount: "$450.00",
-    paymentMethod: "Credit Card",
-  },
-  {
-    invoice: "INV005",
-    paymentStatus: "Paid",
-    totalAmount: "$550.00",
-    paymentMethod: "PayPal",
-  },
-  {
-    invoice: "INV006",
-    paymentStatus: "Pending",
-    totalAmount: "$200.00",
-    paymentMethod: "Bank Transfer",
-  },
-  {
-    invoice: "INV007",
-    paymentStatus: "Unpaid",
-    totalAmount: "$300.00",
-    paymentMethod: "Credit Card",
-  },
-];
+const ClientRecords = async ({
+  params,
+  searchParams,
+}: {
+  params: { id: string };
+  searchParams: { page: string };
+}) => {
+  const currentPage = parseInt(searchParams.page) || 1;
 
-const ClientRecords = () => {
+  const pageSize = 8;
+
+  const totalItemCount = (
+    await db.order.findMany({
+      where: { userId: params.id },
+      orderBy: {
+        createdAt: "desc",
+      },
+    })
+  ).length;
+
+  const totalPages = Math.ceil(totalItemCount / pageSize);
+
+  const Orders = await db.order.findMany({
+    where: { userId: params.id },
+    orderBy: {
+      createdAt: "desc",
+    },
+    skip: (currentPage - 1) * pageSize,
+    take: pageSize,
+  });
+
   return (
     <>
       <Table className="my-2">
-        <TableCaption>A list of your recent invoices.</TableCaption>
+        {totalItemCount === 0 && (
+          <TableCaption>A list of your recent Orders.</TableCaption>
+        )}
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[100px]">OrderId</TableHead>
+            <TableHead>OrderId</TableHead>
             <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
+            <TableHead>Orders</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Created on</TableHead>
           </TableRow>
         </TableHeader>
-        <TableBody>
-          {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice}>
-              <TableCell className="font-medium">{invoice.invoice}</TableCell>
-              <TableCell>{invoice.paymentStatus}</TableCell>
-              <TableCell>{invoice.paymentMethod}</TableCell>
-              <TableCell className="text-right">
-                {invoice.totalAmount}
+        {totalItemCount === 0 && (
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={6} className="text-center">
+                No invoices found
               </TableCell>
             </TableRow>
-          ))}
+          </TableFooter>
+        )}
+        <TableBody>
+          {Orders?.map((order, index) => {
+            return (
+              <TableRow key={index}>
+                <TableCell className="font-medium">{order.orderId}</TableCell>
+                <TableCell>
+                  <BadgeStatus status={order.status} />
+                </TableCell>
+                <TableCell>
+                  <ViewProducts
+                    products={JSON.parse(JSON.stringify(order.products))}
+                  />
+                </TableCell>
+                <TableCell>{formatPrice(order.amount)}</TableCell>
+                <TableCell className="flex flex-col">
+                  <span>{order.createdAt.toLocaleTimeString()}</span>
+                  <span>{order.createdAt.toDateString()}</span>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell className="text-right">$2,500.00</TableCell>
-          </TableRow>
-        </TableFooter>
+        {totalItemCount !== 0 && (
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={3}>Total</TableCell>
+              <TableCell>
+                {formatPrice(
+                  Orders?.reduce((acc, order) => acc + order.amount, 0) ?? 0
+                )}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        )}
       </Table>
+
+      {totalPages > 1 && (
+        <PaginationBar totalPages={totalPages} currentPage={currentPage} />
+      )}
     </>
   );
 };
