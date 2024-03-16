@@ -3,13 +3,14 @@ import NextAuth from "next-auth";
 import authConfig from "@/auth.config";
 import {
   DEFAULT_LOGIN_REDIRECT,
-  adminRoutes,
+  adminAuthPrefix,
   apiAuthPrefix,
   authRoutes,
   publicRoutes,
 } from "@/routes";
 import { NextResponse } from "next/server";
 import { currentRole, currentUserId } from "./lib/auth";
+import next from "next";
 const { auth } = NextAuth(authConfig);
 
 export default auth(async (req) => {
@@ -19,7 +20,7 @@ export default auth(async (req) => {
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
-  const isAdminRoute = adminRoutes.includes(nextUrl.pathname);
+  const isApiAdminRoute = nextUrl.pathname.startsWith(adminAuthPrefix);
 
   if (isApiAuthRoute) {
     return NextResponse.next();
@@ -38,15 +39,17 @@ export default auth(async (req) => {
 
   const role = await currentRole();
 
-  if (isAdminRoute && role !== "ADMIN") {
-    return Response.redirect(new URL("/", nextUrl));
-  }
-
   const userId = await currentUserId();
 
   if (nextUrl.pathname.startsWith("/money")) {
     const urlSuffix = nextUrl.pathname.split("/")[3];
     if (urlSuffix !== userId) {
+      return Response.redirect(new URL("/", nextUrl));
+    }
+  }
+
+  if (isApiAdminRoute) {
+    if (role !== "ADMIN") {
       return Response.redirect(new URL("/", nextUrl));
     }
   }

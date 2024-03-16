@@ -10,6 +10,7 @@ datasource db {
 enum UserRole {
   ADMIN
   USER
+  BLOCKED
 }
 
 enum MoneyStatus {
@@ -25,15 +26,16 @@ enum OrderStatus {
 }
 
 model User {
-  id        String   @id @default(uuid()) @map("_id")
-  email     String   @unique
+  id        String    @id @default(uuid()) @map("_id")
+  email     String    @unique
   name      String?
-  number    String   @unique
+  number    String    @unique
   password  String
-  role      UserRole @default(USER)
-  createdAt DateTime @default(now()) @map("created_at")
+  role      UserRole  @default(USER)
+  createdAt DateTime  @default(now()) @map("created_at")
   money     Money[]
   Order     Order[]
+  Product   Product[]
 }
 
 model Money {
@@ -53,13 +55,18 @@ model Money {
 }
 
 model Product {
-  id          String     @id @default(uuid()) @map("_id")
-  productName String     @unique
+  id          String   @id @default(uuid()) @map("_id")
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  productName String   @unique
   price       Int
-  createdAt   DateTime   @default(now()) @map("created_at")
-  updatedAt   DateTime   @updatedAt
+  minProduct  Int
+  maxProduct  Int
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt
   orderId     String?
-  feeback     Feedback[]
+
+  feeback Feedback[]
 }
 
 model Order {
@@ -78,7 +85,7 @@ model Order {
 model Feedback {
   id        String   @id @default(uuid()) @map("_id")
   orderId   String
-  feedback   String
+  feedback  String
   Product   Product? @relation(fields: [productId], references: [id])
   productId String?
   createdAt DateTime @default(now()) @map("created_at")

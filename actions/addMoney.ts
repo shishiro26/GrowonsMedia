@@ -48,6 +48,12 @@ export const AddMoney = async (formData: FormData) => {
   const username = user?.name;
 
   try {
+    if (user?.role === "BLOCKED") {
+      return {
+        error: "You have been blocked by the admin. contact admin know more",
+      };
+    }
+
     await db.money.create({
       data: {
         amount: formData.get("amount")?.toString(),

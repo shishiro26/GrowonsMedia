@@ -6,4 +6,4 @@ export const apiAuthPrefix = "/api/auth";
 
 export const DEFAULT_LOGIN_REDIRECT = "/";
 
-export const adminRoutes = ["/admin/wallet", "/admin/orders"];
+export const adminAuthPrefix = "/admin";

@@ -9,11 +9,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import ProductRemove from "./product-remove";
 import PaginationBar from "../../money/_components/PaginationBar";
-import { formatPrice } from "@/components/shared/formatPrice";
+import { revalidatePath } from "next/cache";
+import BlockUser from "../_components/block-user";
+import BalanceCell from "../_components/Balance-cell";
 
-const ProductTable = async ({
+const UserTable = async ({
   searchParams,
 }: {
   searchParams: { page: string };
@@ -22,60 +23,54 @@ const ProductTable = async ({
 
   const pageSize = 7;
 
-  const totalItemCount = await db.product.count();
+  const totalItemCount = await db.user.count();
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
 
-  const products = await db.product.findMany({
+  const users = await db.user.findMany({
     orderBy: {
       createdAt: "desc",
-    },
-    select: {
-      userId: false,
-      id: true,
-      productName: true,
-      price: true,
-      minProduct: true,
-      maxProduct: true,
-      createdAt: true,
     },
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });
+
+  revalidatePath("/admin/user");
 
   return (
     <>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Product Name</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Minimum</TableHead>
-            <TableHead>Maximum</TableHead>
-            <TableHead>Created_At</TableHead>
+            <TableHead>UserName</TableHead>
+            <TableHead>Email</TableHead>
+            <TableHead>Wallet</TableHead>
+            <TableHead>Joined on</TableHead>
           </TableRow>
         </TableHeader>
         {totalItemCount === 0 && (
           <TableFooter>
             <TableRow>
               <TableCell colSpan={6} className="text-center">
-                No users found
+                No invoices found
               </TableCell>
             </TableRow>
           </TableFooter>
         )}
         <TableBody>
-          {products.map((product) => (
-            <TableRow key={product.id}>
-              <TableCell className="capitalize">
-                {product.productName}
-              </TableCell>
-              <TableCell>{formatPrice(product.price)}</TableCell>
-              <TableCell>{product.minProduct}</TableCell>
-              <TableCell>{product.maxProduct}</TableCell>
-              <TableCell>{product.createdAt.toDateString()}</TableCell>
+          {users.map((user) => (
+            <TableRow
+              key={user.id}
+              className={user.role === "BLOCKED" ? "text-red-500" : ""}
+            >
+              <TableCell className="capitalize">{user.name}</TableCell>
+              <TableCell>{user.email}</TableCell>
               <TableCell>
-                <ProductRemove id={product.id} />
+                <BalanceCell id={user.id} />
+              </TableCell>
+              <TableCell>{user.createdAt.toDateString()}</TableCell>
+              <TableCell>
+                <BlockUser id={user.id} role={user.role} />
               </TableCell>
             </TableRow>
           ))}
@@ -88,4 +83,4 @@ const ProductTable = async ({
   );
 };
 
-export default ProductTable;
+export default UserTable;

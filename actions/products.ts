@@ -1,6 +1,6 @@
 "use server";
 import { db } from "@/lib/db";
-import { ProductSchema } from "@/schemas";
+import { EditProductFormSchema, ProductSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import * as z from "zod";
 
@@ -10,7 +10,12 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>) => {
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
-  const { productName, price } = validatedFields.data;
+  const { userId, productName, price, minProduct, maxProduct } =
+    validatedFields.data;
+
+  if (minProduct > maxProduct) {
+    return { error: "Minimum quantity must be less than maximum quantity" };
+  }
 
   try {
     const product = await db.product.findUnique({
@@ -23,8 +28,11 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>) => {
 
     await db.product.create({
       data: {
+        userId,
         productName,
         price,
+        minProduct: minProduct,
+        maxProduct: maxProduct,
         createdAt: new Date(),
       },
     });
@@ -59,5 +67,37 @@ export const getAllProducts = async () => {
     return products;
   } catch (err) {
     return { error: "error while fetching products" };
+  }
+};
+
+export const editProduct = async (
+  values: z.infer<typeof EditProductFormSchema>
+) => {
+  const validatedFields = EditProductFormSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return { error: "Invalid fields!" };
+  }
+  const { productName, price, minProduct, maxProduct, id } =
+    validatedFields.data;
+
+  try {
+    if (minProduct !== undefined && minProduct > (maxProduct ?? 0)) {
+      return { error: "Minimum quantity must be less than maximum quantity" };
+    }
+
+    await db.product.update({
+      where: { id },
+      data: {
+        productName,
+        price,
+        minProduct,
+        maxProduct,
+      },
+    });
+
+    return { success: "Product updated" };
+  } catch (error) {
+    return { error: "Error updating product" };
   }
 };

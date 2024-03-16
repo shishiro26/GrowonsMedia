@@ -89,101 +89,104 @@ const OrderForm = ({ id, products }: OrderProps) => {
 
   return (
     <div className="flex flex-col lg:flex-row md:justify-between gap-4  md:gap-x-10">
-      <Form {...form}>
-        <form
-          action=""
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-6 w-[100%] md:w-[50%]"
-        >
-          {fields.map((item, index) => (
-            <div key={item.id}>
-              <FormField
-                control={form.control}
-                name={`products.${index}.name`}
-                render={({ field }) => (
-                  <FormItem>
-                    <Select
-                      onValueChange={field.onChange}
-                      disabled={isPending}
-                      defaultValue={field.value}
-                    >
+      <div className="md:overflow-auto md:max-h-[90%] w-full md:w-[50%] p-2">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 w-[100%]"
+          >
+            {fields.map((item, index) => (
+              <div key={item.id}>
+                <FormField
+                  control={form.control}
+                  name={`products.${index}.name`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <Select
+                        onValueChange={field.onChange}
+                        disabled={isPending}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select a product" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <FormMessage />
+                        <SelectContent>
+                          {products.map((product: any) => {
+                            return (
+                              <SelectItem
+                                value={product.productName}
+                                key={product.id}
+                                className="capitalize"
+                              >
+                                {product.productName} min-{product.minProduct}{" "}
+                                max-{product.maxProduct}{" "}
+                                {formatPrice(product.price)}
+                              </SelectItem>
+                            );
+                          })}
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`products.${index}.quantity`}
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Quantity</FormLabel>
                       <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a product" />
-                        </SelectTrigger>
+                        <Input type="number" disabled={isPending} {...field} />
                       </FormControl>
                       <FormMessage />
-                      <SelectContent>
-                        {products.map((product: any) => {
-                          return (
-                            <SelectItem
-                              value={product.productName}
-                              key={product.id}
-                            >
-                              {product.productName} -{" "}
-                              {formatPrice(product.price)}
-                            </SelectItem>
-                          );
-                        })}
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            ))}
+            <div>
               <FormField
                 control={form.control}
-                name={`products.${index}.quantity`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Quantity</FormLabel>
-                    <FormControl>
-                      <Input type="number" disabled={isPending} {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                name="products"
+                render={() => (
+                  <Button type="button" disabled={isPending} className={`mb-2`}>
+                    <div className="flex items-center gap-x-3 mt-2 mb-2">
+                      <label
+                        htmlFor="Products"
+                        className={`text-sm text-[7E8DA0] cursor-pointer focus:outline-none focus:underline`}
+                        tabIndex={0}
+                        onClick={() => {
+                          const lastProduct =
+                            form.getValues().products[fields.length - 1];
+
+                          if (lastProduct && lastProduct.name.trim() !== "") {
+                            append({
+                              name: "",
+                              quantity: 0,
+                            });
+                          } else {
+                            toast.error(
+                              "Please fill in the previous product before adding a new one."
+                            );
+                          }
+                        }}
+                      >
+                        Add Product
+                      </label>
+                    </div>
+                  </Button>
                 )}
               />
             </div>
-          ))}
-          <div>
-            <FormField
-              control={form.control}
-              name="products"
-              render={() => (
-                <Button type="button" disabled={isPending} className={`mb-2`}>
-                  <div className="flex items-center gap-x-3 mt-2 mb-2">
-                    <label
-                      htmlFor="Products"
-                      className={`text-sm text-[7E8DA0] cursor-pointer focus:outline-none focus:underline`}
-                      tabIndex={0}
-                      onClick={() => {
-                        const lastProduct =
-                          form.getValues().products[fields.length - 1];
-
-                        if (lastProduct && lastProduct.name.trim() !== "") {
-                          append({
-                            name: "",
-                            quantity: 0,
-                          });
-                        } else {
-                          toast.error(
-                            "Please fill in the previous product before adding a new one."
-                          );
-                        }
-                      }}
-                    >
-                      Add Product
-                    </label>
-                  </div>
-                </Button>
-              )}
-            />
-          </div>
-          <Button disabled={isPending} type="submit" className="mt-0 w-full">
-            Request Order
-          </Button>
-        </form>
-      </Form>
+            <Button disabled={isPending} type="submit" className="mt-0 w-full">
+              Request Order
+            </Button>
+          </form>
+        </Form>
+      </div>
       <div className="flex-1 ml-2">
         <p>Total amount:</p>
         <h1 className="font-bold text-2xl">

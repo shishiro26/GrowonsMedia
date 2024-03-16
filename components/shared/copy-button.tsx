@@ -4,9 +4,9 @@ import React from "react";
 import { Button } from "../ui/button";
 import { toast } from "sonner";
 
-interface CopyButtonProps {
+type CopyButtonProps = {
   text: string;
-}
+};
 
 const CopyButton: React.FC<CopyButtonProps> = ({ text }) => {
   const handleCopy = () => {

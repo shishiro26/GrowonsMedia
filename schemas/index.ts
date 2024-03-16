@@ -137,6 +137,7 @@ export const RejectInvoiceSchema = z.object({
 });
 
 export const ProductSchema = z.object({
+  userId: z.string(),
   productName: z
     .string()
     .min(1, {
@@ -145,6 +146,12 @@ export const ProductSchema = z.object({
     .toLowerCase(),
   price: z.coerce.number().min(1, {
     message: "Price must be greater than 0",
+  }),
+  minProduct: z.coerce.number().min(1, {
+    message: "Minimum product must be greater than 0",
+  }),
+  maxProduct: z.coerce.number().min(1, {
+    message: "Maximum product must be greater than 0",
   }),
 });
 
@@ -156,8 +163,9 @@ export const OrderSchema = z.object({
       quantity: z.coerce.number().min(1, { message: "Quantity is required" }),
     })
   ),
-  price: z.coerce.number(),
+  price: z.coerce.number().gte(0),
 });
+
 export const FeedbackSchema = z.object({
   orderId: z
     .string()
@@ -200,4 +208,23 @@ export const AcceptOrderSchema = z.object({
       }
     })
     .pipe(z.custom<File>()),
+});
+
+export const EditProductFormSchema = z.object({
+  id: z.string(),
+  productName: z
+    .string()
+    .min(1, {
+      message: "Product name is required",
+    })
+    .toLowerCase()
+    .optional(),
+  price: z.coerce
+    .number()
+    .min(1, {
+      message: "Price must be greater than 0",
+    })
+    .optional(),
+  minProduct: z.coerce.number().optional(),
+  maxProduct: z.coerce.number().optional(),
 });

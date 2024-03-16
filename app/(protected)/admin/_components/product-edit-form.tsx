@@ -1,7 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import React, { useState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import {
@@ -13,37 +12,50 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import * as z from "zod";
-import { ProductSchema } from "@/schemas";
+import { EditProductFormSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FormError } from "@/components/shared/form-error";
-import { addProduct } from "@/actions/products";
-import { toast } from "sonner";
+import { editProduct } from "@/actions/products";
+import { useRouter } from "next/navigation";
 
-const ProductForm = ({ userId }: { userId: string }) => {
+type Product = {
+  id: string;
+  productName: string;
+  price: number;
+  minProduct: number;
+  maxProduct: number;
+} | null;
+
+type ProductEditFormProps = {
+  product: Product;
+};
+
+const ProductEditForm: React.FC<ProductEditFormProps> = ({ product }) => {
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | undefined>("");
+  const router = useRouter();
 
-  const form = useForm<z.infer<typeof ProductSchema>>({
-    resolver: zodResolver(ProductSchema),
+  const form = useForm<z.infer<typeof EditProductFormSchema>>({
+    resolver: zodResolver(EditProductFormSchema),
     defaultValues: {
-      userId: userId,
-      productName: "",
-      price: 0,
-      minProduct: 0,
-      maxProduct: 1,
+      id: product?.id,
+      productName: product?.productName,
+      price: product?.price,
+      minProduct: product?.minProduct,
+      maxProduct: product?.maxProduct,
     },
   });
 
-  const onSubmit = (values: z.infer<typeof ProductSchema>) => {
+  const onSubmit = (values: z.infer<typeof EditProductFormSchema>) => {
     setError("");
     startTransition(() => {
-      addProduct(values).then((data) => {
-        if (data?.success) {
-          toast.success(data.success);
-          form.reset();
-        }
-        if (data?.error) {
+      editProduct(values).then((data) => {
+        if (data.error) {
           setError(data.error);
+        }
+
+        if (data.success) {
+          router.push("/admin/product/product-table");
         }
       });
     });
@@ -117,7 +129,7 @@ const ProductForm = ({ userId }: { userId: string }) => {
           </div>
           <FormError message={error} />
           <Button type="submit" disabled={isPending} className="w-full">
-            Add Product
+            Edit Product
           </Button>
         </form>
       </Form>
@@ -125,4 +137,4 @@ const ProductForm = ({ userId }: { userId: string }) => {
   );
 };
 
-export default ProductForm;
+export default ProductEditForm;
