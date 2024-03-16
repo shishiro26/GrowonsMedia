@@ -26,7 +26,6 @@ const NavItems = async () => {
       <li>
         <SidebarItems userId={session?.user.id?.toString() ?? ""} />
       </li>
-
       <li>
         <Link
           href={`/feedback/${session?.user.id}`}

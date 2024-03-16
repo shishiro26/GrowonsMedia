@@ -36,6 +36,7 @@ model User {
   money     Money[]
   Order     Order[]
   Product   Product[]
+  News      News[]
 }
 
 model Money {
@@ -90,4 +91,14 @@ model Feedback {
   productId String?
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
+}
+
+model News {
+  id        String   @id @default(uuid()) @map("_id")
+  title     String
+  content   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
+  User      User?    @relation(fields: [userId], references: [id])
+  userId    String?
 }

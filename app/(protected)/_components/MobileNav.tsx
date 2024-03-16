@@ -11,7 +11,7 @@ import TopBar from "./Topbar";
 
 const MobileNv = () => {
   return (
-    <div className="m-2 flex md:hidden">
+    <div className="m-2 flex  md:hidden">
       <Sheet>
         <SheetTrigger>
           <svg
@@ -31,7 +31,7 @@ const MobileNv = () => {
           </svg>
         </SheetTrigger>
         <SheetContent
-          className="w-[300px] flex flex-col gap-6 bg-white md:hidden"
+          className="w-[300px] flex flex-col gap-6 bg-white overflow-auto md:hidden"
           side={"left"}
         >
           <SheetTitle>

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import React from "react";
 
 export const SidebarItems = ({ userId }: { userId: string }) => {
@@ -35,20 +36,20 @@ export const SidebarItems = ({ userId }: { userId: string }) => {
       </button>
       <ul className={`${isDropdownOpen ? "block" : "hidden"} py-2 space-y-2`}>
         <li>
-          <a
+          <Link
             href={`/orders/${userId}`}
             className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
           >
             New Orders
-          </a>
+          </Link>
         </li>
         <li>
-          <a
+          <Link
             href={`/orders/records/${userId}`}
             className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
           >
             records
-          </a>
+          </Link>
         </li>
       </ul>
     </>
@@ -88,20 +89,28 @@ export const AdminSidebar = () => {
       </button>
       <ul className={`${isDropdownOpen ? "block" : "hidden"} py-2 space-y-2`}>
         <li>
-          <a
+          <Link
             href={`/admin/user`}
             className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
           >
             Users
-          </a>
+          </Link>
         </li>
         <li>
-          <a
+          <Link
+            href={`/admin/news`}
+            className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
+          >
+            Add News
+          </Link>
+        </li>
+        <li>
+          <Link
             href={`/admin/wallet `}
             className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
           >
             Client Invoices
-          </a>
+          </Link>
         </li>
         <li>
           <a

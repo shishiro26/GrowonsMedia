@@ -228,3 +228,28 @@ export const EditProductFormSchema = z.object({
   minProduct: z.coerce.number().optional(),
   maxProduct: z.coerce.number().optional(),
 });
+
+export const NewsSchema = z.object({
+  userId: z.string(),
+  title: z
+    .string()
+    .min(1, { message: "Title is required" })
+    .max(100, { message: "Title must not exceed 100 characters" }),
+  content: z
+    .string()
+    .min(1, { message: "Content is required" })
+    .max(500, { message: "Content must not exceed 500 characters" }),
+});
+
+export const EditNewsSchema = z.object({
+  id: z.string(),
+  userId: z.string(),
+  title: z
+    .string()
+    .min(1, { message: "Title is required" })
+    .max(100, { message: "Title must not exceed 100 characters" }),
+  content: z
+    .string()
+    .min(1, { message: "Content is required" })
+    .max(500, { message: "Content must not exceed 500 characters" }),
+});
