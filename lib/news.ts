@@ -1,6 +1,8 @@
+import { revalidateTag } from "next/cache";
 import { db } from "./db";
 
 export const getNewsById = async () => {
+  revalidateTag("/");
   return await db.news.findMany({
     orderBy: {
       createdAt: "desc",

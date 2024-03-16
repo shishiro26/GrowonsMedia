@@ -203,11 +203,16 @@ export const AcceptOrderSchema = z.object({
       if (file.size > 5 * 1024 * 1024) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
-          message: "Max file size allowed is 5MB",
+          message: "Max file size allowed is 15MB",
         });
       }
     })
     .pipe(z.custom<File>()),
+});
+
+export const RejectOrderSchema = z.object({
+  id: z.string(),
+  reason: z.string().min(10, { message: "Minimum of 10 characters required" }),
 });
 
 export const EditProductFormSchema = z.object({

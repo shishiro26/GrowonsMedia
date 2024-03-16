@@ -14,6 +14,7 @@ export const generateMetadata = () => {
 
 const page = async ({ params }: { params: { id: string } }) => {
   const news = await getNewsById();
+  const newsLength = (await getNewsById()).length;
 
   return (
     <section className="mt-4 mx-2">
@@ -33,23 +34,31 @@ const page = async ({ params }: { params: { id: string } }) => {
           <AddMoneyForm userId={params.id.toString()} />
         </div>
         <div className="md:w-[50%]">
-          <div className="border-2 mt-4 mx-2 md:mt-10 border-black  p-2 rounded-lg">
-            <span className="m-2">News and Notices</span>
-            <div className="grid grid-rows-1 md:grid-rows-3">
-              {news?.map((n) => {
-                return (
-                  <Card key={n.id} className="m-2 md:w-full h-fit">
-                    <CardHeader>
-                      <CardTitle className="text-2xl font-semibold">
-                        {n.title}
-                      </CardTitle>
-                    </CardHeader>
-                    <CardContent className="text-sm">{n.content}</CardContent>
-                  </Card>
-                );
-              })}
-            </div>
-          </div>
+          {newsLength === 0 ? (
+            <div className="m-2 font-serif">No News to show here</div>
+          ) : (
+            <>
+              <div className="border-2 mt-4 mx-2 md:mt-10 border-black  p-2 rounded-lg">
+                <span className="m-2">News and Notices</span>
+                <div className="grid grid-rows-1 md:grid-rows-3">
+                  {news?.map((n) => {
+                    return (
+                      <Card key={n.id} className="m-2 md:w-full h-fit">
+                        <CardHeader>
+                          <CardTitle className="text-2xl font-semibold">
+                            {n.title}
+                          </CardTitle>
+                        </CardHeader>
+                        <CardContent className="text-sm">
+                          {n.content}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>
