@@ -61,9 +61,9 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-3  md:mt-10"
+          className="space-y-3 my-2 md:mt-10"
         >
-          <div className="space-y-2">
+          <div className="space-y-2 p-2">
             <FormField
               control={form.control}
               name="upiid"
@@ -154,7 +154,7 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
               )}
             />
           </div>
-          <Button disabled={isPending} type="submit" className="w-full">
+          <Button disabled={isPending} type="submit" className="w-full md:mb-0">
             Submit Request
           </Button>
         </form>
