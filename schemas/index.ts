@@ -182,32 +182,37 @@ export const FeedbackSchema = z.object({
 
 export const AcceptOrderSchema = z.object({
   id: z.string(),
-  file: z
-    .custom<FileList>()
-    .transform((val) => {
-      if (val instanceof File) return val;
-      if (val instanceof FileList) return val[0];
-      return null;
-    })
-    .superRefine((file, ctx) => {
-      if (!(file instanceof File)) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          fatal: true,
-          message: "Not a file",
-        });
+  files: z
+    .array(
+      z
+        .custom<File>()
+        .transform((val) => {
+          if (val instanceof File) return val;
+          return null;
+        })
+        .superRefine((file, ctx) => {
+          if (!(file instanceof File)) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              fatal: true,
+              message: "Not a file",
+            });
 
-        return z.NEVER;
-      }
+            return z.NEVER;
+          }
 
-      if (file.size > 5 * 1024 * 1024) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: "Max file size allowed is 15MB",
-        });
-      }
-    })
-    .pipe(z.custom<File>()),
+          if (file.size > 15 * 1024 * 1024) {
+            ctx.addIssue({
+              code: z.ZodIssueCode.custom,
+              message: "Max file size allowed is 15MB",
+            });
+          }
+        })
+    )
+    .refine((files) => files.length > 0, {
+      message: "At least one file must be provided",
+      path: ["files"],
+    }),
 });
 
 export const RejectOrderSchema = z.object({

@@ -1,5 +1,4 @@
 "use client";
-import { acceptInvoice, rejectInvoice } from "@/actions/admin-invoice";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,18 +24,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import * as z from "zod";
-import { AcceptOrderSchema, RejectInvoiceSchema } from "@/schemas";
+import { AcceptOrderSchema, RejectOrderSchema } from "@/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { acceptOrder, rejectOrder } from "@/actions/admin-order";
 
 type InvoiceProps = {
   id: string;
+  userId: string;
 };
 
 const AdminOrderForm = ({ id }: InvoiceProps) => {
   const [isPending, startTransition] = useTransition();
 
-  const rejectForm = useForm<z.infer<typeof RejectInvoiceSchema>>({
-    resolver: zodResolver(RejectInvoiceSchema),
+  const rejectForm = useForm<z.infer<typeof RejectOrderSchema>>({
+    resolver: zodResolver(RejectOrderSchema),
     defaultValues: {
       id: id,
       reason: "",
@@ -47,13 +48,27 @@ const AdminOrderForm = ({ id }: InvoiceProps) => {
     resolver: zodResolver(AcceptOrderSchema),
     defaultValues: {
       id: id,
-      file: undefined,
+      files: undefined,
     },
   });
 
-  const handleAccept = async () => {
+  const handleAccept = async (values: z.infer<typeof AcceptOrderSchema>) => {
+    const formData = new FormData();
+
+    console.log(values.files);
+
+    formData.append("id", values.id);
+    if (values.files) {
+      for (let i = 0; i < values.files.length; i++) {
+        console.log(values.files[i]);
+        formData.append(`files[${i}]`, values.files[i] ?? "");
+        formData.append(`fileName[${i}][fileName]`, values?.files[i]?.name ?? "");
+        formData.append(`fileType[${i}][fileType]`, values?.files[i]?.type ?? "");
+      }
+    }
+
     startTransition(() => {
-      acceptInvoice(id).then((data) => {
+      acceptOrder(formData).then((data) => {
         if (data?.success) {
           toast.success(data.success, {
             action: {
@@ -74,9 +89,9 @@ const AdminOrderForm = ({ id }: InvoiceProps) => {
     });
   };
 
-  const handleReject = async (values: z.infer<typeof RejectInvoiceSchema>) => {
+  const handleReject = async (values: z.infer<typeof RejectOrderSchema>) => {
     startTransition(() => {
-      rejectInvoice({ id: id, reason: values.reason }).then((data) => {
+      rejectOrder(values).then((data) => {
         if (data?.success) {
           toast.success(data.success, {
             action: {
@@ -108,12 +123,15 @@ const AdminOrderForm = ({ id }: InvoiceProps) => {
             <DialogTitle>Accept the order :</DialogTitle>
           </DialogHeader>
           <Form {...acceptForm}>
-            <form onSubmit={acceptForm.handleSubmit(handleAccept)}>
+            <form
+              onSubmit={acceptForm.handleSubmit(handleAccept)}
+              className="space-y-4"
+            >
               <div>
                 <FormField
                   control={acceptForm.control}
-                  name="file"
-                  render={({ field }) => (
+                  name="files"
+                  render={({ field: { onChange, onBlur, name } }) => (
                     <FormItem>
                       <FormLabel>Attach the file below:</FormLabel>
                       <FormControl>
@@ -122,7 +140,12 @@ const AdminOrderForm = ({ id }: InvoiceProps) => {
                           disabled={isPending}
                           placeholder="Attach the screenshot here"
                           type="file"
-                          {...acceptForm.register("file")}
+                          multiple
+                          name={name}
+                          onChange={(e) =>
+                            onChange([...Array.from(e.target.files ?? [])])
+                          }
+                          onBlur={onBlur}
                         />
                       </FormControl>
                       <FormMessage />
@@ -130,6 +153,15 @@ const AdminOrderForm = ({ id }: InvoiceProps) => {
                   )}
                 />
               </div>
+              {acceptForm.formState.errors ? (
+                <Button type="submit">Confirm</Button>
+              ) : (
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="submit">ConfirmF</Button>
+                  </DialogClose>
+                </DialogFooter>
+              )}
             </form>
           </Form>
         </DialogContent>
@@ -162,13 +194,17 @@ const AdminOrderForm = ({ id }: InvoiceProps) => {
                       <FormMessage />
                     </FormItem>
                   )}
-                />{" "}
+                />
               </div>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button type="submit">Submit</Button>
-                </DialogClose>
-              </DialogFooter>
+              {rejectForm.formState.errors ? (
+                <Button type="submit">Submit</Button>
+              ) : (
+                <DialogFooter>
+                  <DialogClose asChild>
+                    <Button type="submit">Submit</Button>
+                  </DialogClose>
+                </DialogFooter>
+              )}
             </form>
           </Form>
         </DialogContent>

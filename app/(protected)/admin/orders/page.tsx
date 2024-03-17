@@ -82,7 +82,7 @@ const AdminOrders = async ({
                 </TableCell>
                 <TableCell>{formatPrice(order.amount)}</TableCell>
                 <TableCell>
-                  <AdminOrderForm id={order.userId} />
+                  <AdminOrderForm userId={order.userId} id={order.id} />
                 </TableCell>
               </TableRow>
             );

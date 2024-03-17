@@ -76,6 +76,7 @@ model Order {
   userId    String
   user      User?       @relation(fields: [userId], references: [id])
   products  Json
+  files     Json?
   amount    Int
   reason    String?
   status    OrderStatus @default(PENDING)

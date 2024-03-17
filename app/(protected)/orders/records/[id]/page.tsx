@@ -1,8 +1,9 @@
 import ViewProducts from "@/app/(protected)/_components/view-products";
+import FileDialog from "@/app/(protected)/admin/_components/file-dialog";
 import BadgeStatus from "@/app/(protected)/money/_components/BadgeStatus";
 import PaginationBar from "@/app/(protected)/money/_components/PaginationBar";
+import ReasonDialog from "@/components/shared/ReasonDialog";
 import { formatPrice } from "@/components/shared/formatPrice";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import {
   Table,
   TableBody,
@@ -75,7 +76,21 @@ const ClientRecords = async ({
               <TableRow key={index}>
                 <TableCell className="font-medium">{order.orderId}</TableCell>
                 <TableCell>
-                  <BadgeStatus status={order.status} />
+                  {order.status === "FAILED" && order.reason !== null ? (
+                    <ReasonDialog status={order.status} reason={order.reason} />
+                  ) : (
+                    order.status === "SUCCESS" && (
+                      <>
+                        <FileDialog
+                          status={order.status}
+                          files={JSON.parse(JSON.stringify(order.files))}
+                        />
+                      </>
+                    )
+                  )}
+                  {order.status !== "FAILED" && order.status !== "SUCCESS" && (
+                    <BadgeStatus status={order.status} />
+                  )}
                 </TableCell>
                 <TableCell>
                   <ViewProducts
