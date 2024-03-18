@@ -71,7 +71,10 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
                 <ImageDialog imageLink={invoice.secure_url} />
               </TableCell>
               <TableCell>
-                <FormInvoice id={invoice.id.toString()} />
+                <FormInvoice
+                  id={invoice.id.toString()}
+                  userId={invoice.userId}
+                />
               </TableCell>
             </TableRow>
           ))}

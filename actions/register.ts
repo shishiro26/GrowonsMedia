@@ -39,23 +39,5 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
     },
   });
 
-  try {
-    await signIn("credentials", {
-      username: email,
-      password,
-      redirectTo: DEFAULT_LOGIN_REDIRECT,
-    });
-  } catch (error) {
-    if (error instanceof AuthError) {
-      switch (error.type) {
-        case "CredentialsSignin":
-          return { error: "Something went wrong!" };
-        default:
-          return { error: "Something went wrong!" };
-      }
-    }
-    throw error;
-  }
-
   return { success: "User created!" };
 };

@@ -1,6 +1,4 @@
 "use server";
-import { auth } from "@/auth";
-import { getTotalMoney } from "@/data/money";
 import { getUserById } from "@/data/user";
 import { db } from "@/lib/db";
 import { OrderSchema } from "@/schemas";
@@ -60,12 +58,26 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
       return { error: errorMessages };
     }
 
-    const userTotalMoney = await getTotalMoney(values.id);
+    const userTotalMoney = user?.totalMoney;
 
     const orderId = Date.now() + Math.floor(Math.random() * 100000);
 
-    if (userTotalMoney < price) {
+    if (userTotalMoney < price && user.role !== "PRO") {
       return { error: "Wallet money is insufficient" };
+    }
+
+    const proUser = await db.proUser.findFirst({
+      where: {
+        userId: id,
+      },
+    });
+    if (userTotalMoney < price && user.role === "PRO") {
+      if (!proUser) {
+        return { error: "User is not a PRO!" };
+      }
+      if (userTotalMoney === 0 && proUser.amount_limit < price) {
+        return { error: "PRO user amount limit exceeded" };
+      }
     }
 
     await db.order.create({
@@ -80,6 +92,33 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
       },
     });
 
+    if (user.role === "PRO") {
+      if (price <= userTotalMoney + (proUser?.amount_limit ?? 0)) {
+        await db.user.update({
+          where: { id },
+          data: { totalMoney: 0 },
+        });
+        const remainingPrice = price - userTotalMoney;
+        await db.proUser.update({
+          where: { userId: id },
+          data: {
+            amount_limit: (proUser?.amount_limit ?? 0) - remainingPrice,
+          },
+        });
+      } else {
+        await db.user.update({
+          where: { id },
+          data: { totalMoney: user?.totalMoney - price },
+        });
+      }
+    } else {
+      await db.user.update({
+        where: { id: values.id },
+        data: {
+          totalMoney: user?.totalMoney - price,
+        },
+      });
+    }
     return { success: "Order added successfully!" };
   } catch (error) {
     console.error("Error:", error);

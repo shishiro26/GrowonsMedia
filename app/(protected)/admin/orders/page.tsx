@@ -14,6 +14,7 @@ import { formatPrice } from "@/components/shared/formatPrice";
 import BalanceCell from "../_components/Balance-cell";
 import AdminOrderForm from "../_components/admin-order-form";
 import PaginationBar from "../../money/_components/PaginationBar";
+import { revalidatePath } from "next/cache";
 
 export const generateMetadata = () => {
   return {
@@ -53,6 +54,8 @@ const AdminOrders = async ({
     take: pageSize,
   });
 
+  revalidatePath("/admin/orders");
+
   return (
     <>
       <Table>
@@ -82,7 +85,11 @@ const AdminOrders = async ({
                 </TableCell>
                 <TableCell>{formatPrice(order.amount)}</TableCell>
                 <TableCell>
-                  <AdminOrderForm userId={order.userId} id={order.id} />
+                  <AdminOrderForm
+                    userId={order.userId}
+                    id={order.id}
+                    amount={order.amount}
+                  />
                 </TableCell>
               </TableRow>
             );

@@ -13,6 +13,7 @@ import { formatPrice } from "@/components/shared/formatPrice";
 import BadgeStatus from "./BadgeStatus";
 import ImageDialog from "@/components/shared/Image-dialog";
 import ReasonDialog from "@/components/shared/ReasonDialog";
+import { revalidatePath } from "next/cache";
 
 type TableProps = {
   searchParams: { page: string };
@@ -37,6 +38,8 @@ export async function MoneyTable({ userId, searchParams }: TableProps) {
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });
+
+  revalidatePath(`/money/record/${userId}`);
 
   return (
     <section className="w-full">

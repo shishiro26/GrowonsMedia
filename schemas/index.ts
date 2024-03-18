@@ -218,6 +218,8 @@ export const AcceptOrderSchema = z.object({
 export const RejectOrderSchema = z.object({
   id: z.string(),
   reason: z.string().min(10, { message: "Minimum of 10 characters required" }),
+  userId: z.string(),
+  amount: z.coerce.number(),
 });
 
 export const EditProductFormSchema = z.object({
@@ -262,4 +264,16 @@ export const EditNewsSchema = z.object({
     .string()
     .min(1, { message: "Content is required" })
     .max(500, { message: "Content must not exceed 500 characters" }),
+});
+
+export const ProUserSchema = z.object({
+  userId: z.string(),
+  amount: z.coerce.number(),
+  minProduct: z.coerce.number().nonnegative().min(0, {
+    message: "Minimum product must be greater than 0",
+  }),
+
+  maxProduct: z.coerce.number().nonnegative().min(0, {
+    message: "Maximum product must be greater than 0",
+  }),
 });

@@ -19,8 +19,6 @@ type CardWrapperProps = {
 
 import { Poppins } from "next/font/google";
 
-import { cn } from "@/lib/utils";
-
 const font = Poppins({
   subsets: ["latin"],
   weight: ["600"],
@@ -36,11 +34,9 @@ const CardWrapper = ({
     <Card className="m-1 shadow-md w-full lg:max-w-lg lg:p-0 sm:p-8 bg-white rounded-lg">
       <CardHeader>
         <div className="flex flex-col gap-y-2 items-center justify-center">
-          <h1 className={cn("text-3xl font-semibold", font.className)}>
-            GrowonsMedia
-          </h1>
+          <h1 className="text-3xl font-semibold">GrowonsMedia</h1>
           <p className="text-muted-foreground text-sm">{headerLabel}</p>
-        </div>{" "}
+        </div>
       </CardHeader>
       <CardContent>{children}</CardContent>
       <CardFooter>

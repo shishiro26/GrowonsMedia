@@ -1,15 +1,39 @@
 "use server";
 
+import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { RejectInvoiceSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import * as z from "zod";
 
-export const acceptInvoice = async (invoiceId: string) => {
+type ValuesProps = {
+  userId: string;
+  invoiceId: string;
+};
+
+export const acceptInvoice = async ({ userId, invoiceId }: ValuesProps) => {
   try {
     await db.money.update({
       where: { id: invoiceId },
       data: { status: "SUCCESS" },
+    });
+
+    const invoices = await db.money.findMany({
+      where: { userId: userId, status: "SUCCESS" },
+      select: {
+        amount: true,
+      },
+    });
+
+    const totalMoney = invoices.reduce((acc, curr) => {
+      return acc + Number(curr.amount);
+    }, 0);
+
+    await db.user.update({
+      where: { id: userId },
+      data: {
+        totalMoney: totalMoney,
+      },
     });
   } catch (error) {
     return { error: "Error while updating the Invoice!" };

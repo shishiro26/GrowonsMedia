@@ -13,6 +13,7 @@ import PaginationBar from "../../money/_components/PaginationBar";
 import { revalidatePath } from "next/cache";
 import BlockUser from "../_components/block-user";
 import BalanceCell from "../_components/Balance-cell";
+import ProUser from "../_components/upgrade-to-pro";
 
 const UserTable = async ({
   searchParams,
@@ -72,6 +73,11 @@ const UserTable = async ({
               <TableCell>
                 <BlockUser id={user.id} role={user.role} />
               </TableCell>
+              {user.role !== "BLOCKED" && (
+                <TableCell>
+                  <ProUser userId={user.id} role={user.role} />
+                </TableCell>
+              )}
             </TableRow>
           ))}
         </TableBody>

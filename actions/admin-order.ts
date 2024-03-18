@@ -19,6 +19,20 @@ export const rejectOrder = async (
       where: { id: values.id },
       data: { status: "FAILED", reason: values.reason },
     });
+
+    const user = await db.user.findUnique({
+      where: { id: values.userId },
+      select: {
+        totalMoney: true,
+      },
+    });
+
+    await db.user.update({
+      where: { id: values.userId },
+      data: {
+        totalMoney: (user?.totalMoney ?? 0) + values.amount,
+      },
+    });
   } catch (error) {
     console.log(error);
     return { error: "Error while rejecting the Invoice!" };
@@ -42,7 +56,6 @@ async function convertFilesToBase64(formData: FormData) {
 
   const base64Promises = files.map(async (fileEntry) => {
     const [fieldName, file] = fileEntry;
-    console.log(file);
     const fileContent = await file.arrayBuffer();
     const base64 = Buffer.from(fileContent).toString("base64");
     return base64;
@@ -72,12 +85,12 @@ async function uploadFilestoCloudinary(buffer: string[]) {
 export const acceptOrder = async (formData: FormData) => {
   const filesBase64 = await convertFilesToBase64(formData);
   const files = await uploadFilestoCloudinary(filesBase64);
-
   try {
     await db.order.update({
       where: { id: formData.get("id")?.toString() },
       data: {
         status: "SUCCESS",
+        isDeleted: true,
         files: files.map((file, index) => ({
           public_id: file.public_id,
           secure_url: file.secure_url,
@@ -87,6 +100,7 @@ export const acceptOrder = async (formData: FormData) => {
       },
     });
   } catch (error) {
+    console.log(error);
     return { error: "Error while accepting the order!" };
   }
 

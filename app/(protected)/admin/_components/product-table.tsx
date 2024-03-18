@@ -12,6 +12,9 @@ import {
 import ProductRemove from "./product-remove";
 import PaginationBar from "../../money/_components/PaginationBar";
 import { formatPrice } from "@/components/shared/formatPrice";
+import { revalidatePath } from "next/cache";
+
+export const revalidate = 3600;
 
 const ProductTable = async ({
   searchParams,
@@ -42,6 +45,8 @@ const ProductTable = async ({
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });
+
+  revalidatePath("/admin/product");
 
   return (
     <>
