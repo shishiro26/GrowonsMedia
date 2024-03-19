@@ -25,6 +25,12 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
       };
     }
 
+    const proUser = await db.proUser.findFirst({
+      where: {
+        userId: id,
+      },
+    });
+
     if (products.length === 0) {
       return { error: "No product added in the order" };
     }
@@ -40,15 +46,32 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
       const existingProduct = existingProducts.find(
         (p) => p.productName === product.name
       );
-      if (!existingProduct) {
+      if (!existingProduct && user.role !== "PRO") {
         errors.push({ error: `Product ${product.name} not found` });
       } else {
-        if (existingProduct.minProduct > product.quantity) {
+        if (
+          (existingProduct?.minProduct ?? 0) > product.quantity &&
+          user.role !== "PRO"
+        ) {
           errors.push({ error: `${product.name} Minimum quantity not met` });
         }
 
-        if (existingProduct.maxProduct < product.quantity) {
+        if (
+          existingProduct &&
+          existingProduct.maxProduct < product.quantity &&
+          user.role !== "PRO"
+        ) {
           errors.push({ error: `${product.name} Maximum quantity exceeded` });
+        }
+
+        if (user.role === "PRO") {
+          if ((proUser?.minProduct ?? 0) > product.quantity) {
+            errors.push({ error: `${product.name} Minimum quantity not met` });
+          }
+          if ((proUser?.maxProduct ?? 0) < product.quantity) {
+            errors.push({ error: `${product.name} Maximum quantity exceeded` });
+          }
+          
         }
       }
     });
@@ -66,11 +89,6 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
       return { error: "Wallet money is insufficient" };
     }
 
-    const proUser = await db.proUser.findFirst({
-      where: {
-        userId: id,
-      },
-    });
     if (userTotalMoney < price && user.role === "PRO") {
       if (!proUser) {
         return { error: "User is not a PRO!" };

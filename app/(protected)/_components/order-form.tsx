@@ -30,9 +30,18 @@ type FormValues = z.infer<typeof OrderSchema>;
 type OrderProps = {
   id: string;
   products: any;
+  role: "PRO" | "BLOCKED" | "USER" | "ADMIN" | undefined;
+  minProduct: number | undefined;
+  maxProduct: number | undefined;
 };
 
-const OrderForm = ({ id, products }: OrderProps) => {
+const OrderForm = ({
+  id,
+  products,
+  role,
+  minProduct,
+  maxProduct,
+}: OrderProps) => {
   const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = React.useTransition();
 
@@ -121,8 +130,17 @@ const OrderForm = ({ id, products }: OrderProps) => {
                                 key={product.id}
                                 className="capitalize"
                               >
-                                {product.productName} min-{product.minProduct}{" "}
-                                max-{product.maxProduct}{" "}
+                                {product.productName}{" "}
+                                {role === "PRO" ? (
+                                  <>
+                                    min-{minProduct} - max-{maxProduct}{" "}
+                                  </>
+                                ) : (
+                                  <>
+                                    min-{product.minProduct} max-
+                                    {product.maxProduct}{" "}
+                                  </>
+                                )}{" "}
                                 {formatPrice(product.price)}
                               </SelectItem>
                             );
