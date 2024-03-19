@@ -1,9 +1,9 @@
 import React from "react";
 import Image from "next/image";
 import AddMoneyForm from "../../_components/add-money";
-import { getNewsById } from "@/lib/news";
 import DownloadButton from "@/components/shared/download";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { getNewsById } from "@/lib/news";
 
 export const generateMetadata = () => {
   return {

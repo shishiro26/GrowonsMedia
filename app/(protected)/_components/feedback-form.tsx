@@ -32,15 +32,18 @@ type Order = {
 
 type FeedbackFormProps = {
   orders: Order[];
+  userId: string;
 };
 
-const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders }) => {
+const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders, userId }) => {
   const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = useTransition();
 
   const form = useForm<z.infer<typeof FeedbackSchema>>({
     resolver: zodResolver(FeedbackSchema),
+
     defaultValues: {
+      userId: userId,
       orderId: "",
       feedback: "",
     },
@@ -94,11 +97,16 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders }) => {
                     <FormMessage />
                     <SelectContent>
                       {orders.length !== 0 &&
-                        orders.map((order) => (
-                          <SelectItem key={order.orderId} value={order.orderId}>
-                            {order.orderId}
-                          </SelectItem>
-                        ))}
+                        orders.map((order) => {
+                          return (
+                            <SelectItem
+                              key={order.orderId}
+                              value={order.orderId}
+                            >
+                              {order.orderId}
+                            </SelectItem>
+                          );
+                        })}
                     </SelectContent>
                   </Select>
                 </FormItem>

@@ -27,19 +27,20 @@ enum OrderStatus {
 }
 
 model User {
-  id         String    @id @default(uuid()) @map("_id")
-  email      String    @unique
+  id         String     @id @default(uuid()) @map("_id")
+  email      String     @unique
   name       String?
-  number     String    @unique
+  number     String     @unique
   password   String
-  totalMoney Int       @default(0)
-  role       UserRole  @default(USER)
-  createdAt  DateTime  @default(now()) @map("created_at")
+  totalMoney Int        @default(0)
+  role       UserRole   @default(USER)
+  createdAt  DateTime   @default(now()) @map("created_at")
   money      Money[]
   Order      Order[]
   Product    Product[]
   News       News[]
   ProUser    ProUser[]
+  Feedback   Feedback[]
 }
 
 model ProUser {
@@ -79,8 +80,6 @@ model Product {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt
   orderId     String?
-
-  feeback Feedback[]
 }
 
 model Order {
@@ -99,13 +98,15 @@ model Order {
 }
 
 model Feedback {
-  id        String   @id @default(uuid()) @map("_id")
-  orderId   String
-  feedback  String
-  Product   Product? @relation(fields: [productId], references: [id])
-  productId String?
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid()) @map("_id")
+  orderId     String
+  feedback    String
+  reply       String?
+  replyStatus Boolean  @default(false)
+  userId      String?
+  User        User?    @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt
 }
 
 model News {

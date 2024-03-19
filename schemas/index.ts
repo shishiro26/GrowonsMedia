@@ -178,6 +178,7 @@ export const FeedbackSchema = z.object({
   feedback: z.string().min(1, {
     message: "The Comment must be at least 10 character long",
   }),
+  userId: z.string(),
 });
 
 export const AcceptOrderSchema = z.object({
@@ -276,4 +277,10 @@ export const ProUserSchema = z.object({
   maxProduct: z.coerce.number().nonnegative().min(0, {
     message: "Maximum product must be greater than 0",
   }),
+});
+
+export const ReplySchema = z.object({
+  orderId: z.string(),
+  reply: z.string().min(1, { message: "Reply is required" }),
+  feedback: z.string(),
 });

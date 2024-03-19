@@ -14,6 +14,7 @@ const FeedbackPage = async ({ params }: { params: { id: string } }) => {
     where: { userId: params.id },
     select: {
       orderId: true,
+      userId: true,
     },
   });
 
@@ -22,7 +23,7 @@ const FeedbackPage = async ({ params }: { params: { id: string } }) => {
       <h1 className="text-3xl mt-4 ml-2">Feedback</h1>
       <div className="m-3">
         <div className="mt-4">
-          <FeedbackForm orders={orders} />
+          <FeedbackForm orders={orders} userId={params.id} />
         </div>
       </div>
     </section>
