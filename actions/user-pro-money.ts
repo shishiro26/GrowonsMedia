@@ -87,46 +87,48 @@ export const addProMoney = async (formData: FormData) => {
       },
     });
   } else {
-    if (proUser.amount === proUser.amount_limit) {
-      return { error: "Amount limit reached" };
-    }
-    if (proUser.amount - proUser.amount_limit < Number(rechargeAmount)) {
-      return { error: "Amount is greater than the available amount" };
-    }
-    if (proUser.amount - proUser.amount_limit > Number(rechargeAmount)) {
-      return { error: "Insufficient amount to recharge" };
-    }
+    if (proUser !== null) {
+      if (proUser.amount === proUser.amount_limit) {
+        return { error: "Amount limit reached" };
+      }
+      if (proUser.amount - proUser.amount_limit < Number(rechargeAmount)) {
+        return { error: "Amount is greater than the available amount" };
+      }
+      if (proUser.amount - proUser.amount_limit > Number(rechargeAmount)) {
+        return { error: "Insufficient amount to recharge" };
+      }
 
-    if (proUser.amount_limit > proUser.amount) {
-      return { error: "Amount limit is greater than the available amount" };
+      if (proUser.amount_limit > proUser.amount) {
+        return { error: "Amount limit is greater than the available amount" };
+      }
+
+      if (proUser.amount_limit + Number(rechargeAmount) > proUser.amount) {
+        return { error: "Amount limit is greater than the available amount" };
+      }
+
+      await db.money.create({
+        data: {
+          amount: formData.get("amount")?.toString(),
+          secure_url: photos.secure_url,
+          public_id: photos.public_id,
+          transactionId: formData.get("transactionId")?.toString() ?? "",
+          upiid: formData.get("upiid")?.toString() ?? "",
+          accountNumber: formData.get("accountNumber")?.toString(),
+          userId: formData.get("userId")?.toString(),
+          name: username ?? "",
+          isProRecharge: true,
+        },
+      });
+
+      await db.proUser.update({
+        where: {
+          userId: user?.id,
+        },
+        data: {
+          amount: proUser.amount_limit + Number(rechargeAmount),
+        },
+      });
     }
-
-    if (proUser.amount_limit + Number(rechargeAmount) > proUser.amount) {
-      return { error: "Amount limit is greater than the available amount" };
-    }
-
-    await db.money.create({
-      data: {
-        amount: formData.get("amount")?.toString(),
-        secure_url: photos.secure_url,
-        public_id: photos.public_id,
-        transactionId: formData.get("transactionId")?.toString() ?? "",
-        upiid: formData.get("upiid")?.toString() ?? "",
-        accountNumber: formData.get("accountNumber")?.toString(),
-        userId: formData.get("userId")?.toString(),
-        name: username ?? "",
-        isProRecharge: true,
-      },
-    });
-
-    await db.proUser.update({
-      where: {
-        userId: user?.id,
-      },
-      data: {
-        amount: proUser.amount_limit + Number(rechargeAmount),
-      },
-    });
   }
 
   revalidatePath("/money/record");
