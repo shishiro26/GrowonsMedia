@@ -90,7 +90,6 @@ export const acceptOrder = async (formData: FormData) => {
       where: { id: formData.get("id")?.toString() },
       data: {
         status: "SUCCESS",
-        isDeleted: true,
         files: files.map((file, index) => ({
           public_id: file.public_id,
           secure_url: file.secure_url,
