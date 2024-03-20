@@ -6,6 +6,7 @@ import {
   adminAuthPrefix,
   apiAuthPrefix,
   authRoutes,
+  proAuthPrefix,
   publicRoutes,
 } from "@/routes";
 import { NextResponse } from "next/server";
@@ -21,6 +22,7 @@ export default auth(async (req) => {
   const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
   const isAuthRoute = authRoutes.includes(nextUrl.pathname);
   const isApiAdminRoute = nextUrl.pathname.startsWith(adminAuthPrefix);
+  const isApiProRoute = nextUrl.pathname.startsWith(proAuthPrefix);
 
   if (isApiAuthRoute) {
     return NextResponse.next();
@@ -52,6 +54,25 @@ export default auth(async (req) => {
     if (role !== "ADMIN") {
       return Response.redirect(new URL("/", nextUrl));
     }
+  }
+
+  if (isApiProRoute) {
+    if (role !== "ADMIN" && role !== "PRO") {
+      return Response.redirect(new URL("/", nextUrl));
+    }
+  }
+
+  if (!isLoggedIn && !isPublicRoute) {
+    let callbackUrl = nextUrl.pathname;
+    if (nextUrl.search) {
+      callbackUrl += nextUrl.search;
+    }
+
+    const encodedCallbackUrl = encodeURIComponent(callbackUrl);
+
+    return Response.redirect(
+      new URL(`/auth/login?callbackUrl=${encodedCallbackUrl}`, nextUrl)
+    );
   }
 
   return NextResponse.next();
