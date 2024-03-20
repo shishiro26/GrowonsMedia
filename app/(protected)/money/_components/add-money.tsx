@@ -23,7 +23,7 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
   const form = useForm<z.infer<typeof MoneySchema>>({
     resolver: zodResolver(MoneySchema),
     defaultValues: {
-      amount: "",
+      amount: 0,
       transactionId: "",
       upiid: "",
       accountNumber: "",

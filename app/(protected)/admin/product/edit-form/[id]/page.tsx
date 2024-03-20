@@ -1,6 +1,14 @@
 import React from "react";
 import ProductEditForm from "../../../_components/product-edit-form";
 import { db } from "@/lib/db";
+import TopBar from "@/app/(protected)/_components/Topbar";
+
+export const generateMetadata = () => {
+  return {
+    title: "Edit Product | GrowonsMedia",
+    description: "Edit Product",
+  };
+};
 
 const page = async ({ params }: { params: { id: string } }) => {
   const product = await db.product.findUnique({
@@ -15,12 +23,16 @@ const page = async ({ params }: { params: { id: string } }) => {
   });
 
   return (
-    <section>
-      <h1 className="text-3xl mt-4 ml-2 text-center">Edit Product</h1>
-      <div className="m-1">
-        <ProductEditForm product={product} />
-      </div>
-    </section>
+    <>
+      <nav className="md:block hidden">
+        <TopBar title="Edit Product" />
+      </nav>
+      <section>
+        <div className="m-1">
+          <ProductEditForm product={product} />
+        </div>
+      </section>
+    </>
   );
 };
 

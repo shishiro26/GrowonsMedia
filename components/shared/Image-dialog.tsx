@@ -17,7 +17,7 @@ const ImageDialog = ({ imageLink }: { imageLink: string }) => {
         <Image
           src={imageLink}
           alt="INVOICE001"
-          className="cursor-pointer"
+          className="cursor-pointer w-14 h-14"
           width={50}
           height={50}
           priority
@@ -27,15 +27,17 @@ const ImageDialog = ({ imageLink }: { imageLink: string }) => {
         <DialogHeader>
           <DialogTitle className="mb-2">Invoice Image:</DialogTitle>
           <DialogDescription className="flex flex-col items-center gap-1">
-            <Image
-              src={imageLink}
-              alt="INVOICE001"
-              className="cursor-pointer"
-              width={500}
-              height={500}
-              objectFit="cover"
-              priority
-            />
+            <div className="w-64 h-64 overflow-auto">
+              <Image
+                src={imageLink}
+                alt="INVOICE001"
+                className="cursor-pointer"
+                width={500}
+                height={500}
+                objectFit="cover"
+                priority
+              />
+            </div>
             <DownloadButton imageLink={imageLink} />
           </DialogDescription>
         </DialogHeader>

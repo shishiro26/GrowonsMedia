@@ -14,6 +14,7 @@ import { revalidatePath } from "next/cache";
 import BlockUser from "../_components/block-user";
 import BalanceCell from "../_components/Balance-cell";
 import ProUser from "../_components/upgrade-to-pro";
+import TopBar from "../../_components/Topbar";
 
 const UserTable = async ({
   searchParams,
@@ -40,6 +41,9 @@ const UserTable = async ({
 
   return (
     <>
+      <nav className="hidden md:block">
+        <TopBar title="User Management" />
+      </nav>
       <Table>
         <TableHeader>
           <TableRow>

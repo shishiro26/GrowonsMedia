@@ -13,6 +13,14 @@ import ViewProducts from "./_components/view-products";
 import { revalidatePath } from "next/cache";
 import PaginationBar from "@/app/(protected)/money/_components/PaginationBar";
 import AddReplyPage from "./_components/add-reply-page";
+import TopBar from "@/app/(protected)/_components/Topbar";
+
+export const generateMetadata = () => {
+  return {
+    title: "Feedbacks | Growonsmedia",
+    description: "Feedbacks",
+  };
+};
 
 const Feedbacks = async ({
   searchParams,
@@ -54,6 +62,9 @@ const Feedbacks = async ({
 
   return (
     <>
+      <nav>
+        <TopBar title="Feedbacks" />
+      </nav>
       <Table>
         <TableCaption>List of your recent Feedbacks.</TableCaption>
         <TableHeader>

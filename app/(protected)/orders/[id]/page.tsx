@@ -37,18 +37,22 @@ const page = async ({ params }: { params: { id: string } }) => {
   });
 
   return (
-    <section>
-      <h1 className="text-3xl mt-4 ml-2">Add order</h1>
-      <div className="m-3">
-        <OrderForm
-          id={params.id.toString()}
-          products={products}
-          role={user?.role}
-          minProduct={prouser?.minProduct}
-          maxProduct={prouser?.maxProduct}
-        />
+    <>
+      <div className="hidden md:block">
+        <TopBar title="Add order" />
       </div>
-    </section>
+      <section>
+        <div className="m-3">
+          <OrderForm
+            id={params.id.toString()}
+            products={products}
+            role={user?.role}
+            minProduct={prouser?.minProduct}
+            maxProduct={prouser?.maxProduct}
+          />
+        </div>
+      </section>
+    </>
   );
 };
 

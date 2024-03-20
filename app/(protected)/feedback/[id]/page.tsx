@@ -1,6 +1,7 @@
 import React from "react";
 import { db } from "@/lib/db";
 import FeedbackForm from "../../_components/feedback-form";
+import TopBar from "../../_components/Topbar";
 
 export const generateMetadata = () => {
   return {
@@ -19,14 +20,18 @@ const FeedbackPage = async ({ params }: { params: { id: string } }) => {
   });
 
   return (
-    <section>
-      <h1 className="text-3xl mt-4 ml-2">Feedback</h1>
-      <div className="m-3">
-        <div className="mt-4">
-          <FeedbackForm orders={orders} userId={params.id} />
-        </div>
+    <>
+      <div className="hidden md:block">
+        <TopBar title="Add Feedback" />
       </div>
-    </section>
+      <section>
+        <div className="m-3">
+          <div className="mt-4">
+            <FeedbackForm orders={orders} userId={params.id} />
+          </div>
+        </div>
+      </section>
+    </>
   );
 };
 

@@ -15,6 +15,7 @@ import BalanceCell from "../_components/Balance-cell";
 import AdminOrderForm from "../_components/admin-order-form";
 import PaginationBar from "../../money/_components/PaginationBar";
 import { revalidatePath } from "next/cache";
+import TopBar from "../../_components/Topbar";
 
 export const generateMetadata = () => {
   return {
@@ -58,6 +59,9 @@ const AdminOrders = async ({
 
   return (
     <>
+      <nav className="hidden md:block">
+        <TopBar title="Order records" />
+      </nav>
       <Table>
         <TableHeader>
           <TableRow>

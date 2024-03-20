@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/auth";
 import { Replies } from "../../_components/replies";
+import TopBar from "@/app/(protected)/_components/Topbar";
 
 export const generateMetadata = () => {
   return {
@@ -20,16 +21,19 @@ type RecordProps = {
 const page = async ({ params, searchParams }: RecordProps) => {
   const session = await auth();
   return (
-    <section className="ml-2 mt-4 space-y-4">
-      <Button className="flex items-center " asChild>
-        <Link href={`/feedback/${session?.user.id}`} className="inline">
-          Add your feedback here
-        </Link>
-      </Button>
-      <div>
-        <Replies userId={params.id.toString()} searchParams={searchParams} />
-      </div>
-    </section>
+    <>
+      <TopBar title="All Feedbacks" />
+      <section className="ml-2 mt-4 space-y-4">
+        <Button className="flex items-center " asChild>
+          <Link href={`/feedback/${session?.user.id}`} className="inline">
+            Add your feedback here
+          </Link>
+        </Button>
+        <div>
+          <Replies userId={params.id.toString()} searchParams={searchParams} />
+        </div>
+      </section>
+    </>
   );
 };
 

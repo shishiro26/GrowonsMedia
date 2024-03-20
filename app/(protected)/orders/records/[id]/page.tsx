@@ -1,3 +1,4 @@
+import TopBar from "@/app/(protected)/_components/Topbar";
 import ViewProducts from "@/app/(protected)/_components/view-products";
 import FileDialog from "@/app/(protected)/admin/_components/file-dialog";
 import BadgeStatus from "@/app/(protected)/money/_components/BadgeStatus";
@@ -48,6 +49,9 @@ const ClientRecords = async ({
 
   return (
     <>
+      <div className="hidden md:block">
+        <TopBar title="Order Records" />
+      </div>
       <Table className="my-2">
         {totalItemCount === 0 && (
           <TableCaption>A list of your recent Orders.</TableCaption>

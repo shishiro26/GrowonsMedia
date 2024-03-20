@@ -4,6 +4,7 @@ import Image from "next/image";
 import { MoneyTable } from "../../_components/money-table";
 import Link from "next/link";
 import { auth } from "@/auth";
+import TopBar from "@/app/(protected)/_components/Topbar";
 
 export const generateMetadata = () => {
   return {
@@ -20,23 +21,31 @@ type RecordProps = {
 const page = async ({ params, searchParams }: RecordProps) => {
   const session = await auth();
   return (
-    <section className="ml-2 mt-4 space-y-4">
-      <Button className="flex items-center " asChild>
-        <Link href={`/money/add/${session?.user.id}`} className="inline">
-          <Image
-            src="/svgs/plus.svg"
-            alt="add money"
-            width={20}
-            height={20}
-            className="h-6 w-6 mr-1"
-          />
-          Add Money here
-        </Link>
-      </Button>
-      <div>
-        <MoneyTable userId={params.id.toString()} searchParams={searchParams} />
+    <>
+      <div className="hidden md:block">
+        <TopBar title="Wallet Records" />
       </div>
-    </section>
+      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[90vh] w-full md:w-[100%] p-2">
+        <Button className="flex items-center " asChild>
+          <Link href={`/money/add/${session?.user.id}`} className="inline">
+            <Image
+              src="/svgs/plus.svg"
+              alt="add money"
+              width={20}
+              height={20}
+              className="h-6 w-6 mr-1"
+            />
+            Add Money here
+          </Link>
+        </Button>
+        <div>
+          <MoneyTable
+            userId={params.id.toString()}
+            searchParams={searchParams}
+          />
+        </div>
+      </section>
+    </>
   );
 };
 

@@ -11,7 +11,7 @@ import TopBar from "./Topbar";
 
 const MobileNv = () => {
   return (
-    <div className="m-2 flex  md:hidden">
+    <div className="m-2 flex justify-between md:hidden">
       <Sheet>
         <SheetTrigger>
           <svg
@@ -41,7 +41,7 @@ const MobileNv = () => {
           <NavItems />
         </SheetContent>
       </Sheet>
-      <TopBar />
+      <TopBar title="Dashboard" />
     </div>
   );
 };

@@ -79,19 +79,14 @@ export const RegisterSchema = z
   });
 
 export const MoneySchema = z.object({
-  amount: z.string().min(1, {
+  amount: z.coerce.number().min(1, {
     message: "Amount must be greater than 0",
   }),
   upiid: z.string(),
   accountNumber: z.string(),
-  transactionId: z
-    .string()
-    .min(12, {
-      message: "Transaction ID must be 12 characters",
-    })
-    .max(18, {
-      message: "Transaction Id cant' exceed 18 characters",
-    }),
+  transactionId: z.string().min(1, {
+    message: "Transaction Id is required",
+  }),
   image: z
     .custom<FileList>()
     .transform((val) => {

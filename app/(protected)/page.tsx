@@ -6,9 +6,9 @@ export default async function Home() {
   const session = await auth();
 
   return (
-    <section className="">
+    <section>
       <div className="hidden md:block">
-        <TopBar />
+        <TopBar title={"Dashboard"} />
       </div>
       <NewsNotices />
       <div>
