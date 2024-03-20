@@ -14,6 +14,7 @@ import FormInvoice from "../_components/form-invoice";
 import ImageDialog from "@/components/shared/Image-dialog";
 import PaginationBar from "../../money/_components/PaginationBar";
 import CopyButton from "@/components/shared/copy-button";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const generateMetadata = () => {
   return {
@@ -53,6 +54,7 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
             <TableHead>Name</TableHead>
             <TableHead>Transaction id</TableHead>
             <TableHead>Amount</TableHead>
+            <TableHead>Pro recharge</TableHead>
             <TableHead>Screenshot</TableHead>
           </TableRow>
         </TableHeader>
@@ -67,6 +69,13 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
                 </div>
               </TableCell>
               <TableCell>{formatPrice(Number(invoice.amount))}</TableCell>
+              <TableCell className="text-center">
+                {invoice.isProRecharge ? (
+                  <Checkbox checked={invoice.isProRecharge} disabled />
+                ) : (
+                  <Checkbox checked={invoice.isProRecharge} disabled />
+                )}
+              </TableCell>
               <TableCell>
                 <ImageDialog imageLink={invoice.secure_url} />
               </TableCell>

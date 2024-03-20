@@ -4,6 +4,10 @@ import AddMoneyForm from "../../_components/add-money";
 import DownloadButton from "@/components/shared/download";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { getNewsById } from "@/lib/news";
+import { getUserById } from "@/data/user";
+import { db } from "@/lib/db";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export const generateMetadata = () => {
   return {
@@ -15,6 +19,13 @@ export const generateMetadata = () => {
 const page = async ({ params }: { params: { id: string } }) => {
   const news = await getNewsById();
   const newsLength = (await getNewsById()).length;
+
+  const user = await getUserById(params.id.toString());
+  const proUser = await db.proUser.findUnique({
+    where: {
+      userId: params.id.toString(),
+    },
+  });
 
   return (
     <section className="mt-4 mx-2">
@@ -34,6 +45,17 @@ const page = async ({ params }: { params: { id: string } }) => {
           <AddMoneyForm userId={params.id.toString()} />
         </div>
         <div className="md:w-[50%]">
+          {(proUser?.isRecharged === false || user?.role === "PRO") && (
+            <>
+              {proUser.amount < proUser.amount_limit && (
+                <Button variant={"link"} asChild>
+                  <Link href={`/pro-user/add/${user?.id}`}>
+                    Recharge the pro wallet
+                  </Link>
+                </Button>
+              )}
+            </>
+          )}
           {newsLength === 0 ? (
             <div className="m-2 font-serif">No News to show here</div>
           ) : (

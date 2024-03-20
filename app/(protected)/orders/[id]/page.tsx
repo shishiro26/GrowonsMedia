@@ -38,7 +38,6 @@ const page = async ({ params }: { params: { id: string } }) => {
 
   return (
     <section>
-      <TopBar />
       <h1 className="text-3xl mt-4 ml-2">Add order</h1>
       <div className="m-3">
         <OrderForm
