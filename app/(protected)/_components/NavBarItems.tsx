@@ -113,12 +113,28 @@ export const AdminSidebar = () => {
           </Link>
         </li>
         <li>
-          <a
+          <Link
+            href={`/admin/wallet/history`}
+            className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
+          >
+            Invoice history
+          </Link>
+        </li>
+        <li>
+          <Link
             href={`/admin/orders`}
             className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
           >
             Client Orders
-          </a>
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={`/admin/orders/history`}
+            className="flex items-center w-full p-2 text-gray-900 transition duration-75 rounded-lg pl-11 group hover:bg-gray-100"
+          >
+            Orders history
+          </Link>
         </li>
         <AdminProducts />
       </ul>
@@ -186,3 +202,6 @@ const AdminProducts = () => {
     </>
   );
 };
+
+
+
