@@ -70,7 +70,7 @@ const page = async ({ params }: { params: { id: string } }) => {
                     <span className="text-sm">
                       since you have upgraded to pro u haven`t recharged your
                       pro wallet balance of
-                      {formatPrice(proUser.amount)}
+                      {formatPrice(proUser?.amount ?? 0)}
                     </span>
                   </CardDescription>
                 </CardContent>
@@ -87,7 +87,7 @@ const page = async ({ params }: { params: { id: string } }) => {
               <CardDescription>
                 <span className="text-sm">
                   you have an purchasing limit of
-                  {formatPrice(proUser.amount)}
+                  {formatPrice(proUser?.amount ?? 0)}
                 </span>
               </CardDescription>
             </CardContent>
@@ -102,7 +102,7 @@ const page = async ({ params }: { params: { id: string } }) => {
               <CardDescription>
                 <span className="text-sm">
                   Your current pro wallet balance is{" "}
-                  {formatPrice(proUser.amount_limit)}
+                  {formatPrice(proUser?.amount_limit ?? 0)}
                 </span>
               </CardDescription>
             </CardContent>
