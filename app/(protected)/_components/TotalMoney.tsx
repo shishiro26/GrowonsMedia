@@ -1,28 +1,19 @@
-import { auth } from "@/auth";
+"use client";
 import { formatPrice } from "@/components/shared/formatPrice";
-import { getUserById } from "@/data/user";
-import { db } from "@/lib/db";
-import React from "react";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import React, { useEffect, useState } from "react";
 
-const TotalMoney = async () => {
-  const session = await auth();
-  const user = await getUserById(session?.user.id ?? "");
-  const proUser = await db.proUser.findUnique({
-    where: {
-      userId: user?.id,
-    },
-  });
+const TotalMoney = () => {
+  const session = useCurrentUser();
+  const [amount, setAmount] = useState(session?.amount ?? 0);
+
+  useEffect(() => {
+    setAmount(session?.amount ?? 0);
+  }, [session]);
+
   return (
     <>
-      {user?.role === "PRO" ? (
-        <span className="font-semibold">
-          {formatPrice((proUser?.amount_limit ?? 0) + user?.totalMoney)}
-        </span>
-      ) : (
-        <span className="font-semibold">
-          {formatPrice(user?.totalMoney ?? 0)}
-        </span>
-      )}
+      <span className="font-semibold">{formatPrice(amount)}</span>
     </>
   );
 };

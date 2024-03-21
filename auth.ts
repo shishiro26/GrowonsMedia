@@ -20,6 +20,7 @@ export const {
 
       if (token.role && session.user) {
         session.user.role = token.role as UserRole;
+        session.user.amount = token.amount as number;
         return session;
       }
 
@@ -33,6 +34,7 @@ export const {
       if (!existingUser) return token;
 
       token.role = existingUser.role;
+      token.amount = existingUser.totalMoney;
 
       return token;
     },
