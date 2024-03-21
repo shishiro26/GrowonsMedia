@@ -26,13 +26,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { addFeedback } from "@/actions/feedback";
 import { toast } from "sonner";
 
+type User = {
+  name: string;
+} | null;
+
 type Order = {
   orderId: string;
+  user: User;
+  createdAt: Date;
 };
 
 type FeedbackFormProps = {
-  orders: Order[];
   userId: string;
+  orders: Order[];
 };
 
 const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders, userId }) => {
@@ -103,7 +109,8 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders, userId }) => {
                               key={order.orderId}
                               value={order.orderId}
                             >
-                              {order.orderId}
+                              {order.user?.name} -{" "}
+                              {order.createdAt.toDateString()} - {order.orderId}
                             </SelectItem>
                           );
                         })}

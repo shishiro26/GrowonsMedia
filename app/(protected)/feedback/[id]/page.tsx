@@ -13,9 +13,8 @@ export const generateMetadata = () => {
 const FeedbackPage = async ({ params }: { params: { id: string } }) => {
   const orders = await db.order.findMany({
     where: { userId: params.id },
-    select: {
-      orderId: true,
-      userId: true,
+    include: {
+      user: { select: { name: true } },
     },
   });
 
