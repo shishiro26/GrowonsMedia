@@ -83,16 +83,6 @@ const ClientRecords = async ({
                   {order.status === "FAILED" && order.reason !== null ? (
                     <ReasonDialog status={order.status} reason={order.reason} />
                   ) : (
-                    order.status === "SUCCESS" && (
-                      <>
-                        <FileDialog
-                          status={order.status}
-                          files={JSON.parse(JSON.stringify(order.files))}
-                        />
-                      </>
-                    )
-                  )}
-                  {order.status !== "FAILED" && order.status !== "SUCCESS" && (
                     <BadgeStatus status={order.status} />
                   )}
                 </TableCell>
@@ -111,6 +101,14 @@ const ClientRecords = async ({
                       timeZoneName: "shortGeneric",
                     })}
                   </span>
+                </TableCell>
+                <TableCell>
+                  {order.status === "SUCCESS" && (
+                    <FileDialog
+                      status={order.status}
+                      files={JSON.parse(JSON.stringify(order.files))}
+                    />
+                  )}
                 </TableCell>
               </TableRow>
             );

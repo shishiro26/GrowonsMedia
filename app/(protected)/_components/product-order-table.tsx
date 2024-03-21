@@ -11,12 +11,13 @@ import {
 import { db } from "@/lib/db";
 import React from "react";
 
-const ProductTable = async () => {
+const ProductOrderTable = async () => {
   const products = await db.product.findMany({
     orderBy: {
       createdAt: "desc",
     },
   });
+
   return (
     <>
       {products?.map((product) => {
@@ -50,4 +51,4 @@ const ProductTable = async () => {
   );
 };
 
-export default ProductTable;
+export default ProductOrderTable;

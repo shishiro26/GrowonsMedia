@@ -1,6 +1,4 @@
 "use server";
-
-import { auth } from "@/auth";
 import { db } from "@/lib/db";
 import { RejectInvoiceSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";

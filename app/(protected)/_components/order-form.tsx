@@ -24,7 +24,6 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { formatPrice } from "@/components/shared/formatPrice";
 import { addOrder } from "@/actions/orders";
-import ProductTable from "./order-table";
 
 type FormValues = z.infer<typeof OrderSchema>;
 
@@ -34,15 +33,10 @@ type OrderProps = {
   role: "PRO" | "BLOCKED" | "USER" | "ADMIN" | undefined;
   minProduct: number | undefined;
   maxProduct: number | undefined;
+  children: React.ReactNode;
 };
 
-const OrderForm = ({
-  id,
-  products,
-  role,
-  minProduct,
-  maxProduct,
-}: OrderProps) => {
+const OrderForm = ({ id, products, children }: OrderProps) => {
   const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = React.useTransition();
 
@@ -201,7 +195,7 @@ const OrderForm = ({
           {formatPrice(calculateTotalAmount())}
         </h1>
         <div className="mt-2 md:overflow-auto md:max-h-[80vh] w-full p-2">
-          <ProductTable />
+          {children}
         </div>
       </div>
     </div>

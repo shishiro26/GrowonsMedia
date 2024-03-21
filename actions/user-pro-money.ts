@@ -3,8 +3,6 @@ import { v2 as cloudinary } from "cloudinary";
 import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
 import { revalidatePath } from "next/cache";
-import { ProUser } from "@prisma/client";
-import { tree } from "next/dist/build/templates/app-page";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,

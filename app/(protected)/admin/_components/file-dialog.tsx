@@ -23,14 +23,11 @@ type Order = {
 const FileDialog = ({ files, status }: { files: Order[]; status: string }) => {
   return (
     <Dialog>
-      <DialogTrigger>
-        <BadgeStatus status={status} />
-      </DialogTrigger>
+      <DialogTrigger>Download</DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="mb-2">Your orders:</DialogTitle>
           {files.map((file, index) => {
-            console.log(file.fileName);
             return (
               <div key={index} className="flex flex-row items-center">
                 <p className="capitalize font-bold">

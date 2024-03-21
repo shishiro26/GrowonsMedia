@@ -9,13 +9,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { db } from "@/lib/db";
-import ViewProducts from "../../_components/view-products";
 import { formatPrice } from "@/components/shared/formatPrice";
-import BalanceCell from "../_components/Balance-cell";
-import AdminOrderForm from "../_components/admin-order-form";
-import PaginationBar from "../../money/_components/PaginationBar";
 import { revalidatePath } from "next/cache";
-import TopBar from "../../_components/Topbar";
+import TopBar from "@/app/(protected)/_components/Topbar";
+import AdminOrderForm from "../_components/admin-order-form";
+import PaginationBar from "@/app/(protected)/money/_components/PaginationBar";
+import BalanceCell from "../_components/Balance-cell";
 
 export const generateMetadata = () => {
   return {
@@ -74,15 +73,20 @@ const AdminOrders = async ({
         {totalItemCount === 0 && <TableCaption>No Orders found</TableCaption>}
         <TableBody>
           {orders.map((order) => {
+            const products = order.products;
             return (
               <TableRow key={order.id}>
                 <TableCell className="font-medium">
                   {order.user?.name}
                 </TableCell>
                 <TableCell>
-                  <ViewProducts
-                    products={JSON.parse(JSON.stringify(order.products))}
-                  />
+                  {Array.isArray(products) &&
+                    products.map((product: any, index: number) => (
+                      <div key={index}>
+                        <span>{product.name}</span>{" "}
+                        <span> - Quantity: {product.quantity}</span>
+                      </div>
+                    ))}
                 </TableCell>
                 <TableCell>
                   <BalanceCell id={order.userId} />
@@ -99,6 +103,7 @@ const AdminOrders = async ({
             );
           })}
         </TableBody>
+
         <TableFooter>
           <TableRow>
             <TableCell colSpan={3}>Total</TableCell>
