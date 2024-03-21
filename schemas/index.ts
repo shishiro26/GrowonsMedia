@@ -44,6 +44,54 @@ export const RegisterSchema = z
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
     path: ["confirmPassword"],
+  });
+
+export const EditUserSchema = z.object({
+  id: z.string().uuid(),
+  name: z
+    .string()
+    .min(4, {
+      message: "Minimum of 4 characters required",
+    })
+    .toLowerCase()
+    .optional(),
+  email: z
+    .string()
+    .email({
+      message: "Email is required",
+    })
+    .toLowerCase()
+    .optional(),
+  number: z
+    .string()
+    .min(10, {
+      message: "Phone number must be 10 characters",
+    })
+    .max(10, {
+      message: "Phone number must be 10 characters",
+    })
+    .optional(),
+  amount: z.coerce
+    .number()
+    .nonnegative({
+      message: "Amount must be greater than 0",
+    })
+    .optional(),
+});
+
+export const UpdatePasswordSchema = z
+  .object({
+    id: z.string(),
+    password: z.string({ required_error: "Password is required" }).min(6, {
+      message: "Minimum of 6 characters required",
+    }),
+    confirmPassword: z.string().min(6, {
+      message: "Minimum of 6 characters required",
+    }),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"],
   })
   .superRefine(({ password }, checkPassComplexity) => {
     const containsUppercase = (ch: string) => /[A-Z]/.test(ch);
@@ -77,7 +125,6 @@ export const RegisterSchema = z
       });
     }
   });
-
 export const MoneySchema = z.object({
   amount: z.coerce.number().min(1, {
     message: "Amount must be greater than 0",

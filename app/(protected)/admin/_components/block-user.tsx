@@ -65,7 +65,9 @@ const BlockUser: React.FC<BlockUserProps> = ({ id, role }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>{role === "BLOCKED" ? "Unblock" : "Block"}</Button>
+        <Button className="w-full">
+          {role === "BLOCKED" ? "Unblock" : "Block user"}
+        </Button>
       </DialogTrigger>
       <DialogContent className="m-2">
         {role === "BLOCKED" ? (

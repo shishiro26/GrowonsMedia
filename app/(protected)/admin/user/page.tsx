@@ -15,6 +15,7 @@ import BlockUser from "../_components/block-user";
 import BalanceCell from "../_components/Balance-cell";
 import ProUser from "../_components/upgrade-to-pro";
 import TopBar from "../../_components/Topbar";
+import EditUser from "./_components/edit-user";
 
 const UserTable = async ({
   searchParams,
@@ -75,7 +76,7 @@ const UserTable = async ({
               </TableCell>
               <TableCell>{user.createdAt.toDateString()}</TableCell>
               <TableCell>
-                <BlockUser id={user.id} role={user.role} />
+                <EditUser user={user} />
               </TableCell>
               {user.role !== "BLOCKED" && (
                 <TableCell>

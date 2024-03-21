@@ -69,7 +69,7 @@ const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
             <TableFooter>
               <TableRow>
                 <TableCell colSpan={6} className="text-center">
-                  No invoices found
+                  No orders found
                 </TableCell>
               </TableRow>
             </TableFooter>
