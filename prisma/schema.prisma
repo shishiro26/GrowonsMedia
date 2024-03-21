@@ -27,20 +27,34 @@ enum OrderStatus {
 }
 
 model User {
-  id         String     @id @default(uuid()) @map("_id")
-  email      String     @unique
-  name       String
-  number     String     @unique
-  password   String
-  totalMoney Int        @default(0)
-  role       UserRole   @default(USER)
-  createdAt  DateTime   @default(now()) @map("created_at")
-  money      Money[]
-  Order      Order[]
-  Product    Product[]
-  News       News[]
-  ProUser    ProUser[]
-  Feedback   Feedback[]
+  id          String        @id @default(uuid()) @map("_id")
+  email       String        @unique
+  name        String
+  number      String        @unique
+  password    String
+  totalMoney  Int           @default(0)
+  role        UserRole      @default(USER)
+  createdAt   DateTime      @default(now()) @map("created_at")
+  money       Money[]
+  Order       Order[]
+  Product     Product[]
+  News        News[]
+  ProUser     ProUser[]
+  Feedback    Feedback[]
+  BankDetails BankDetails[]
+}
+
+model BankDetails {
+  id             String   @id @default(uuid()) @map("_id")
+  public_id      String   @unique
+  secure_url     String
+  upiid          String
+  upinumber      String
+  accountDetails String
+  role           UserRole @default(ADMIN)
+  User           User     @relation(fields: [userId], references: [id])
+  userId         String
+  createdAt      DateTime @default(now()) @map("created_at")
 }
 
 model ProUser {

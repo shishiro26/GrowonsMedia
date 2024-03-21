@@ -28,6 +28,12 @@ const page = async ({ params }: { params: { id: string } }) => {
     },
   });
 
+  const bankDetails = await db.bankDetails.findFirst({
+    orderBy: {
+      createdAt: "desc",
+    },
+    take: 1,
+  });
   return (
     <>
       <div className="hidden md:block">
@@ -38,15 +44,21 @@ const page = async ({ params }: { params: { id: string } }) => {
           <div className="md:w-[50%]">
             <div className="mt-2">
               <p>Scan the QR below:</p>
-              <Image
-                src={"/svgs/qrcode.webp"}
-                alt="QR-CODE"
-                width={150}
-                height={150}
-              />
+              {bankDetails && (
+                <Image
+                  key={bankDetails.public_id}
+                  src={bankDetails.secure_url ?? ""}
+                  alt="QR-CODE"
+                  width={150}
+                  height={150}
+                />
+              )}
             </div>
-            <DownloadButton imageLink={"/svgs/qrcode.webp"} />
-            <AddMoneyForm userId={params.id.toString()} />
+            <DownloadButton imageLink={bankDetails?.secure_url ?? ""} />
+            <AddMoneyForm
+              userId={params.id.toString()}
+              bankDetails={bankDetails}
+            />
           </div>
           <div className="md:w-[50%]">
             {proUser !== null &&
@@ -73,12 +85,22 @@ const page = async ({ params }: { params: { id: string } }) => {
                       return (
                         <Card key={n.id} className="m-2 md:w-full h-fit">
                           <CardHeader>
-                            <CardTitle className="text-2xl font-semibold">
+                            <CardTitle className="text-xl font-semibold capitalize">
                               {n.title}
                             </CardTitle>
                           </CardHeader>
                           <CardContent className="text-sm">
-                            {n.content}
+                            {n.content.includes("https") ? (
+                              <Link
+                                href={n.content}
+                                target="_blank"
+                                className="text-[#3b49df] underline"
+                              >
+                                {n.content}
+                              </Link>
+                            ) : (
+                              <>{n.content}</>
+                            )}
                           </CardContent>
                         </Card>
                       );

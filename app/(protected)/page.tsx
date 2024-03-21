@@ -2,6 +2,7 @@ import { auth, signOut } from "@/auth";
 import TopBar from "./_components/Topbar";
 import NewsNotices from "./_components/News-notices";
 import BalanceCard from "./_components/BalanceCard";
+import BankDetails from "./_components/bank-details";
 export default async function Home() {
   const session = await auth();
 
@@ -17,6 +18,7 @@ export default async function Home() {
         </p>
         <div className="flex flex-wrap">
           <BalanceCard />
+          {session?.user.role === "ADMIN" && <BankDetails />}
         </div>
       </div>
     </section>

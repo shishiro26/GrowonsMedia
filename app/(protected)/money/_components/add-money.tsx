@@ -18,15 +18,32 @@ import { Input } from "@/components/ui/input";
 import { AddMoney } from "@/actions/addMoney";
 import { toast } from "sonner";
 
-const AddMoneyForm = ({ userId }: { userId: string }) => {
+type BankDetailsProps = {
+  id: string;
+  public_id: string;
+  secure_url: string;
+  upiid: string;
+  upinumber: string;
+  accountDetails: string;
+  role: "ADMIN" | "PRO" | "BLOCKED" | "USER";
+  userId: string;
+  createdAt: Date;
+} | null;
+
+type AddMoneyFormProps = {
+  userId: string;
+  bankDetails: BankDetailsProps;
+};
+
+const AddMoneyForm = ({ bankDetails, userId }: AddMoneyFormProps) => {
   const [isPending, startTransition] = useTransition();
   const form = useForm<z.infer<typeof MoneySchema>>({
     resolver: zodResolver(MoneySchema),
     defaultValues: {
       amount: 0,
       transactionId: "",
-      upiid: "",
-      accountNumber: "",
+      upiid: bankDetails?.upiid ?? "",
+      accountNumber: bankDetails?.accountDetails ?? "",
       image: undefined,
     },
   });
@@ -57,7 +74,7 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
     });
   }
   return (
-    <>
+    <section className="md:overflow-auto md:max-h-[55vh] w-full p-2">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -69,13 +86,14 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
               name="upiid"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>UPI ID</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter you UPI ID"
                       autoComplete="off"
-                      disabled={isPending}
                       className=""
                       {...field}
+                      disabled
                     />
                   </FormControl>
                   <FormMessage />
@@ -87,6 +105,7 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
               name="amount"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Enter the amount</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter the Amount"
@@ -104,12 +123,13 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
               name="accountNumber"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Account number</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter the Account number"
                       autoComplete="off"
-                      disabled={isPending}
                       {...field}
+                      disabled
                     />
                   </FormControl>
                   <FormMessage />
@@ -121,6 +141,7 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
               name="transactionId"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Enter the transaction ID</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter the Transaction ID"
@@ -159,7 +180,7 @@ const AddMoneyForm = ({ userId }: { userId: string }) => {
           </Button>
         </form>
       </Form>
-    </>
+    </section>
   );
 };
 

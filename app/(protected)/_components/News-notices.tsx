@@ -10,6 +10,7 @@ const NewsNotices = async () => {
       createdAt: "desc",
     },
     take: 5,
+    skip: 0,
     select: {
       id: true,
       title: true,
@@ -21,7 +22,7 @@ const NewsNotices = async () => {
   return (
     <div className="border-2 mt-4 mx-2 md:mt-10 border-black  p-2 rounded-lg">
       <span className="m-2">News and Notices</span>
-      <div className="grid grid-cols-1 md:grid-cols-3 h-64 overflow-x-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 h-64 overflow-x-hidden overflow-y-auto">
         {newsLength === 0 ? (
           <div className="m-2 font-serif">Nothing to show here</div>
         ) : (
@@ -38,7 +39,7 @@ const NewsNotices = async () => {
                     {n.content.includes("https") ? (
                       <Link
                         href={n.content}
-                        target="_target"
+                        target="_blank"
                         className="text-[#3b49df] underline"
                       >
                         {n.content}

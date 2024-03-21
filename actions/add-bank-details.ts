@@ -34,37 +34,43 @@ async function uploadPhotosToCloudinary(buffer: string) {
   );
 }
 
-export const AddMoney = async (formData: FormData) => {
+export const addBankDetails = async (formData: FormData) => {
   const file = await uploadPhotosToLocal(formData);
   const photos = await uploadPhotosToCloudinary(file);
 
-  const user = await getUserById(formData.get("userId")?.toString() ?? "");
-  const username = user?.name;
-
-  try {
-    if (user?.role === "BLOCKED") {
-      return {
-        error: "You have been blocked by the admin. contact admin know more",
-      };
-    }
-
-    await db.money.create({
-      data: {
-        amount: formData.get("amount")?.toString(),
-        secure_url: photos.secure_url,
-        public_id: photos.public_id,
-        transactionId: formData.get("transactionId")?.toString() ?? "",
-        upiid: formData.get("upiid")?.toString() ?? "",
-        accountNumber: formData.get("accountNumber")?.toString(),
-        userId: formData.get("userId")?.toString(),
-        name: username ?? "",
-      },
-    });
-  } catch (err: any) {
-    return { error: "an error occurred. please try again later" };
+  if (
+    !formData ||
+    !formData.get("upiid") ||
+    !formData.get("accountDetails") ||
+    !formData.get("upinumber")
+  ) {
+    return { error: "Please fill in all required fields." };
   }
 
-  revalidatePath("/money/record");
+  const user = await getUserById(formData.get("userId")?.toString() as string);
+  const upiid = formData.get("upiid") as string;
+  const accountDetails = formData.get("accountDetails") as string;
+  const upinumber = formData.get("upinumber") as string;
+  try {
+    if (user?.role === "ADMIN") {
+      await db.bankDetails.create({
+        data: {
+          secure_url: photos.secure_url,
+          public_id: photos.public_id,
+          upiid: upiid,
+          accountDetails: accountDetails,
+          userId: formData.get("userId") as string,
+          upinumber: upinumber,
+        },
+      });
+    } else {
+      throw new Error("Unauthorized: Only admins can add bank details.");
+    }
+  } catch (err: any) {
+    return { error: "An error occurred. Please try again later." };
+  }
 
-  return { success: "Money added!" };
+  revalidatePath("/money/add");
+
+  return { success: "Bank details added!" };
 };
