@@ -4,7 +4,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { UpdatePasswordSchema } from "@/schemas";
 import * as z from "zod";
-import CardWrapper from "@/components/shared/auth/card-wrapper";
 import {
   Form,
   FormField,
@@ -68,7 +67,7 @@ const UpdatePassword = ({ params }: { params: { id: string } }) => {
                     {...field}
                     disabled={isPending}
                     placeholder=""
-                    type="text"
+                    type="password"
                   />
                 </FormControl>
                 <FormMessage />
@@ -86,7 +85,7 @@ const UpdatePassword = ({ params }: { params: { id: string } }) => {
                     {...field}
                     disabled={isPending}
                     placeholder=""
-                    type="text"
+                    type="password"
                   />
                 </FormControl>
                 <FormMessage />

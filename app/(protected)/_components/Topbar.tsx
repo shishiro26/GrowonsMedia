@@ -13,7 +13,8 @@ import { LogoutButton } from "@/components/shared/auth/log-out-button";
 import { LogOut } from "lucide-react";
 import { auth } from "@/auth";
 import TotalMoney from "./TotalMoney";
-import Link from "next/link";
+
+
 const TopBar = async ({ title }: { title: string }) => {
   const session = await auth();
   return (

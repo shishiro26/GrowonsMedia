@@ -28,7 +28,6 @@ import BlockUser from "../../_components/block-user";
 import { editUser } from "@/actions/user";
 import { toast } from "sonner";
 import Link from "next/link";
-import { useCurrentUser } from "@/hooks/use-current-user";
 
 type User = {
   id: string;
