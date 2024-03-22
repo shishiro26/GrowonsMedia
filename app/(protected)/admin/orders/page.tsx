@@ -30,7 +30,7 @@ const AdminOrders = async ({
 }) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 9;
+  const pageSize = 8;
 
   const totalItemCount = (
     await db.order.findMany({
@@ -61,61 +61,62 @@ const AdminOrders = async ({
       <nav className="hidden md:block">
         <TopBar title="Order records" />
       </nav>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Name</TableHead>
-            <TableHead>Products</TableHead>
-            <TableHead>Balance</TableHead>
-            <TableHead>Amount</TableHead>
-          </TableRow>
-        </TableHeader>
-        {totalItemCount === 0 && <TableCaption>No Orders found</TableCaption>}
-        <TableBody>
-          {orders.map((order) => {
-            const products = order.products;
-            return (
-              <TableRow key={order.id}>
-                <TableCell className="font-medium">
-                  {order.user?.name}
-                </TableCell>
-                <TableCell>
-                  {Array.isArray(products) &&
-                    products.map((product: any, index: number) => (
-                      <div key={index}>
-                        <span>{product.name}</span>{" "}
-                        <span> - Quantity: {product.quantity}</span>
-                      </div>
-                    ))}
-                </TableCell>
-                <TableCell>
-                  <BalanceCell id={order.userId} />
-                </TableCell>
-                <TableCell>{formatPrice(order.amount)}</TableCell>
-                <TableCell>
-                  <AdminOrderForm
-                    userId={order.userId}
-                    id={order.id}
-                    amount={order.amount}
-                  />
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
+      <section className="md:overflow-auto md:max-h-[85vh] w-full p-2">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Name</TableHead>
+              <TableHead>Products</TableHead>
+              <TableHead>Balance</TableHead>
+              <TableHead>Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          {totalItemCount === 0 && <TableCaption>No Orders found</TableCaption>}
+          <TableBody>
+            {orders.map((order) => {
+              const products = order.products;
+              return (
+                <TableRow key={order.id}>
+                  <TableCell className="font-medium">
+                    {order.user?.name}
+                  </TableCell>
+                  <TableCell>
+                    {Array.isArray(products) &&
+                      products.map((product: any, index: number) => (
+                        <div key={index}>
+                          <span>{product.name}</span>{" "}
+                          <span> - Quantity: {product.quantity}</span>
+                        </div>
+                      ))}
+                  </TableCell>
+                  <TableCell>
+                    <BalanceCell id={order.userId} />
+                  </TableCell>
+                  <TableCell>{formatPrice(order.amount)}</TableCell>
+                  <TableCell>
+                    <AdminOrderForm
+                      userId={order.userId}
+                      id={order.id}
+                      amount={order.amount}
+                    />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
 
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={3}>Total</TableCell>
-            <TableCell>
-              {formatPrice(
-                orders?.reduce((acc, order) => acc + order.amount, 0) ?? 0
-              )}
-            </TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-
+          <TableFooter>
+            <TableRow>
+              <TableCell colSpan={3}>Total</TableCell>
+              <TableCell>
+                {formatPrice(
+                  orders?.reduce((acc, order) => acc + order.amount, 0) ?? 0
+                )}
+              </TableCell>
+            </TableRow>
+          </TableFooter>
+        </Table>
+      </section>
       {totalPages > 1 && (
         <PaginationBar totalPages={totalPages} currentPage={currentPage} />
       )}
