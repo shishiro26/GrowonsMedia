@@ -23,10 +23,6 @@ export const generateMetadata = () => {
   };
 };
 
-type AdminHistoryProps = {
-  searchParams: { page: string };
-};
-
 const AdminWallet = async ({
   searchParams,
 }: {

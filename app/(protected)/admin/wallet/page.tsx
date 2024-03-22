@@ -48,7 +48,7 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
   });
   return (
     <section className="my-2">
-      <nav>
+      <nav className="hidden md:block">
         <TopBar title="Admin Wallet" />
       </nav>
       <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[85vh] w-full md:w-[100%] p-2">
