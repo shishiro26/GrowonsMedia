@@ -190,7 +190,7 @@ const OrderForm = ({ id, products, children }: OrderProps) => {
         </Form>
       </div>
       <div className="flex-1 ml-2">
-        <p>Total amount:</p>
+        <span>Total amount:</span>
         <h1 className="font-bold text-2xl">
           {formatPrice(calculateTotalAmount())}
         </h1>

@@ -42,7 +42,12 @@ export const addBankDetails = async (formData: FormData) => {
     !formData ||
     !formData.get("upiid") ||
     !formData.get("accountDetails") ||
-    !formData.get("upinumber")
+    !formData.get("upinumber") ||
+    !formData.get("userId") ||
+    !formData.get("ifsccode") ||
+    !formData.get("name") ||
+    !formData.get("bankName") ||
+    !formData.get("accountType")
   ) {
     return { error: "Please fill in all required fields." };
   }
@@ -61,6 +66,10 @@ export const addBankDetails = async (formData: FormData) => {
           accountDetails: accountDetails,
           userId: formData.get("userId") as string,
           upinumber: upinumber,
+          name: formData.get("name") as string,
+          bankName: formData.get("bankName") as string,
+          accountType: formData.get("accountType") as string,
+          ifsccode: formData.get("ifsccode") as string,
         },
       });
     } else {

@@ -51,6 +51,7 @@ const page = async ({ params }: { params: { id: string } }) => {
                   alt="QR-CODE"
                   width={150}
                   height={150}
+                  className=" w-40 h-40 m-2"
                 />
               )}
             </div>

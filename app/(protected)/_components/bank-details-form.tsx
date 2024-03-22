@@ -38,6 +38,10 @@ const BankDetailsForm = ({ userId }: { userId: string }) => {
       upinumber: "",
       image: undefined,
       userId: userId,
+      name: "",
+      bankName: "",
+      accountType: "",
+      ifsccode: "",
     },
   });
 
@@ -47,6 +51,10 @@ const BankDetailsForm = ({ userId }: { userId: string }) => {
     formData.append("accountDetails", values.accountDetails);
     formData.append("upiid", values.upiid);
     formData.append("upinumber", values.upinumber);
+    formData.append("name", values.name);
+    formData.append("bankName", values.bankName);
+    formData.append("accountType", values.accountType);
+    formData.append("ifsccode", values.ifsccode);
 
     for (const field of Object.keys(values) as Array<keyof typeof values>) {
       if (field === "image") {
@@ -61,7 +69,6 @@ const BankDetailsForm = ({ userId }: { userId: string }) => {
         }
         if (data?.success) {
           toast.success(data.success);
-
           form.reset();
         }
       });
@@ -80,6 +87,78 @@ const BankDetailsForm = ({ userId }: { userId: string }) => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="Enter the Name"
+                        type="text"
+                        {...form.register("name")}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="bankName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="Enter the Bank Name"
+                        type="text"
+                        {...form.register("bankName")}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="accountType"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="Enter the Account Type"
+                        type="text"
+                        {...form.register("accountType")}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="ifsccode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="Enter the IFSC Code"
+                        type="text"
+                        {...form.register("ifsccode")}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="accountDetails"

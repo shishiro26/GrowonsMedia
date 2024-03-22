@@ -39,7 +39,7 @@ const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
   const totalPages = Math.ceil(totalItemCount / pageSize);
 
   const Orders = await db.order.findMany({
-    orderBy: { id: "desc" },
+    orderBy: { createdAt: "desc" },
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });

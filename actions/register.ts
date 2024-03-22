@@ -20,7 +20,7 @@ export const register = async (values: z.infer<typeof RegisterSchema>) => {
   const { email, password, name, number } = validatedFields.data;
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const username = await db.user.findMany({
+  const username = await db.user.findUnique({
     where: { name: name },
   });
 

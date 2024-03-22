@@ -134,6 +134,21 @@ export const MoneySchema = z.object({
   transactionId: z.string().min(1, {
     message: "Transaction Id is required",
   }),
+  ifsccode: z.string().min(1, {
+    message: "IFSC code is required",
+  }),
+  name: z.string().min(1, {
+    message: "Name is required",
+  }),
+  accountType: z.string().min(1, {
+    message: "Account Type is required",
+  }),
+  bankName: z.string().min(1, {
+    message: "Bank Name is required",
+  }),
+  upiinumber: z.string().min(1, {
+    message: "UPI Number is required",
+  }),
   image: z
     .custom<FileList>()
     .transform((val) => {
@@ -183,6 +198,18 @@ export const BankDetailsSchema = z.object({
   }),
   accountDetails: z.string().min(1, {
     message: "Account Details is required",
+  }),
+  ifsccode: z.string().min(1, {
+    message: "IFSC Code is required",
+  }),
+  accountType: z.string().min(1, {
+    message: "Account Type is required",
+  }),
+  name: z.string().min(1, {
+    message: "Name is required",
+  }),
+  bankName: z.string().min(1, {
+    message: "Bank Name is required",
   }),
   image: z
     .custom<FileList>()

@@ -19,15 +19,14 @@ import { AddMoney } from "@/actions/addMoney";
 import { toast } from "sonner";
 
 type BankDetailsProps = {
-  id: string;
-  public_id: string;
-  secure_url: string;
   upiid: string;
   upinumber: string;
   accountDetails: string;
-  role: "ADMIN" | "PRO" | "BLOCKED" | "USER";
+  ifsccode: string;
+  name: string;
+  bankName: string;
+  accountType: string;
   userId: string;
-  createdAt: Date;
 } | null;
 
 type AddMoneyFormProps = {
@@ -43,8 +42,13 @@ const AddMoneyForm = ({ bankDetails, userId }: AddMoneyFormProps) => {
       amount: 0,
       transactionId: "",
       upiid: bankDetails?.upiid ?? "",
+      upiinumber: bankDetails?.upinumber ?? "",
       accountNumber: bankDetails?.accountDetails ?? "",
       image: undefined,
+      ifsccode: bankDetails?.ifsccode ?? "",
+      name: bankDetails?.name ?? "",
+      accountType: bankDetails?.accountType ?? "",
+      bankName: bankDetails?.bankName ?? "",
     },
   });
 
@@ -86,12 +90,125 @@ const AddMoneyForm = ({ bankDetails, userId }: AddMoneyFormProps) => {
               name="upiid"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="ADMIN NAME"
+                      autoComplete="off"
+                      className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="ifsccode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>IFSC Code</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="ADMIN IFSC CODE"
+                      autoComplete="off"
+                      className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accountType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account Type</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="ADMIN account type"
+                      autoComplete="off"
+                      className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bankName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="ADMIN BANK NAME"
+                      autoComplete="off"
+                      className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="upiid"
+              render={({ field }) => (
+                <FormItem>
                   <FormLabel>UPI ID</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter you UPI ID"
+                      placeholder="ADMIN UPI ID"
                       autoComplete="off"
                       className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="upiinumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>UPI Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="ADMIN UPI NUMBER"
+                      autoComplete="off"
+                      className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accountNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account number</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the Account number"
+                      autoComplete="off"
                       {...field}
                       disabled
                     />
@@ -112,24 +229,6 @@ const AddMoneyForm = ({ bankDetails, userId }: AddMoneyFormProps) => {
                       autoComplete="off"
                       disabled={isPending}
                       {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="accountNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Account number</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the Account number"
-                      autoComplete="off"
-                      {...field}
-                      disabled
                     />
                   </FormControl>
                   <FormMessage />
