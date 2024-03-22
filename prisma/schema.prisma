@@ -117,15 +117,21 @@ model Order {
 }
 
 model Feedback {
-  id          String   @id @default(uuid()) @map("_id")
-  orderId     String
-  feedback    String
-  reply       String?
-  replyStatus Boolean  @default(false)
-  userId      String?
-  User        User?    @relation(fields: [userId], references: [id])
-  createdAt   DateTime @default(now()) @map("created_at")
-  updatedAt   DateTime @updatedAt
+  id               String   @id @default(uuid()) @map("_id")
+  orderId          String   @unique
+  feedback         String
+  reply            String?
+  userId           String?
+  public_id        String?  @unique
+  secure_url       String?
+  fileName         String?
+  reply_fileName   String?
+  reply_public_id  String?
+  reply_secure_url String?
+  replyStatus      Boolean  @default(false)
+  User             User?    @relation(fields: [userId], references: [id])
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt
 }
 
 model News {

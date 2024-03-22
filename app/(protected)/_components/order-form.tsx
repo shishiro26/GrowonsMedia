@@ -189,7 +189,7 @@ const OrderForm = ({ id, products, children }: OrderProps) => {
           </form>
         </Form>
       </div>
-      <div className="flex-1 ml-2">
+      <section className="flex-1 ml-2">
         <span>Total amount:</span>
         <h1 className="font-bold text-2xl">
           {formatPrice(calculateTotalAmount())}
@@ -197,7 +197,7 @@ const OrderForm = ({ id, products, children }: OrderProps) => {
         <div className="mt-2 md:overflow-auto md:max-h-[80vh] w-full p-2">
           {children}
         </div>
-      </div>
+      </section>
     </div>
   );
 };

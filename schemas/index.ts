@@ -300,6 +300,44 @@ export const FeedbackSchema = z.object({
   userId: z.string(),
 });
 
+export const FeedbackFileSchema = z.object({
+  orderId: z
+    .string()
+    .min(10, {
+      message: "The Order Id must be at least 10 character long",
+    })
+    .max(10, {
+      message: "OrderId must not exceed 10 characters long",
+    }),
+  userId: z.string(),
+  file: z
+    .custom<FileList>()
+    .transform((val) => {
+      if (val instanceof File) return val;
+      if (val instanceof FileList) return val[0];
+      return null;
+    })
+    .superRefine((file, ctx) => {
+      if (!(file instanceof File)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          fatal: true,
+          message: "Not a file",
+        });
+
+        return z.NEVER;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Max file size allowed is 5MB",
+        });
+      }
+    })
+    .pipe(z.custom<File>()),
+});
+
 export const AcceptOrderSchema = z.object({
   id: z.string(),
   files: z

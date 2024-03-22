@@ -38,12 +38,12 @@ const page = async ({ params, searchParams }: RecordProps) => {
             Add Money here
           </Link>
         </Button>
-        <div>
+        <section>
           <MoneyTable
             userId={params.id.toString()}
             searchParams={searchParams}
           />
-        </div>
+        </section>
       </section>
     </>
   );

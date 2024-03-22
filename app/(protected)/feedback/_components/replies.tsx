@@ -13,6 +13,9 @@ import { formatPrice } from "@/components/shared/formatPrice";
 import ImageDialog from "@/components/shared/Image-dialog";
 import ReasonDialog from "@/components/shared/ReasonDialog";
 import { revalidatePath } from "next/cache";
+import FileDialog from "../../admin/_components/file-dialog";
+import FeedbackDialog from "./FeedbackDialog";
+import Link from "next/link";
 
 type TableProps = {
   searchParams: { page: string };
@@ -47,8 +50,9 @@ export async function Replies({ userId, searchParams }: TableProps) {
           <TableRow>
             <TableHead>Order Id</TableHead>
             <TableHead>Feedback</TableHead>
+            <TableHead>File</TableHead>
             <TableHead>Reply</TableHead>
-            <TableHead>Replied on</TableHead>
+            <TableHead>Created at</TableHead>
           </TableRow>
         </TableHeader>
         {totalItemCount === 0 && (
@@ -64,7 +68,26 @@ export async function Replies({ userId, searchParams }: TableProps) {
           {feedbacks.map((feedback) => (
             <TableRow key={feedback.id}>
               <TableCell>{feedback.orderId}</TableCell>
-              <TableCell>{feedback.feedback}</TableCell>
+              <TableCell>
+                {feedback.feedback.includes("https") ? (
+                  <Link
+                    href={feedback.feedback}
+                    target="_blank"
+                    className="text-[#3b49df] underline"
+                  >
+                    Link
+                  </Link>
+                ) : (
+                  <>{feedback.feedback}</>
+                )}
+              </TableCell>
+              <TableCell>
+                <FeedbackDialog
+                  fileName={feedback.fileName as string}
+                  secure_url={feedback.secure_url as string}
+                  public_id={(feedback.public_id as string) ?? ""}
+                />
+              </TableCell>
               <TableCell>{feedback.reply || "-"}</TableCell>
               <TableCell>{feedback.updatedAt.toDateString()}</TableCell>
             </TableRow>

@@ -25,6 +25,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { addFeedback } from "@/actions/feedback";
 import { toast } from "sonner";
+import FeedbackFileForm from "./feedback-file-form";
 
 type User = {
   name: string;
@@ -128,7 +129,7 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders, userId }) => {
                   <FormControl>
                     <Textarea
                       placeholder="Enter your feedback"
-                      rows={15}
+                      rows={5}
                       {...field}
                       disabled={isPending}
                     />
@@ -142,12 +143,15 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders, userId }) => {
           <Button
             type="submit"
             disabled={isPending}
-            className="flex justify-end"
+            className="w-full md:w-[50%]"
           >
             Submit
           </Button>
         </form>
       </Form>
+      <div className="mt-3">
+        <FeedbackFileForm orders={orders} userId={userId} />
+      </div>
     </>
   );
 };
