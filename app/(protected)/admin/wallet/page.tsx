@@ -51,7 +51,7 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
       <nav>
         <TopBar title="Admin Wallet" />
       </nav>
-      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[90vh] w-full md:w-[100%] p-2">
+      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[85vh] w-full md:w-[100%] p-2">
         <Table>
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
@@ -107,7 +107,6 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
           )}
         </Table>
       </section>
-
       {totalPages > 1 && (
         <PaginationBar totalPages={totalPages} currentPage={currentPage} />
       )}

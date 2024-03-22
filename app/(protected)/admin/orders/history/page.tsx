@@ -34,11 +34,7 @@ const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
   const pageSize = 7;
-  const totalItemCount = (
-    await db.order.findMany({
-      where: { status: "PENDING" },
-    })
-  ).length;
+  const totalItemCount = await db.order.count();
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
 

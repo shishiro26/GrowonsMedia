@@ -27,15 +27,15 @@ type AdminHistoryProps = {
   searchParams: { page: string };
 };
 
-const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
+const AdminWallet = async ({
+  searchParams,
+}: {
+  searchParams: { page: string };
+}) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 7;
-  const totalItemCount = (
-    await db.money.findMany({
-      where: { status: "PENDING" },
-    })
-  ).length;
+  const pageSize = 5;
+  const totalItemCount = await db.money.count();
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
 
@@ -49,7 +49,7 @@ const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
       <nav className="hidden md:block">
         <TopBar title="Admin Wallet" />
       </nav>
-      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[90vh] w-full md:w-[100%] p-2">
+      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[80vh] w-full md:w-[100%] p-2">
         <Table>
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
