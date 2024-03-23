@@ -11,7 +11,7 @@ cloudinary.config({
   api_secret: process.env.CLOUD_API_SECRET,
 });
 
-const uploadPhotosToLocal = async (formData: any) => {
+const uploadFilesToLocal = async (formData: any) => {
   const image = formData.get("file");
   return image
     .arrayBuffer()
@@ -21,7 +21,7 @@ const uploadPhotosToLocal = async (formData: any) => {
     });
 };
 
-async function uploadPhotosToCloudinary(buffer: string) {
+async function uploadFilesToCloudinary(buffer: string) {
   return cloudinary.uploader.upload(
     `data:application/octet-stream;base64,${buffer}`,
     {
@@ -36,8 +36,8 @@ async function uploadPhotosToCloudinary(buffer: string) {
 }
 
 export const addFeedbackFile = async (formData: FormData) => {
-  const file = await uploadPhotosToLocal(formData);
-  const photos = await uploadPhotosToCloudinary(file);
+  const file = await uploadFilesToLocal(formData);
+  const audio = await uploadFilesToCloudinary(file);
 
   const orderId = formData.get("orderId")?.toString();
   const userId = formData.get("userId")?.toString();
@@ -55,8 +55,8 @@ export const addFeedbackFile = async (formData: FormData) => {
         data: {
           orderId: orderId ?? "",
           userId: userId,
-          public_id: photos.public_id,
-          secure_url: photos.secure_url,
+          public_id: audio.public_id,
+          secure_url: audio.secure_url,
           feedback: "",
           fileName: fileName as string,
         },
@@ -74,8 +74,8 @@ export const addFeedbackFile = async (formData: FormData) => {
         orderId: orderId,
       },
       data: {
-        public_id: photos.public_id,
-        secure_url: photos.secure_url,
+        public_id: audio.public_id,
+        secure_url: audio.secure_url,
       },
     });
   } catch (err: any) {
@@ -145,16 +145,10 @@ export const addReply = async (values: z.infer<typeof ReplySchema>) => {
 
   const { orderId, reply } = validatedFields.data;
 
-  const existingFeedback = await db.feedback.findUnique({
-    where: {
-      id: orderId,
-    },
-  });
-
   try {
     await db.feedback.update({
       where: {
-        id: orderId,
+        orderId: orderId,
       },
       data: {
         reply: reply,
@@ -162,10 +156,36 @@ export const addReply = async (values: z.infer<typeof ReplySchema>) => {
       },
     });
   } catch (err) {
+    console.log(err);
     return { error: "An error occurred!" };
   }
 
   revalidatePath("/admin/product/product-feedback");
 
+  return { success: "Reply added!" };
+};
+
+export const addReplyFile = async (formData: FormData) => {
+  const file = await uploadFilesToLocal(formData);
+  const audio = await uploadFilesToCloudinary(file);
+
+  const orderId = formData.get("orderId")?.toString();
+
+  try {
+    await db.feedback.update({
+      where: {
+        orderId: orderId,
+      },
+      data: {
+        reply_fileName: formData.get("fileName") as string,
+        reply_public_id: audio.public_id,
+        reply_secure_url: audio.secure_url,
+      },
+    });
+  } catch (err) {
+    console.log(err);
+    return { error: "An error occurred!" };
+  }
+  revalidatePath("/admin/product/product-feedback");
   return { success: "Reply added!" };
 };

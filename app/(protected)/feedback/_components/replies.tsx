@@ -16,6 +16,7 @@ import { revalidatePath } from "next/cache";
 import FileDialog from "../../admin/_components/file-dialog";
 import FeedbackDialog from "./FeedbackDialog";
 import Link from "next/link";
+import ReplyDialog from "./ReplyDialog";
 
 type TableProps = {
   searchParams: { page: string };
@@ -27,7 +28,7 @@ export async function Replies({ userId, searchParams }: TableProps) {
 
   const pageSize = 5;
   const totalItemCount = (
-    await db.money.findMany({
+    await db.feedback.findMany({
       where: { userId: userId },
     })
   ).length;
@@ -52,7 +53,8 @@ export async function Replies({ userId, searchParams }: TableProps) {
             <TableHead>Feedback</TableHead>
             <TableHead>File</TableHead>
             <TableHead>Reply</TableHead>
-            <TableHead>Created at</TableHead>
+            <TableHead>Reply File</TableHead>
+            <TableHead>updated at</TableHead>
           </TableRow>
         </TableHeader>
         {totalItemCount === 0 && (
@@ -82,13 +84,28 @@ export async function Replies({ userId, searchParams }: TableProps) {
                 )}
               </TableCell>
               <TableCell>
-                <FeedbackDialog
-                  fileName={feedback.fileName as string}
-                  secure_url={feedback.secure_url as string}
-                  public_id={(feedback.public_id as string) ?? ""}
-                />
+                {feedback.secure_url && (
+                  <FeedbackDialog
+                    head="Feedback"
+                    fileName={feedback.fileName as string}
+                    secure_url={feedback.secure_url as string}
+                    public_id={(feedback.public_id as string) ?? ""}
+                  />
+                )}
               </TableCell>
-              <TableCell>{feedback.reply || "-"}</TableCell>
+              <TableCell>
+                {feedback.reply && <ReplyDialog reply={feedback.reply} />}
+              </TableCell>
+              <TableCell>
+                {feedback.reply_secure_url && (
+                  <FeedbackDialog
+                    head={"Reply"}
+                    fileName={feedback.reply_fileName as string}
+                    secure_url={feedback.reply_secure_url as string}
+                    public_id={(feedback.reply_public_id as string) ?? ""}
+                  />
+                )}
+              </TableCell>
               <TableCell>{feedback.updatedAt.toDateString()}</TableCell>
             </TableRow>
           ))}

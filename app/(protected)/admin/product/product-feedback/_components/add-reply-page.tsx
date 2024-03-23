@@ -31,9 +31,11 @@ import { toast } from "sonner";
 const AddReplyPage = ({
   orderId,
   feedback,
+  secure_url,
 }: {
   orderId: string;
   feedback: string;
+  secure_url: string | null;
 }) => {
   const [isPending, startTransition] = React.useTransition();
   const [error, setError] = React.useState<string | undefined>();
@@ -75,19 +77,31 @@ const AddReplyPage = ({
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="reply"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Feedback</FormLabel>
-                    <FormControl>
-                      <Textarea {...field} disabled readOnly value={feedback} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              {feedback && (
+                <FormField
+                  control={form.control}
+                  name="reply"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Feedback</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          {...field}
+                          disabled
+                          readOnly
+                          value={feedback}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+              {secure_url && (
+                <audio controls>
+                  <source src={secure_url} type="audio/mp4" width={50} height={50}/>
+                </audio>
+              )}
               <FormField
                 control={form.control}
                 name="reply"

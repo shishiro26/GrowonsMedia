@@ -14,6 +14,8 @@ import { revalidatePath } from "next/cache";
 import PaginationBar from "@/app/(protected)/money/_components/PaginationBar";
 import AddReplyPage from "./_components/add-reply-page";
 import TopBar from "@/app/(protected)/_components/Topbar";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export const generateMetadata = () => {
   return {
@@ -88,10 +90,14 @@ const Feedbacks = async ({
                   <ViewProducts orderId={feedback.orderId} />
                 </TableCell>
                 <TableCell>
-                  <AddReplyPage
-                    feedback={feedback.feedback}
-                    orderId={feedback.id}
-                  />
+                  <Button variant={"link"} asChild>
+                    <Link
+                      href={`/admin/product/product-feedback/reply/${feedback.orderId}`}
+                      target="_blank"
+                    >
+                      Add reply
+                    </Link>
+                  </Button>
                 </TableCell>
                 <TableCell>{feedback.createdAt.toDateString()}</TableCell>
               </TableRow>
