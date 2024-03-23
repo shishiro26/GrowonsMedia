@@ -1,7 +1,6 @@
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
@@ -42,7 +41,7 @@ const PaginationBar = ({ currentPage, totalPages }: PaginationBarProps) => {
             <PaginationNext href={"?page=" + (currentPage + 1)} />
           </PaginationItem>
         )}
-      </PaginationContent>  
+      </PaginationContent>
     </Pagination>
   );
 };
