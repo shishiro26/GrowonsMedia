@@ -49,29 +49,43 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
       if (!existingProduct && user.role !== "PRO") {
         errors.push({ error: `Product ${product.name} not found` });
       } else {
-        if (
-          (existingProduct?.minProduct ?? 0) > product.quantity &&
-          user.role !== "PRO"
-        ) {
-          errors.push({ error: `${product.name} Minimum quantity not met` });
-        }
+        if (existingProduct?.stock === 0) {
+          return { error: `Out of stock for product ${product.name}` };
+        } else {
+          if (
+            existingProduct?.stock !== undefined &&
+            existingProduct.stock < product.quantity
+          ) {
+            errors.push({ error: `Stock not available for ${product.name}` });
+          }
 
-        if (
-          existingProduct &&
-          existingProduct.maxProduct < product.quantity &&
-          user.role !== "PRO"
-        ) {
-          errors.push({ error: `${product.name} Maximum quantity exceeded` });
-        }
-
-        if (user.role === "PRO") {
-          if ((proUser?.minProduct ?? 0) > product.quantity) {
+          if (
+            (existingProduct?.minProduct ?? 0) > product.quantity &&
+            user.role !== "PRO"
+          ) {
             errors.push({ error: `${product.name} Minimum quantity not met` });
           }
-          if ((proUser?.maxProduct ?? 0) < product.quantity) {
+
+          if (
+            existingProduct &&
+            existingProduct.maxProduct < product.quantity &&
+            user.role !== "PRO"
+          ) {
             errors.push({ error: `${product.name} Maximum quantity exceeded` });
           }
-          
+
+          if (user.role === "PRO") {
+            if ((proUser?.minProduct ?? 0) > product.quantity) {
+              errors.push({
+                error: `${product.name} Minimum quantity not met`,
+              });
+            }
+            if ((proUser?.maxProduct ?? 0) < product.quantity) {
+              errors.push({
+                error: `${product.name} Maximum quantity exceeded`,
+              });
+            }
+          }
         }
       }
     });
@@ -108,6 +122,20 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
         })),
         amount: price,
       },
+    });
+
+    products.forEach(async (product) => {
+      const existingProduct = existingProducts.find(
+        (p) => p.productName === product.name
+      );
+      if (existingProduct) {
+        await db.product.update({
+          where: { productName: product.name },
+          data: {
+            stock: existingProduct.stock - product.quantity,
+          },
+        });
+      }
     });
 
     if (user.role === "PRO") {

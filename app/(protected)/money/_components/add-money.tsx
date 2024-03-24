@@ -17,6 +17,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { AddMoney } from "@/actions/addMoney";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 type BankDetailsProps = {
   upiid: string;
@@ -36,6 +37,7 @@ type AddMoneyFormProps = {
 
 const AddMoneyForm = ({ bankDetails, userId }: AddMoneyFormProps) => {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const form = useForm<z.infer<typeof MoneySchema>>({
     resolver: zodResolver(MoneySchema),
     defaultValues: {
@@ -69,10 +71,10 @@ const AddMoneyForm = ({ bankDetails, userId }: AddMoneyFormProps) => {
         if (data?.success) {
           toast.success(data?.success);
           form.reset();
+          window.location.reload();
         }
         if (data?.error) {
           toast.error(data?.error);
-          form.reset();
         }
       });
     });

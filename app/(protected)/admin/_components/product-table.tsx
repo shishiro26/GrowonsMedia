@@ -38,6 +38,7 @@ const ProductTable = async ({
       id: true,
       productName: true,
       price: true,
+      stock: true,
       minProduct: true,
       maxProduct: true,
       createdAt: true,
@@ -55,6 +56,7 @@ const ProductTable = async ({
           <TableRow>
             <TableHead>Product Name</TableHead>
             <TableHead>Price</TableHead>
+            <TableHead>Stock</TableHead>
             <TableHead>Minimum</TableHead>
             <TableHead>Maximum</TableHead>
             <TableHead>Created_At</TableHead>
@@ -64,7 +66,7 @@ const ProductTable = async ({
           <TableFooter>
             <TableRow>
               <TableCell colSpan={6} className="text-center">
-                No users found
+                No products found
               </TableCell>
             </TableRow>
           </TableFooter>
@@ -76,6 +78,7 @@ const ProductTable = async ({
                 {product.productName}
               </TableCell>
               <TableCell>{formatPrice(product.price)}</TableCell>
+              <TableCell>{product.stock}</TableCell>
               <TableCell>{product.minProduct}</TableCell>
               <TableCell>{product.maxProduct}</TableCell>
               <TableCell>{product.createdAt.toDateString()}</TableCell>

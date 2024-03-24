@@ -263,15 +263,30 @@ export const ProductSchema = z.object({
       message: "Product name is required",
     })
     .toLowerCase(),
-  price: z.coerce.number().min(1, {
-    message: "Price must be greater than 0",
-  }),
-  minProduct: z.coerce.number().min(1, {
-    message: "Minimum product must be greater than 0",
-  }),
-  maxProduct: z.coerce.number().min(1, {
-    message: "Maximum product must be greater than 0",
-  }),
+  price: z.coerce
+    .number()
+    .min(1, {
+      message: "Price must be greater than 0",
+    })
+    .nonnegative(),
+  minProduct: z.coerce
+    .number()
+    .min(1, {
+      message: "Minimum product must be greater than 0",
+    })
+    .nonnegative(),
+  maxProduct: z.coerce
+    .number()
+    .min(1, {
+      message: "Maximum product must be greater than 0",
+    })
+    .nonnegative(),
+  stock: z.coerce
+    .number()
+    .min(1, {
+      message: "Daily stock must be greater than 0",
+    })
+    .nonnegative(),
 });
 
 export const OrderSchema = z.object({
@@ -394,9 +409,11 @@ export const EditProductFormSchema = z.object({
     .min(1, {
       message: "Price must be greater than 0",
     })
+    .nonnegative()
     .optional(),
-  minProduct: z.coerce.number().optional(),
-  maxProduct: z.coerce.number().optional(),
+  stock: z.coerce.number().nonnegative(),
+  minProduct: z.coerce.number().nonnegative().optional(),
+  maxProduct: z.coerce.number().nonnegative().optional(),
 });
 
 export const NewsSchema = z.object({

@@ -20,7 +20,7 @@ export const rejectOrder = async (
       data: { status: "FAILED", reason: values.reason },
     });
 
-    const user = await db.user.findUnique({
+    const user = await db.user.findUnique({ 
       where: { id: values.userId },
       select: {
         totalMoney: true,

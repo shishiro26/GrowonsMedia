@@ -97,6 +97,7 @@ model Product {
   price       Int
   minProduct  Int
   maxProduct  Int
+  stock       Int
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt
   orderId     String?

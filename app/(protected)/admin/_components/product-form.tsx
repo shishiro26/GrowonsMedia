@@ -31,6 +31,7 @@ const ProductForm = ({ userId }: { userId: string }) => {
       price: 0,
       minProduct: 0,
       maxProduct: 1,
+      stock: 0,
     },
   });
 
@@ -68,6 +69,19 @@ const ProductForm = ({ userId }: { userId: string }) => {
                       placeholder="Product Name"
                       type="text"
                     />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="stock"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Daily stock</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isPending} type="number" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -24,6 +24,7 @@ import React, { useState } from "react";
 import { toast } from "sonner";
 import { formatPrice } from "@/components/shared/formatPrice";
 import { addOrder } from "@/actions/orders";
+import { useRouter } from "next/navigation";
 
 type FormValues = z.infer<typeof OrderSchema>;
 
@@ -39,6 +40,7 @@ type OrderProps = {
 const OrderForm = ({ id, products, children }: OrderProps) => {
   const [error, setError] = useState<string | undefined>("");
   const [isPending, startTransition] = React.useTransition();
+  const router = useRouter();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(OrderSchema),
@@ -68,6 +70,7 @@ const OrderForm = ({ id, products, children }: OrderProps) => {
         if (data?.success) {
           toast.success(data.success);
           form.reset();
+          router.refresh();
         }
 
         if (data?.error) {
@@ -189,15 +192,15 @@ const OrderForm = ({ id, products, children }: OrderProps) => {
           </form>
         </Form>
       </div>
-      <section className="flex-1 ml-2">
+      <div className="flex-1 ml-2">
         <span>Total amount:</span>
-        <h1 className="font-bold text-2xl">
+        <p className="font-bold text-2xl">
           {formatPrice(calculateTotalAmount())}
-        </h1>
+        </p>
         <div className="mt-2 md:overflow-auto md:max-h-[80vh] w-full p-2">
           {children}
         </div>
-      </section>
+      </div>
     </div>
   );
 };

@@ -24,6 +24,7 @@ type Product = {
   price: number;
   minProduct: number;
   maxProduct: number;
+  stock: number;
 } | null;
 
 type ProductEditFormProps = {
@@ -43,6 +44,7 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ product }) => {
       price: product?.price,
       minProduct: product?.minProduct,
       maxProduct: product?.maxProduct,
+      stock: product?.stock,
     },
   });
 
@@ -80,6 +82,19 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ product }) => {
                       placeholder="Product Name"
                       type="text"
                     />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="stock"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Daily stock</FormLabel>
+                  <FormControl>
+                    <Input {...field} disabled={isPending} type="number" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

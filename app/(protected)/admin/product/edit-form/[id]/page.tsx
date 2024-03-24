@@ -19,6 +19,7 @@ const page = async ({ params }: { params: { id: string } }) => {
       price: true,
       minProduct: true,
       maxProduct: true,
+      stock: true,
     },
   });
 
