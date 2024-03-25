@@ -8,7 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { MoneySchema } from "@/schemas";
@@ -16,18 +16,41 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { addProMoney } from "@/actions/user-pro-money";
 
-const RechargeProWallet = ({ userId }: { userId: string }) => {
+type BankDetailsProps = {
+  upiid: string;
+  upinumber: string;
+  accountDetails: string;
+  ifsccode: string;
+  name: string;
+  bankName: string;
+  accountType: string;
+  userId: string;
+} | null;
+
+type AddMoneyFormProps = {
+  userId: string;
+  bankDetails: BankDetailsProps;
+};
+
+const RechargeProWallet = ({ bankDetails, userId }: AddMoneyFormProps) => {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
   const form = useForm<z.infer<typeof MoneySchema>>({
     resolver: zodResolver(MoneySchema),
     defaultValues: {
       amount: 0,
       transactionId: "",
-      upiid: "",
-      accountNumber: "",
+      upiid: bankDetails?.upiid ?? "",
+      upiinumber: bankDetails?.upinumber ?? "",
+      accountNumber: bankDetails?.accountDetails ?? "",
       image: undefined,
+      ifsccode: bankDetails?.ifsccode ?? "",
+      name: bankDetails?.name ?? "",
+      accountType: bankDetails?.accountType ?? "",
+      bankName: bankDetails?.bankName ?? "",
     },
   });
 
@@ -48,6 +71,7 @@ const RechargeProWallet = ({ userId }: { userId: string }) => {
         if (data?.success) {
           toast.success(data?.success);
           form.reset();
+          window.location.reload();
         }
         if (data?.error) {
           toast.error(data?.error);
@@ -56,7 +80,7 @@ const RechargeProWallet = ({ userId }: { userId: string }) => {
     });
   }
   return (
-    <>
+    <section className="md:overflow-auto md:max-h-[55vh] w-full p-2">
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -68,13 +92,127 @@ const RechargeProWallet = ({ userId }: { userId: string }) => {
               name="upiid"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Name</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter you UPI ID"
+                      placeholder="ADMIN NAME"
                       autoComplete="off"
-                      disabled={isPending}
                       className=""
                       {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="ifsccode"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>IFSC Code</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="ADMIN IFSC CODE"
+                      autoComplete="off"
+                      className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accountType"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account Type</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="ADMIN account type"
+                      autoComplete="off"
+                      className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="bankName"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bank name</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="ADMIN BANK NAME"
+                      autoComplete="off"
+                      className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="upiid"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>UPI ID</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="ADMIN UPI ID"
+                      autoComplete="off"
+                      className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="upiinumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>UPI Number</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="ADMIN UPI NUMBER"
+                      autoComplete="off"
+                      className=""
+                      {...field}
+                      disabled
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="accountNumber"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Account number</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter the Account number"
+                      autoComplete="off"
+                      {...field}
+                      disabled
                     />
                   </FormControl>
                   <FormMessage />
@@ -86,6 +224,7 @@ const RechargeProWallet = ({ userId }: { userId: string }) => {
               name="amount"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Enter the amount</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter the Amount"
@@ -100,26 +239,10 @@ const RechargeProWallet = ({ userId }: { userId: string }) => {
             />
             <FormField
               control={form.control}
-              name="accountNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter the Account number"
-                      autoComplete="off"
-                      disabled={isPending}
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
               name="transactionId"
               render={({ field }) => (
                 <FormItem>
+                  <FormLabel>Enter the transaction ID</FormLabel>
                   <FormControl>
                     <Input
                       placeholder="Enter the Transaction ID"
@@ -158,7 +281,7 @@ const RechargeProWallet = ({ userId }: { userId: string }) => {
           </Button>
         </form>
       </Form>
-    </>
+    </section>
   );
 };
 

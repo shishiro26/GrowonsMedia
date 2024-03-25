@@ -62,18 +62,15 @@ const page = async ({ params }: { params: { id: string } }) => {
             />
           </div>
           <div className="md:w-[50%]">
-            {proUser !== null &&
-              (proUser?.isRecharged === false || user?.role === "PRO") && (
-                <>
-                  {proUser?.amount < proUser?.amount_limit && (
-                    <Button variant={"link"} asChild>
-                      <Link href={`/pro-user/add/${user?.id}`}>
-                        Recharge the pro wallet
-                      </Link>
-                    </Button>
-                  )}
-                </>
-              )}
+            {user?.role === "PRO" && (
+              <>
+                <Button variant={"link"} asChild>
+                  <Link href={`/pro-user/add/${user?.id}`}>
+                    Recharge the pro wallet
+                  </Link>
+                </Button>
+              </>
+            )}
 
             {newsLength === 0 ? (
               <div className="m-2 font-serif">No News to show here</div>

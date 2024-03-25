@@ -46,65 +46,27 @@ export const addProMoney = async (formData: FormData) => {
   });
   const username = user?.name;
 
-  if (user?.role === "BLOCKED") {
-    return {
-      error: "You have been blocked by the admin. contact admin know more",
-    };
-  }
-
-  const rechargeAmount = formData.get("amount")?.toString();
-
-  if (proUser?.isRecharged === false) {
-    if (Number(rechargeAmount) > proUser.amount) {
-      return { error: "Amount is greater than the  available amount" };
-    }
-    if (Number(rechargeAmount) < proUser?.amount) {
-      return { error: "Insufficient amount to recharge" };
+  try {
+    if (user?.role === "BLOCKED") {
+      return {
+        error: "You have been blocked by the admin. contact admin know more",
+      };
     }
 
-    await db.money.create({
-      data: {
-        amount: formData.get("amount")?.toString(),
-        secure_url: photos.secure_url,
-        public_id: photos.public_id,
-        transactionId: formData.get("transactionId")?.toString() ?? "",
-        upiid: formData.get("upiid")?.toString() ?? "",
-        accountNumber: formData.get("accountNumber")?.toString(),
-        userId: formData.get("userId")?.toString(),
-        name: username ?? "",
-        isProRecharge: true,
-      },
-    });
+    if (user?.role !== "PRO") {
+      return { error: "You are not a pro user" };
+    }
+    const rechargeAmount = formData.get("amount")?.toString();
 
-    await db.proUser.update({
-      where: {
-        userId: user?.id,
-      },
-      data: {
-        isRecharged: true,
-      },
-    });
-  } else {
-    if (proUser !== null) {
-      if (proUser.amount === proUser.amount_limit) {
-        return { error: "Amount limit reached" };
+    if (proUser?.isRecharged === false) {
+      if (Number(rechargeAmount) > proUser.amount) {
+        return { error: "Amount is greater than the  available amount" };
       }
-      if (proUser.amount - proUser.amount_limit < Number(rechargeAmount)) {
-        return { error: "Amount is greater than the available amount" };
-      }
-      if (proUser.amount - proUser.amount_limit > Number(rechargeAmount)) {
+      if (Number(rechargeAmount) < proUser?.amount) {
         return { error: "Insufficient amount to recharge" };
       }
 
-      if (proUser.amount_limit > proUser.amount) {
-        return { error: "Amount limit is greater than the available amount" };
-      }
-
-      if (proUser.amount_limit + Number(rechargeAmount) > proUser.amount) {
-        return { error: "Amount limit is greater than the available amount" };
-      }
-
-      await db.money.create({
+      await db.proMoney.create({
         data: {
           amount: formData.get("amount")?.toString(),
           secure_url: photos.secure_url,
@@ -114,7 +76,6 @@ export const addProMoney = async (formData: FormData) => {
           accountNumber: formData.get("accountNumber")?.toString(),
           userId: formData.get("userId")?.toString(),
           name: username ?? "",
-          isProRecharge: true,
         },
       });
 
@@ -123,13 +84,57 @@ export const addProMoney = async (formData: FormData) => {
           userId: user?.id,
         },
         data: {
-          amount: proUser.amount_limit + Number(rechargeAmount),
+          isRecharged: true,
         },
       });
+    } else {
+      if (proUser !== null) {
+        if (proUser.amount === proUser.amount_limit) {
+          return { error: "Amount limit reached" };
+        }
+        if (proUser.amount - proUser.amount_limit < Number(rechargeAmount)) {
+          return { error: "Amount is greater than the available amount" };
+        }
+        if (proUser.amount - proUser.amount_limit > Number(rechargeAmount)) {
+          return { error: "Insufficient amount to recharge" };
+        }
+
+        if (proUser.amount_limit > proUser.amount) {
+          return { error: "Amount limit is greater than the available amount" };
+        }
+
+        if (proUser.amount_limit + Number(rechargeAmount) > proUser.amount) {
+          return { error: "Amount limit is greater than the available amount" };
+        }
+
+        await db.proMoney.create({
+          data: {
+            amount: formData.get("amount")?.toString(),
+            secure_url: photos.secure_url,
+            public_id: photos.public_id,
+            transactionId: formData.get("transactionId")?.toString() ?? "",
+            upiid: formData.get("upiid")?.toString() ?? "",
+            accountNumber: formData.get("accountNumber")?.toString(),
+            userId: formData.get("userId")?.toString(),
+            name: username ?? "",
+          },
+        });
+
+        await db.proUser.update({
+          where: {
+            userId: user?.id,
+          },
+          data: {
+            amount: proUser.amount_limit + Number(rechargeAmount),
+          },
+        });
+      }
     }
+  } catch (err: any) {
+    return { error: "an error occurred. please try again later" };
   }
 
-  revalidatePath("/money/record");
+  revalidatePath("/pro-money/record");
 
-  return { success: "Pro money recharge requested!" };
+  return { success: "Recharge pro wallet requested!" };
 };
