@@ -67,6 +67,7 @@ model ProUser {
   amount_limit Int
   amount       Int
   products     Json
+  proRecharge  Boolean @default(false)
   isRecharged  Boolean @default(false)
   User         User?   @relation(fields: [userId], references: [id])
   userId       String  @unique

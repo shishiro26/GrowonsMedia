@@ -26,18 +26,25 @@ const page = async ({ params, searchParams }: RecordProps) => {
         <TopBar title="Wallet Records" />
       </div>
       <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[90vh] w-full md:w-[100%] p-2">
-        <Button className="flex items-center " asChild>
-          <Link href={`/money/add/${session?.user.id}`} className="inline">
-            <Image
-              src="/svgs/plus.svg"
-              alt="add money"
-              width={20}
-              height={20}
-              className="h-6 w-6 mr-1"
-            />
-            Add Money here
-          </Link>
-        </Button>
+        <div className="flex items-center gap-x-2">
+          <Button className="flex items-center " asChild>
+            <Link href={`/money/add/${session?.user.id}`} className="inline">
+              <Image
+                src="/svgs/plus.svg"
+                alt="add money"
+                width={20}
+                height={20}
+                className="h-6 w-6 mr-1"
+              />
+              Add Money here
+            </Link>
+          </Button>
+          {session?.user.role === "PRO" && (
+            <Button>
+              <Link href={`/pro-user/record/${params.id}`}>Pro wallet</Link>
+            </Button>
+          )}
+        </div>
         <section>
           <MoneyTable
             userId={params.id.toString()}

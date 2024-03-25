@@ -3,6 +3,8 @@ import { v2 as cloudinary } from "cloudinary";
 import { db } from "@/lib/db";
 import { getUserById } from "@/data/user";
 import { revalidatePath } from "next/cache";
+import { RejectInvoiceSchema } from "@/schemas";
+import * as z from "zod";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -137,4 +139,85 @@ export const addProMoney = async (formData: FormData) => {
   revalidatePath("/pro-money/record");
 
   return { success: "Recharge pro wallet requested!" };
+};
+
+type ValuesProps = {
+  userId: string;
+  invoiceId: string;
+};
+
+export const acceptProInvoice = async ({ userId, invoiceId }: ValuesProps) => {
+  try {
+    const proUser = await db.proUser.findUnique({
+      where: {
+        userId: userId,
+      },
+    });
+    if (!proUser) {
+      return { error: "User not found" };
+    }
+
+    if (proUser.proRecharge === false) {
+      await db.proMoney.update({
+        where: {
+          id: invoiceId,
+        },
+        data: {
+          status: "SUCCESS",
+        },
+      });
+
+      await db.proUser.update({
+        where: {
+          userId: userId,
+        },
+        data: {
+          proRecharge: true,
+        },
+      });
+    } else {
+      await db.proMoney.update({
+        where: {
+          id: invoiceId,
+        },
+        data: {
+          status: "SUCCESS",
+        },
+      });
+
+      await db.proUser.update({
+        where: {
+          userId: userId,
+        },
+        data: {
+          amount_limit: proUser.amount,
+        },
+      });
+    }
+  } catch (error) {
+    return { error: "Error while updating the Invoice!" };
+  }
+
+  revalidatePath("/admin/wallet");
+  return { success: "Invoice accepted" };
+};
+
+export const rejectProInvoice = async (
+  values: z.infer<typeof RejectInvoiceSchema>
+) => {
+  const validatedFields = RejectInvoiceSchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return { error: "Invalid fields!!" };
+  }
+  try {
+    await db.proMoney.update({
+      where: { id: values.id },
+      data: { status: "FAILED", reason: values.reason },
+    });
+  } catch (error) {
+    return { error: "Error while rejecting the Invoice!" };
+  }
+  revalidatePath("/admin/wallet");
+  return { success: "Invoice rejected" };
 };

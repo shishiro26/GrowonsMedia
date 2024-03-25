@@ -10,15 +10,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { db } from "@/lib/db";
-import FormInvoice from "../_components/form-invoice";
 import ImageDialog from "@/components/shared/Image-dialog";
-import PaginationBar from "../../money/_components/PaginationBar";
 import CopyButton from "@/components/shared/copy-button";
-import TopBar from "../../_components/Topbar";
+import TopBar from "@/app/(protected)/_components/Topbar";
+import PaginationBar from "@/app/(protected)/money/_components/PaginationBar";
+import ProFormInvoice from "../_components/pro-form-invoice";
 
 export const generateMetadata = () => {
   return {
-    title: "Admin Wallet | GrowonsMedia",
+    title: "Pro Wallet | GrowonsMedia",
     description: "Admin Wallet",
   };
 };
@@ -32,14 +32,14 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
 
   const pageSize = 7;
   const totalItemCount = (
-    await db.money.findMany({
+    await db.proMoney.findMany({
       where: { status: "PENDING" },
     })
   ).length;
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
 
-  const invoices = await db.money.findMany({
+  const invoices = await db.proMoney.findMany({
     where: { status: "PENDING" },
     orderBy: { id: "desc" },
     skip: (currentPage - 1) * pageSize,
@@ -48,7 +48,7 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
   return (
     <section className="my-2">
       <nav className="hidden md:block">
-        <TopBar title="Admin Wallet" />
+        <TopBar title="Pro Wallet" />
       </nav>
       <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[85vh] w-full md:w-[100%] p-2">
         <Table>
@@ -76,7 +76,7 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
                   <ImageDialog imageLink={invoice.secure_url} />
                 </TableCell>
                 <TableCell>
-                  <FormInvoice
+                  <ProFormInvoice
                     id={invoice.id.toString()}
                     userId={invoice.userId}
                   />

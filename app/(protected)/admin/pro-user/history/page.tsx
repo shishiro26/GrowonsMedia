@@ -10,37 +10,32 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { db } from "@/lib/db";
-import FormInvoice from "../_components/form-invoice";
 import ImageDialog from "@/components/shared/Image-dialog";
-import PaginationBar from "../../money/_components/PaginationBar";
-import CopyButton from "@/components/shared/copy-button";
-import TopBar from "../../_components/Topbar";
+import PaginationBar from "../../../money/_components/PaginationBar";
+import TopBar from "../../../_components/Topbar";
+import ReasonDialog from "@/components/shared/ReasonDialog";
+import BadgeStatus from "@/app/(protected)/money/_components/BadgeStatus";
 
 export const generateMetadata = () => {
   return {
-    title: "Admin Wallet | GrowonsMedia",
+    title: "Pro wallet History | GrowonsMedia",
     description: "Admin Wallet",
   };
 };
 
-type AdminWalletParams = {
+const ProHistoryWallet = async ({
+  searchParams,
+}: {
   searchParams: { page: string };
-};
-
-const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
+}) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 7;
-  const totalItemCount = (
-    await db.money.findMany({
-      where: { status: "PENDING" },
-    })
-  ).length;
+  const pageSize = 5;
+  const totalItemCount = await db.proMoney.count();
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
 
-  const invoices = await db.money.findMany({
-    where: { status: "PENDING" },
+  const invoices = await db.proMoney.findMany({
     orderBy: { id: "desc" },
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
@@ -50,44 +45,50 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
       <nav className="hidden md:block">
         <TopBar title="Admin Wallet" />
       </nav>
-      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[85vh] w-full md:w-[100%] p-2">
+      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[80vh] w-full md:w-[100%] p-2">
         <Table>
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
+              <TableHead>Account No</TableHead>
+              <TableHead>UPI-ID</TableHead>
               <TableHead>Transaction id</TableHead>
-              <TableHead>Amount</TableHead>
+              <TableHead>Charge Money</TableHead>
+              <TableHead>State</TableHead>
               <TableHead>Screenshot</TableHead>
+              <TableHead>Date Created</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {invoices.map((invoice) => (
-              <TableRow key={invoice.userId}>
-                <TableCell className="font-medium">{invoice.name}</TableCell>
-                <TableCell>
-                  <div className="flex gap-1 items-center">
-                    {invoice.transactionId}
-                    <CopyButton text={invoice.transactionId} />
-                  </div>
-                </TableCell>
+              <TableRow key={invoice.upiid}>
+                <TableCell>{invoice.name}</TableCell>
+                <TableCell>{invoice.accountNumber}</TableCell>
+                <TableCell>{invoice.upiid}</TableCell>
+                <TableCell>{invoice.transactionId}</TableCell>
                 <TableCell>{formatPrice(Number(invoice.amount))}</TableCell>
+                <TableCell className="cursor-pointer">
+                  {invoice.status === "FAILED" && invoice.reason !== null ? (
+                    <ReasonDialog
+                      status={invoice.status}
+                      reason={invoice.reason}
+                    />
+                  ) : (
+                    <BadgeStatus status={invoice.status} />
+                  )}
+                </TableCell>
                 <TableCell>
                   <ImageDialog imageLink={invoice.secure_url} />
                 </TableCell>
-                <TableCell>
-                  <FormInvoice
-                    id={invoice.id.toString()}
-                    userId={invoice.userId}
-                  />
-                </TableCell>
+                <TableCell>{invoice.createdAt.toDateString()}</TableCell>
               </TableRow>
             ))}
           </TableBody>
           {totalItemCount !== 0 && (
             <TableFooter>
               <TableRow>
-                <TableCell colSpan={2}>Total</TableCell>
+                <TableCell colSpan={4}>Total</TableCell>
                 <TableCell className="text-left" colSpan={4}>
                   {formatPrice(
                     invoices.reduce((acc, cur) => acc + Number(cur.amount), 0)
@@ -98,6 +99,7 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
           )}
         </Table>
       </section>
+
       {totalPages > 1 && (
         <PaginationBar totalPages={totalPages} currentPage={currentPage} />
       )}
@@ -105,4 +107,4 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
   );
 };
 
-export default AdminWallet;
+export default ProHistoryWallet;

@@ -8,4 +8,4 @@ export const DEFAULT_LOGIN_REDIRECT = "/";
 
 export const adminAuthPrefix = "/admin";
 
-export const proAuthPrefix = "/pro";
+export const proAuthPrefix = "/pro-user";
