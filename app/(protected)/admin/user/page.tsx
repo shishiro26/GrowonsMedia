@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/table";
 import PaginationBar from "../../money/_components/PaginationBar";
 import { revalidatePath } from "next/cache";
-import BlockUser from "../_components/block-user";
 import BalanceCell from "../_components/Balance-cell";
 import ProUser from "../_components/upgrade-to-pro";
 import TopBar from "../../_components/Topbar";
@@ -36,6 +35,12 @@ const UserTable = async ({
     },
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
+  });
+
+  const products = await db.product.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
   });
 
   revalidatePath("/admin/user");
@@ -80,7 +85,11 @@ const UserTable = async ({
               </TableCell>
               {user.role !== "BLOCKED" && (
                 <TableCell>
-                  <ProUser userId={user.id} role={user.role} />
+                  <ProUser
+                    userId={user.id}
+                    role={user.role}
+                    products={products}
+                  />
                 </TableCell>
               )}
             </TableRow>

@@ -8,25 +8,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { db } from "@/lib/db";
 import React from "react";
 
-const ProductOrderTable = async () => {
-  const products = await db.product.findMany({
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
-
+const ProductOrderTable = async ({ products }: { products: any[] }) => {
   return (
     <>
-      {products?.map((product) => {
+      {products?.map((product, index) => {
         return (
           <div
             key={product.id}
             className="p-2 mt-4 border-2 border-gray-300 rounded-lg"
           >
-            <div className="text-lg capitalize">{product.productName}</div>
+            <div className="text-lg capitalize">{product.name}</div>
             <div>
               <Table>
                 <TableHeader>

@@ -32,8 +32,7 @@ type OrderProps = {
   id: string;
   products: any;
   role: "PRO" | "BLOCKED" | "USER" | "ADMIN" | undefined;
-  minProduct: number | undefined;
-  maxProduct: number | undefined;
+
   children: React.ReactNode;
 };
 
@@ -89,7 +88,7 @@ const OrderForm = ({ id, products, children }: OrderProps) => {
   const calculateTotalAmount = () => {
     return form.getValues().products.reduce((total, product) => {
       const productPrice =
-        products.find((p: any) => p.productName === product.name)?.price || 0;
+        products.find((p: any) => p.name === product.name)?.price || 0;
       return total + product.quantity * productPrice;
     }, 0);
   };
@@ -124,11 +123,11 @@ const OrderForm = ({ id, products, children }: OrderProps) => {
                           {products.map((product: any) => {
                             return (
                               <SelectItem
-                                value={product.productName}
+                                value={product.name}
                                 key={product.id}
                                 className="capitalize"
                               >
-                                {product.productName}
+                                {product.name}
                               </SelectItem>
                             );
                           })}

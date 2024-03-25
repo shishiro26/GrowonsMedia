@@ -17,13 +17,10 @@ const page = async ({ params }: { params: { id: string } }) => {
       createdAt: "desc",
     },
   });
-  const prouser = await db.proUser.findUnique({
+
+  const proUser = await db.proUser.findUnique({
     where: {
       userId: params.id,
-    },
-    select: {
-      minProduct: true,
-      maxProduct: true,
     },
   });
 
@@ -36,6 +33,22 @@ const page = async ({ params }: { params: { id: string } }) => {
     },
   });
 
+  const mergedProducts = products.map((product) => {
+    //@ts-ignore
+    const proUserProduct = proUser?.products?.find(
+      (proUserProduct: any) => proUserProduct.name === product.productName
+    );
+
+    return {
+      id: product.id,
+      name: product.productName,
+      stock: product.stock,
+      minProduct: proUserProduct?.minProduct ?? product.minProduct,
+      maxProduct: proUserProduct?.maxProduct ?? product.maxProduct,
+      price: proUserProduct?.price ?? product.price,
+    };
+  });
+
   return (
     <>
       <div className="hidden md:block">
@@ -45,12 +58,10 @@ const page = async ({ params }: { params: { id: string } }) => {
         <div className="m-3">
           <OrderForm
             id={params.id.toString()}
-            products={products}
+            products={mergedProducts}
             role={user?.role}
-            minProduct={prouser?.minProduct}
-            maxProduct={prouser?.maxProduct}
           >
-            <ProductOrderTable />
+            <ProductOrderTable products={mergedProducts} />
           </OrderForm>
         </div>
       </section>

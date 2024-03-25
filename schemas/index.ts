@@ -444,13 +444,24 @@ export const EditNewsSchema = z.object({
 export const ProUserSchema = z.object({
   userId: z.string(),
   amount: z.coerce.number(),
-  minProduct: z.coerce.number().nonnegative().min(0, {
-    message: "Minimum product must be greater than 0",
-  }),
-
-  maxProduct: z.coerce.number().nonnegative().min(0, {
-    message: "Maximum product must be greater than 0",
-  }),
+  products: z.array(
+    z.object({
+      name: z.string().min(1, { message: "Product Name is required" }),
+      minProduct: z.coerce
+        .number()
+        .min(1, { message: "Min product is required" })
+        .nonnegative(),
+      maxProduct: z.coerce
+        .number()
+        .min(1, {
+          message: "Max product must be greater than min product",
+        })
+        .nonnegative(),
+      price: z.coerce.number().nonnegative().min(1, {
+        message: "Price must be greater than zero",
+      }),
+    })
+  ),
 });
 
 export const ReplySchema = z.object({

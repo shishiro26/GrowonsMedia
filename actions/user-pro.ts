@@ -4,26 +4,23 @@ import { db } from "@/lib/db";
 import { ProUserSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
 import * as z from "zod";
+
 export const addProUser = async (values: z.infer<typeof ProUserSchema>) => {
   const validatedFields = ProUserSchema.safeParse(values);
   if (!validatedFields.success) {
-    return { error: "Invalid fields!" };
+    throw new Error("Invalid fields!");
   }
 
-  const { userId, amount, minProduct, maxProduct } = validatedFields.data;
+  const { userId, amount, products } = validatedFields.data;
 
   const user = await getUserById(userId);
 
-  if (user?.role === "BLOCKED") {
-    return { error: "User is blocked!" };
+  if (!user || user.role === "BLOCKED") {
+    return { error: "User has been blocked!" };
   }
 
-  if (user?.role === "PRO") {
+  if (user.role === "PRO") {
     return { error: "User is already a PRO!" };
-  }
-
-  if (minProduct > maxProduct) {
-    return { error: "Min product should be less than max product" };
   }
 
   try {
@@ -34,21 +31,35 @@ export const addProUser = async (values: z.infer<typeof ProUserSchema>) => {
       },
     });
 
+    const uniqueProducts = products.reduce((acc: any[], product: any) => {
+      const existingProduct = acc.find((p) => p.name === product.name);
+      if (!existingProduct) {
+        acc.push({
+          name: product.name,
+          minProduct: product.minProduct,
+          maxProduct: product.maxProduct,
+          price: product.price,
+        });
+      }
+      return acc;
+    }, []);
+
     await db.proUser.create({
       data: {
-        amount_limit: amount,
-        minProduct: minProduct,
-        maxProduct: maxProduct,
-        userId: userId,
         amount: amount,
+        amount_limit: amount,
+        products: uniqueProducts,
+        userId: userId,
       },
     });
+
+    revalidatePath("/users/" + userId);
+
+    return { success: "upgraded to pro user" };
   } catch (err) {
     console.log(err);
     return { error: "Error while upgrading the user!" };
   }
-  revalidatePath("/admin/user");
-  return { success: "User upgraded to pro!" };
 };
 
 export const removeProUser = async (userId: string) => {
