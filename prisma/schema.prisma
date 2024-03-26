@@ -42,7 +42,6 @@ model User {
   ProUser     ProUser[]
   Feedback    Feedback[]
   BankDetails BankDetails[]
-  proMoney    proMoney[]
 }
 
 model BankDetails {
@@ -74,22 +73,6 @@ model ProUser {
 }
 
 model Money {
-  id            String      @id @default(uuid()) @map("_id")
-  name          String
-  amount        String?
-  upiid         String
-  accountNumber String?
-  transactionId String      @unique
-  public_id     String      @unique
-  secure_url    String
-  reason        String?
-  status        MoneyStatus @default(PENDING)
-  User          User?       @relation(fields: [userId], references: [id])
-  userId        String
-  createdAt     DateTime    @default(now()) @map("created_at")
-}
-
-model proMoney {
   id            String      @id @default(uuid()) @map("_id")
   name          String
   amount        String?

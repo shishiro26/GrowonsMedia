@@ -1,4 +1,5 @@
 "use server";
+import TotalMoney from "@/app/(protected)/_components/TotalMoney";
 import { db } from "@/lib/db";
 import { RejectInvoiceSchema } from "@/schemas";
 import { revalidatePath } from "next/cache";
@@ -16,21 +17,30 @@ export const acceptInvoice = async ({ userId, invoiceId }: ValuesProps) => {
       data: { status: "SUCCESS" },
     });
 
-    const invoices = await db.money.findMany({
-      where: { userId: userId, status: "SUCCESS" },
+    const money = await db.money.findUnique({
+      where: {
+        id: invoiceId,
+      },
       select: {
         amount: true,
       },
     });
 
-    const totalMoney = invoices.reduce((acc, curr) => {
-      return acc + Number(curr.amount);
-    }, 0);
+    const updatedMoney = Number(money?.amount);
+
+    const user = await db.user.findUnique({
+      where: { id: userId },
+      select: {
+        totalMoney: true,
+      },
+    });
+
+    const totalMoney = Number(user?.totalMoney);
 
     await db.user.update({
       where: { id: userId },
       data: {
-        totalMoney: totalMoney,
+        totalMoney: totalMoney + updatedMoney,
       },
     });
   } catch (error) {

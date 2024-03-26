@@ -188,6 +188,13 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
         <SheetFooter>
           <BlockUser id={user.id} role={user.role} />
         </SheetFooter>
+        {user.role === "PRO" && (
+          <Button variant={"link"}>
+            <Link href={`/admin/user/pro/${user.id}`} target="_blank" tabIndex={0}>
+              Edit Pro user
+            </Link>
+          </Button>
+        )}
       </SheetContent>
     </Sheet>
   );

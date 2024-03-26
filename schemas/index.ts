@@ -464,6 +464,31 @@ export const ProUserSchema = z.object({
   ),
 });
 
+export const editProUserSchema = z.object({
+  userId: z.string(),
+  amount: z.coerce.number().optional(),
+  products: z
+    .array(
+      z.object({
+        name: z.string().min(1, { message: "Product Name is required" }),
+        minProduct: z.coerce
+          .number()
+          .min(1, { message: "Min product is required" })
+          .nonnegative(),
+        maxProduct: z.coerce
+          .number()
+          .min(1, {
+            message: "Max product must be greater than min product",
+          })
+          .nonnegative(),
+        price: z.coerce.number().nonnegative().min(1, {
+          message: "Price must be greater than zero",
+        }),
+      })
+    )
+    .optional(),
+});
+
 export const ReplySchema = z.object({
   orderId: z.string(),
   reply: z.string().min(1, { message: "Reply is required" }),

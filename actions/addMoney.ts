@@ -40,6 +40,17 @@ export const AddMoney = async (formData: FormData) => {
 
   const user = await getUserById(formData.get("userId")?.toString() ?? "");
   const username = user?.name;
+  const transactionId = formData.get("transactionId")?.toString() ?? "";
+
+  const redunctantId = await db.money.findUnique({
+    where: {
+      transactionId: transactionId,
+    },
+  });
+
+  if (redunctantId) {
+    return { error: "This transaction ID already exists" };
+  }
 
   try {
     if (user?.role === "BLOCKED") {
