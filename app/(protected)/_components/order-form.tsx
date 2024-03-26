@@ -56,13 +56,17 @@ const OrderForm = ({ id, products, children }: OrderProps) => {
     },
   });
 
-  const { fields, append } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     name: "products",
     control: form.control,
   });
 
   const onSubmit = (values: FormValues) => {
     setError("");
+    if (values.products.length === 0) {
+      toast.error("Order cannot be empty");
+      return;
+    }
     startTransition(() => {
       values.price = calculateTotalAmount();
       addOrder(values).then((data) => {
@@ -149,6 +153,15 @@ const OrderForm = ({ id, products, children }: OrderProps) => {
                     </FormItem>
                   )}
                 />
+                <Button
+                  type="button"
+                  disabled={isPending}
+                  onClick={() => remove(index)}
+                  className="mt-2 mb-2"
+                  variant={"ghost"}
+                >
+                  Remove Product
+                </Button>
               </div>
             ))}
             <div>
@@ -163,18 +176,25 @@ const OrderForm = ({ id, products, children }: OrderProps) => {
                         className={`text-sm text-[7E8DA0] cursor-pointer focus:outline-none focus:underline`}
                         tabIndex={0}
                         onClick={() => {
-                          const lastProduct =
-                            form.getValues().products[fields.length - 1];
-
-                          if (lastProduct && lastProduct.name.trim() !== "") {
+                          if (fields.length === 0) {
                             append({
                               name: "",
                               quantity: 0,
                             });
                           } else {
-                            toast.error(
-                              "Please fill in the previous product before adding a new one."
-                            );
+                            const lastProduct =
+                              form.getValues().products[fields.length - 1];
+
+                            if (lastProduct && lastProduct.name.trim() !== "") {
+                              append({
+                                name: "",
+                                quantity: 0,
+                              });
+                            } else {
+                              toast.error(
+                                "Please fill in the previous product before adding a new one."
+                              );
+                            }
                           }
                         }}
                       >
