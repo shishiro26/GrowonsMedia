@@ -41,7 +41,7 @@ const ProMoneyTable = async ({ params, searchParams }: TableProps) => {
 
   const invoices = await db.proMoney.findMany({
     where: { userId: params.id },
-    orderBy: { id: "desc" },
+    orderBy: { createdAt: "desc" },
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });

@@ -34,7 +34,7 @@ export async function MoneyTable({ userId, searchParams }: TableProps) {
 
   const invoices = await db.money.findMany({
     where: { userId: userId },
-    orderBy: { id: "desc" },
+    orderBy: { createdAt: "desc" },
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });

@@ -1,5 +1,4 @@
 import { formatPrice } from "@/components/shared/formatPrice";
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -32,7 +31,13 @@ const ProductOrderTable = async ({ products }: { products: any[] }) => {
                 </TableHeader>
                 <TableBody>
                   <TableRow>
-                    <TableCell>{product.stock}</TableCell>
+                    <TableCell>
+                      {product.stock === 0 ? (
+                        <span className="font-semibold">Out of stock</span>
+                      ) : (
+                        <span className="font-semibold">available</span>
+                      )}
+                    </TableCell>
                     <TableCell>{product.minProduct}</TableCell>
                     <TableCell>{product.maxProduct}</TableCell>
                     <TableCell>{formatPrice(product.price)}</TableCell>

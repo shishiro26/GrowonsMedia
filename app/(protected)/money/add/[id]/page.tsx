@@ -9,6 +9,7 @@ import { db } from "@/lib/db";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import TopBar from "@/app/(protected)/_components/Topbar";
+import CopyButton from "@/components/shared/copy-button";
 
 export const generateMetadata = () => {
   return {
@@ -45,14 +46,36 @@ const page = async ({ params }: { params: { id: string } }) => {
             <div className="mt-2">
               <p>Scan the QR below:</p>
               {bankDetails && (
-                <Image
-                  key={bankDetails.public_id}
-                  src={bankDetails.secure_url ?? ""}
-                  alt="QR-CODE"
-                  width={150}
-                  height={150}
-                  className=" w-40 h-40 m-2"
-                />
+                <div className="flex flex-row items-center">
+                  <Image
+                    key={bankDetails.public_id}
+                    src={bankDetails.secure_url ?? ""}
+                    alt="QR-CODE"
+                    width={150}
+                    height={150}
+                    className=" w-40 h-40 m-2"
+                  />
+                  <div className="flex flex-col">
+                    <div>
+                      <span className="block">UPI ID:</span>
+                      <span className="font-semibold border-2 border-black p-1 rounded-lg flex items-center gap-x-2">
+                        {bankDetails?.upiid}
+                        <span className="hidden md:block">
+                          <CopyButton text={bankDetails.upiid} />
+                        </span>
+                      </span>
+                    </div>
+                    <div>
+                      <span className="block">UPI Number:</span>
+                      <span className="font-semibold border-2 border-black p-1 rounded-lg flex items-center gap-x-2 justify-between">
+                        {bankDetails?.upinumber}
+                        <span className="hidden md:block">
+                          <CopyButton text={bankDetails.upinumber} />
+                        </span>
+                      </span>
+                    </div>
+                  </div>
+                </div>
               )}
             </div>
             <DownloadButton imageLink={bankDetails?.secure_url ?? ""} />
@@ -61,24 +84,72 @@ const page = async ({ params }: { params: { id: string } }) => {
               bankDetails={bankDetails}
             />
           </div>
-          <div className="md:w-[50%]">
-            {user?.role === "PRO" && (
-              <>
-                <Button variant={"link"} asChild>
-                  <Link href={`/pro-user/add/${user?.id}`}>
-                    Recharge the pro wallet
-                  </Link>
-                </Button>
-              </>
-            )}
-
+          <div className="md:w-[50%] flex flex-col-reverse md:flex-col gap-y-2">
+            <div>
+              <p className="font-bold font-2xl mb-2">Bank Details :</p>
+              <div className="flex items-center flex-wrap">
+                <span>Name:</span>
+                <span className="font-semibold p-2 rounded-lg flex items-center gap-x-2">
+                  {bankDetails?.name}
+                  {bankDetails && (
+                    <span className="hidden md:block">
+                      <CopyButton text={bankDetails.name} />
+                    </span>
+                  )}
+                </span>
+              </div>
+              <div className="flex items-center">
+                <span>IFSC Code:</span>
+                <span className="font-semibold p-2 rounded-lg flex items-center gap-x-2">
+                  {bankDetails?.ifsccode}
+                  {bankDetails && (
+                    <span className="hidden md:block">
+                      <CopyButton text={bankDetails.ifsccode} />
+                    </span>
+                  )}
+                </span>
+              </div>
+              <div className="flex items-center">
+                <span>Account type:</span>
+                <span className="font-semibold p-2 rounded-lg flex items-center gap-x-2">
+                  {bankDetails?.accountType}
+                  {bankDetails && (
+                    <span className="hidden md:block">
+                      <CopyButton text={bankDetails.accountType} />
+                    </span>
+                  )}
+                </span>
+              </div>
+              <div className="flex items-center">
+                <span>Bank Name:</span>
+                <span className="font-semibold p-2 rounded-lg flex items-center gap-x-2">
+                  {bankDetails?.bankName}
+                  {bankDetails && (
+                    <span className="hidden md:block">
+                      <CopyButton text={bankDetails.bankName} />
+                    </span>
+                  )}
+                </span>
+              </div>
+              <div className="flex items-center">
+                <span>Account Number:</span>
+                <span className="font-semibold p-2 rounded-lg flex items-center gap-x-2">
+                  {bankDetails?.accountDetails}
+                  {bankDetails && (
+                    <span className="hidden md:block">
+                      <CopyButton text={bankDetails.accountDetails} />
+                    </span>
+                  )}
+                </span>
+              </div>
+            </div>
             {newsLength === 0 ? (
               <div className="m-2 font-serif">No News to show here</div>
             ) : (
               <>
-                <div className="border-2 mt-4 mx-2 md:mt-5 border-black  p-2 rounded-lg">
+                <div className=" h-[45%] overflow-y-auto border-2 mt-4 mx-2 md:mt-5 border-black  p-2 rounded-lg">
                   <span className="m-2">News and Notices</span>
-                  <div className="grid grid-rows-1 md:grid-rows-3">
+                  <div className="grid grid-rows-1 md:grid-rows-3 p-2">
                     {news?.map((n) => {
                       return (
                         <Card key={n.id} className="m-2 md:w-full h-fit">
@@ -103,6 +174,7 @@ const page = async ({ params }: { params: { id: string } }) => {
                         </Card>
                       );
                     })}
+                    
                   </div>
                 </div>
               </>

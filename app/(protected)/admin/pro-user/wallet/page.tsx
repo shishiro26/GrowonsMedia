@@ -41,7 +41,7 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
 
   const invoices = await db.proMoney.findMany({
     where: { status: "PENDING" },
-    orderBy: { id: "desc" },
+    orderBy: { createdAt: "desc" },
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });
@@ -68,7 +68,9 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
                 <TableCell>
                   <div className="flex gap-1 items-center">
                     {invoice.transactionId}
-                    <CopyButton text={invoice.transactionId} />
+                    <span className="hidden md:block">
+                      <CopyButton text={invoice.transactionId} />
+                    </span>
                   </div>
                 </TableCell>
                 <TableCell>{formatPrice(Number(invoice.amount))}</TableCell>

@@ -61,6 +61,7 @@ export const AddMoney = async (formData: FormData) => {
       },
     });
   } catch (err: any) {
+    console.log(err);
     return { error: "an error occurred. please try again later" };
   }
 

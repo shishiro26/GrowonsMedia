@@ -36,7 +36,7 @@ const ProHistoryWallet = async ({
   const totalPages = Math.ceil(totalItemCount / pageSize);
 
   const invoices = await db.proMoney.findMany({
-    orderBy: { id: "desc" },
+    orderBy: { createdAt: "desc" },
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });

@@ -37,7 +37,7 @@ export async function Replies({ userId, searchParams }: TableProps) {
 
   const feedbacks = await db.feedback.findMany({
     where: { userId: userId },
-    orderBy: { id: "desc" },
+    orderBy: { createdAt: "desc" },
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });

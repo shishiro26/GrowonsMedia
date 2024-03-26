@@ -54,6 +54,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
       stock: existingProduct?.stock ?? 0,
       minProduct: proProduct?.minProduct ?? existingProduct?.minProduct ?? 1,
       maxProduct: proProduct?.maxProduct ?? existingProduct?.maxProduct,
+      price: proProduct?.price ?? existingProduct?.price,
     };
   });
 
@@ -61,6 +62,13 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
     if (product.stock === 0) {
       errors.push({
         error: `${product.name} is out of stock`,
+      });
+      return;
+    }
+
+    if (product.quantity > product.stock) {
+      errors.push({
+        error: `${product.name} is stock not available`,
       });
       return;
     }
@@ -123,6 +131,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
         products: allProducts.map((product) => ({
           name: product.name,
           quantity: product.quantity,
+          productPrice: product.price,
         })),
         amount: price,
       },
