@@ -15,6 +15,7 @@ import DateRangeFilter from "../_components/date-range-filter";
 import DownloadToExcel from "../_components/download-to-excel";
 import ProductToExcel from "../_components/product-to-excel";
 import { revalidatePath } from "next/cache";
+import Search from "@/components/shared/search";
 
 const ProductAnalytics = async ({
   searchParams,
@@ -59,6 +60,7 @@ const ProductAnalytics = async ({
           orders={JSON.parse(JSON.stringify(orders))}
           fileName={"Products"}
         />
+        <Search fileName="product" />
         <div className="mt-1 flex items-center justify-around gap-x-2 w-fit">
           <DateRangeFilter />
         </div>

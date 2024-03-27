@@ -12,11 +12,10 @@ import {
 import { db } from "@/lib/db";
 import React from "react";
 import DownloadToExcel from "../_components/download-to-excel";
-import { Input } from "@/components/ui/input";
-import { FilterIcon } from "lucide-react";
 import { revalidatePath } from "next/cache";
 import PaginationBar from "@/app/(protected)/money/_components/PaginationBar";
 import DateRangeFilter from "../_components/date-range-filter";
+import Search from "@/components/shared/search";
 
 const UserAnalytics = async ({
   searchParams,
@@ -61,11 +60,11 @@ const UserAnalytics = async ({
     <section className="m-2">
       <div className="flex item-center justify-between gap-x-2">
         <DownloadToExcel data={users} fileName="Users" />
+        <Search fileName="user" />
         <div className="mt-1 flex items-center justify-around gap-x-2 w-fit">
           <DateRangeFilter />
         </div>
       </div>
-
       <Table>
         <TableHeader>
           <TableRow>
