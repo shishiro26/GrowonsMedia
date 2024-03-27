@@ -134,6 +134,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
           productPrice: product.price,
         })),
         amount: price,
+        name: user.name,
       },
     });
 

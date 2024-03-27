@@ -15,6 +15,7 @@ import ImageDialog from "@/components/shared/Image-dialog";
 import PaginationBar from "../../money/_components/PaginationBar";
 import CopyButton from "@/components/shared/copy-button";
 import TopBar from "../../_components/Topbar";
+import Search from "@/components/shared/search";
 
 export const generateMetadata = () => {
   return {
@@ -50,7 +51,7 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
       <nav className="hidden md:block">
         <TopBar title="Admin Wallet" />
       </nav>
-      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[85vh] w-full md:w-[100%] p-2">
+      <div className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[85vh] w-full md:w-[100%] p-2">
         <Table>
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
@@ -59,6 +60,9 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
               <TableHead>Transaction id</TableHead>
               <TableHead>Amount</TableHead>
               <TableHead>Screenshot</TableHead>
+              <TableHead>
+                <Search fileName="wallet" />
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -99,7 +103,7 @@ const AdminWallet = async ({ searchParams }: AdminWalletParams) => {
             </TableFooter>
           )}
         </Table>
-      </section>
+      </div>
       {totalPages > 1 && (
         <PaginationBar totalPages={totalPages} currentPage={currentPage} />
       )}

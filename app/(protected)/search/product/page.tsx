@@ -97,15 +97,7 @@ export default async function SearchUserPage({
     return (
       <section className="m-2">
         <div className="flex item-center justify-between gap-x-2">
-          <ProductToExcel
-            products={JSON.parse(JSON.stringify(products))}
-            orders={JSON.parse(JSON.stringify(orders))}
-            fileName={"Products"}
-          />
           <Search fileName="user" />
-          <div className="mt-1 flex items-center justify-around gap-x-2 w-fit">
-            <DateRangeFilter />
-          </div>
         </div>
         <Table>
           <TableHeader>
@@ -131,13 +123,23 @@ export default async function SearchUserPage({
 
   return (
     <section className="m-2">
-      <div className="flex item-center justify-between gap-x-2">
+      <div className="flex items-center justify-between gap-x-2 p-1 md:hidden">
         <ProductToExcel
           products={JSON.parse(JSON.stringify(products))}
           orders={JSON.parse(JSON.stringify(orders))}
           fileName={"Products"}
         />
-        <Search fileName="user" />
+        <Search fileName="product" />
+      </div>
+      <div className="md:flex md:items-center md:justify-between md:gap-x-2">
+        <div className="hidden md:flex items-center justify-between  gap-x-3">
+          <ProductToExcel
+            products={JSON.parse(JSON.stringify(products))}
+            orders={JSON.parse(JSON.stringify(orders))}
+            fileName={"Products"}
+          />
+          <Search fileName="product" />
+        </div>
         <div className="mt-1 flex items-center justify-around gap-x-2 w-fit">
           <DateRangeFilter />
         </div>

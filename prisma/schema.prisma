@@ -105,6 +105,7 @@ model Product {
 model Order {
   id        String      @id @default(uuid()) @map("_id")
   orderId   String      @unique
+  name      String
   userId    String
   user      User?       @relation(fields: [userId], references: [id])
   products  Json

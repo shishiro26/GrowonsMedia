@@ -15,6 +15,7 @@ import PaginationBar from "../../../money/_components/PaginationBar";
 import TopBar from "../../../_components/Topbar";
 import ReasonDialog from "@/components/shared/ReasonDialog";
 import BadgeStatus from "@/app/(protected)/money/_components/BadgeStatus";
+import Search from "@/components/shared/search";
 
 export const generateMetadata = () => {
   return {
@@ -45,7 +46,10 @@ const AdminWallet = async ({
       <nav className="hidden md:block">
         <TopBar title="Admin Wallet" />
       </nav>
-      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[80vh] w-full md:w-[100%] p-2">
+      <div className="p-1 m-1 w-[50%]">
+        <Search fileName="wallet-history" />
+      </div>
+      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[75vh] w-full md:w-[100%] p-2">
         <Table>
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>

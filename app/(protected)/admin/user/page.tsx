@@ -15,6 +15,7 @@ import BalanceCell from "../_components/Balance-cell";
 import ProUser from "../_components/upgrade-to-pro";
 import TopBar from "../../_components/Topbar";
 import EditUser from "./_components/edit-user";
+import Search from "@/components/shared/search";
 
 const UserTable = async ({
   searchParams,
@@ -57,6 +58,9 @@ const UserTable = async ({
             <TableHead>Email</TableHead>
             <TableHead>Wallet</TableHead>
             <TableHead>Joined on</TableHead>
+            <TableHead colSpan={2}>
+              <Search fileName={"user-management"} />
+            </TableHead>
           </TableRow>
         </TableHeader>
         {totalItemCount === 0 && (

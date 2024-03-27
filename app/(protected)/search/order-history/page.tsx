@@ -1,8 +1,7 @@
-import { formatPrice } from "@/components/shared/formatPrice";
+import Search from "@/components/shared/search";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableFooter,
   TableHead,
@@ -10,50 +9,98 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { db } from "@/lib/db";
-import PaginationBar from "../../../money/_components/PaginationBar";
-import TopBar from "../../../_components/Topbar";
+import PaginationBar from "../../money/_components/PaginationBar";
 import ReasonDialog from "@/components/shared/ReasonDialog";
 import BadgeStatus from "@/app/(protected)/money/_components/BadgeStatus";
-import FileDialog from "../../_components/file-dialog";
+import FileDialog from "../../admin/_components/file-dialog";
 import ViewProducts from "@/app/(protected)/_components/view-products";
-import GetName from "../_components/get-name";
-import Search from "@/components/shared/search";
+import GetName from "../../admin/orders/_components/get-name";
+import { formatPrice } from "@/components/shared/formatPrice";
 
-export const generateMetadata = () => {
-  return {
-    title: "Admin Orders History | GrowonsMedia",
-    description: "Admin Wallet",
-  };
-};
-
-type AdminHistoryProps = {
-  searchParams: { page: string };
-};
-
-const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
+const SearchOrderHistory = async ({
+  searchParams,
+}: {
+  searchParams: { page: string; query: string };
+}) => {
   const currentPage = parseInt(searchParams.page) || 1;
+  const pagesize = 4;
+  const query = searchParams.query || "";
 
-  const pageSize = 7;
-  const totalItemCount = await db.order.count();
+  const totalItemCount = (
+    await db.order.findMany({
+      where: {
+        OR: [
+          {
+            name: { mode: "insensitive", contains: query },
+          },
+        ],
+      },
+      include: {
+        user: true,
+      },
+    })
+  ).length;
 
-  const totalPages = Math.ceil(totalItemCount / pageSize);
+  const totalPages = Math.ceil(totalItemCount / pagesize);
 
-  const Orders = await db.order.findMany({
-    orderBy: { createdAt: "desc" },
-    skip: (currentPage - 1) * pageSize,
-    take: pageSize,
+  const orders = await db.order.findMany({
+    where: {
+      OR: [
+        {
+          name: { mode: "insensitive", contains: query },
+          orderId: { mode: "insensitive", contains: query },
+        },
+      ],
+    },
+    include: {
+      user: {
+        select: {
+          name: true,
+          email: true,
+          number: true,
+        },
+      },
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    skip: (currentPage - 1) * pagesize,
+    take: pagesize,
   });
+
+  if (orders.length === 0) {
+    return (
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Name</TableHead>
+            <TableHead>OrderId</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Orders</TableHead>
+            <TableHead>Amount</TableHead>
+            <TableHead>Created on</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableFooter>
+          <TableRow>
+            <TableCell className="text-center" colSpan={8}>
+              No invoices found
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell colSpan={6}>
+              <Search fileName="order-history" />
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
+    );
+  }
   return (
-    <section className="my-2">
-      <nav className="hidden md:block">
-        <TopBar title="Admin Wallet" />
-      </nav>
-      <div className="m-1 p-1">
-        <Search fileName="order-history" />
-      </div>
-      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[85vh] w-full md:w-[100%]">
+    <section>
+      <Search fileName="order-history" />
+      <div className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[90vh] w-full md:w-[100%] p-2">
         <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
             <TableRow>
               <TableHead>Name</TableHead>
@@ -64,17 +111,8 @@ const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
               <TableHead>Created on</TableHead>
             </TableRow>
           </TableHeader>
-          {totalItemCount === 0 && (
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={6} className="text-center">
-                  No orders found
-                </TableCell>
-              </TableRow>
-            </TableFooter>
-          )}
           <TableBody>
-            {Orders?.map((order, index) => {
+            {orders?.map((order, index) => {
               return (
                 <TableRow key={index}>
                   <TableCell className="font-medium">
@@ -128,14 +166,14 @@ const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
                 <TableCell colSpan={4}>Total</TableCell>
                 <TableCell className="text-left" colSpan={4}>
                   {formatPrice(
-                    Orders.reduce((acc, cur) => acc + Number(cur.amount), 0)
+                    orders.reduce((acc, cur) => acc + Number(cur.amount), 0)
                   )}
                 </TableCell>
               </TableRow>
             </TableFooter>
           )}
         </Table>
-      </section>
+      </div>
 
       {totalPages > 1 && (
         <PaginationBar totalPages={totalPages} currentPage={currentPage} />
@@ -144,4 +182,4 @@ const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
   );
 };
 
-export default AdminWallet;
+export default SearchOrderHistory;
