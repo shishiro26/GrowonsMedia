@@ -35,67 +35,14 @@ async function uploadFilesToCloudinary(buffer: string) {
   );
 }
 
-export const addFeedbackFile = async (formData: FormData) => {
-  const file = await uploadFilesToLocal(formData);
-  const audio = await uploadFilesToCloudinary(file);
-
+export const addFeedback = async (formData: FormData) => {
   const orderId = formData.get("orderId")?.toString();
   const userId = formData.get("userId")?.toString();
-  const fileName = formData.get("fileName");
+  const feedback = formData.get("feedback")?.toString();
 
-  const feedback = await db.feedback.findUnique({
-    where: {
-      orderId: orderId,
-    },
-  });
-
-  if (!feedback) {
-    try {
-      await db.feedback.create({
-        data: {
-          orderId: orderId ?? "",
-          userId: userId,
-          public_id: audio.public_id,
-          secure_url: audio.secure_url,
-          feedback: "",
-          fileName: fileName as string,
-        },
-      });
-    } catch (error) {
-      return { error: "An error occurred!" };
-    }
-    revalidatePath(`feedback/reply/${userId}`);
-    return { success: "Feedback added!" };
-  }
-
-  try {
-    await db.feedback.update({
-      where: {
-        orderId: orderId,
-      },
-      data: {
-        public_id: audio.public_id,
-        secure_url: audio.secure_url,
-      },
-    });
-  } catch (err: any) {
-    console.log(err);
-    return { error: "an error occurred. please try again later" };
-  }
-
-  revalidatePath(`feedback/reply/${userId}`);
-
-  return { success: "Feedback added!" };
-};
-
-export const addFeedback = async (values: z.infer<typeof FeedbackSchema>) => {
-  const validatedFields = FeedbackSchema.safeParse(values);
-
-  if (!validatedFields.success) {
+  if (!orderId || !userId) {
     return { error: "Invalid fields!" };
   }
-
-  const { userId, orderId, feedback } = validatedFields.data;
 
   const existingFeedback = await db.feedback.findUnique({
     where: {
@@ -104,36 +51,65 @@ export const addFeedback = async (values: z.infer<typeof FeedbackSchema>) => {
   });
 
   if (existingFeedback) {
+    return { error: "Feedback already exists!" };
+  }
+
+  if (formData.get("file") === "" && formData.get("feedback") === "") {
+    return { error: "Please provide feedback or file!" };
+  }
+
+  if (formData.get("file") === "" && formData.get("feedback") !== "") {
     try {
-      await db.feedback.update({
-        where: {
-          orderId: orderId,
-        },
+      await db.feedback.create({
         data: {
-          feedback: feedback,
+          orderId: orderId as string,
+          userId: userId as string,
+          feedback: feedback as string,
         },
       });
-      revalidatePath(`feedback/reply/${userId}`);
-      return { success: "Feedback added!" };
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
       return { error: "An error occurred!" };
     }
   }
 
-  try {
-    await db.feedback.create({
-      data: {
-        orderId: orderId,
-        feedback: feedback,
-        userId: values.userId,
-      },
-    });
-    revalidatePath(`feedback/reply/${userId}`);
-    return { success: "Feedback added " };
-  } catch (error) {
-    console.log(error);
-    return { error: "An error occurred!" };
+  if (formData.get("feedback") === "" && formData.get("file") !== "") {
+    const file = await uploadFilesToLocal(formData);
+    const audio = await uploadFilesToCloudinary(file);
+    try {
+      await db.feedback.create({
+        data: {
+          orderId: orderId as string,
+          userId: userId as string,
+          public_id: audio.public_id,
+          secure_url: audio.secure_url,
+          feedback: "",
+          fileName: formData.get("fileName") as string,
+        },
+      });
+    } catch (err) {
+      return { error: "An error occurred!" };
+    }
   }
+  if (formData.get("file") !== "" && formData.get("feedback") !== "") {
+    const file = await uploadFilesToLocal(formData);
+    const audio = await uploadFilesToCloudinary(file);
+    try {
+      await db.feedback.create({
+        data: {
+          orderId: orderId as string,
+          userId: userId as string,
+          public_id: audio.public_id,
+          secure_url: audio.secure_url,
+          feedback: feedback as string,
+          fileName: formData.get("fileName") as string,
+        },
+      });
+    } catch (err) {
+      return { error: "An error occurred!" };
+    }
+  }
+  return { success: "Feedback added!" };
 };
 
 export const addReply = async (values: z.infer<typeof ReplySchema>) => {

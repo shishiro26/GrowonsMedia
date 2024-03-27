@@ -26,16 +26,19 @@ import { Textarea } from "@/components/ui/textarea";
 import { addReply } from "@/actions/feedback";
 import { toast } from "sonner";
 import ReplyFileForm from "./ReplyFileForm";
+import FileDownload from "@/app/(protected)/admin/_components/file-download";
 
 type ReplyFormProps = {
   secure_url: string | null;
   feedback: string | null;
   orderId: string;
+  fileName: string | null;
 };
 
 const ReplyForm: React.FC<ReplyFormProps> = ({
   feedback,
   orderId,
+  fileName,
   secure_url,
 }) => {
   const [isPending, startTransition] = useTransition();
@@ -79,7 +82,16 @@ const ReplyForm: React.FC<ReplyFormProps> = ({
                 </FormControl>
               </FormItem>
             )}
-            {secure_url && <video src={secure_url} controls width={150} height={150} />}
+
+            {secure_url && (
+              <div className="flex flex-row items-center">
+                <p className="capitalize font-bold">{fileName}</p>
+                <FileDownload
+                  secure_url={secure_url ?? ""}
+                  fileName={fileName ?? ""}
+                />
+              </div>
+            )}
             <FormField
               control={form.control}
               name="reply"
@@ -114,6 +126,7 @@ const ReplyForm: React.FC<ReplyFormProps> = ({
           feedback={feedback ?? ""}
           orderId={orderId}
           secure_url={secure_url ?? ""}
+          fileName={fileName ?? ""}
         />
       </div>
     </>

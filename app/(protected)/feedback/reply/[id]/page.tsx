@@ -29,7 +29,6 @@ const page = async ({ params, searchParams }: RecordProps) => {
             Add your feedback here
           </Link>
         </Button>
-
         <div>
           <Replies userId={params.id.toString()} searchParams={searchParams} />
         </div>

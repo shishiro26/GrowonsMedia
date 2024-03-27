@@ -309,10 +309,25 @@ export const FeedbackSchema = z.object({
     .max(10, {
       message: "OrderId must not exceed 10 characters long",
     }),
-  feedback: z.string().min(1, {
-    message: "The Comment must be at least 10 character long",
-  }),
+  feedback: z.string().optional(),
   userId: z.string(),
+  file: z
+    .custom<FileList>()
+    .transform((val) => {
+      if (val instanceof File) return val;
+      if (val instanceof FileList) return val[0];
+      return null;
+    })
+    .superRefine((file, ctx) => {
+      if (file && file.size > 5 * 1024 * 1024) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Max file size allowed is 5MB",
+        });
+      }
+    })
+    .pipe(z.custom<File>())
+    .optional(),
 });
 
 export const FeedbackFileSchema = z.object({

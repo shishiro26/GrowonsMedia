@@ -13,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { FormError } from "@/components/shared/form-error";
-import { addFeedbackFile, addReplyFile } from "@/actions/feedback";
+import { addReplyFile } from "@/actions/feedback";
 import { toast } from "sonner";
 import {
   Sheet,
@@ -30,11 +30,13 @@ type ReplyFormProps = {
   secure_url: string | null;
   feedback: string | null;
   orderId: string;
+  fileName: string | null;
 };
 
 const ReplyFileForm: React.FC<ReplyFormProps> = ({
   feedback,
   orderId,
+  fileName,
   secure_url,
 }) => {
   const [error, setError] = useState<string | undefined>("");
@@ -100,8 +102,11 @@ const ReplyFileForm: React.FC<ReplyFormProps> = ({
                 </FormItem>
               )}
               {secure_url && (
-                <video src={secure_url} controls className="h-[25%]" />
+                <div className="flex flex-row items-center">
+                  <p className="capitalize font-bold">{fileName}</p>
+                </div>
               )}
+
               <FormField
                 control={form.control}
                 name="file"

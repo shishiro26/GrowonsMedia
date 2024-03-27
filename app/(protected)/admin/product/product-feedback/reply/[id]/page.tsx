@@ -29,6 +29,7 @@ const FeedbackPage = async ({ params }: { params: { id: string } }) => {
               feedback={orderFeedback?.feedback ?? ""}
               orderId={params.id}
               secure_url={orderFeedback?.secure_url ?? ""}
+              fileName={orderFeedback?.fileName ?? ""}
             />
           </div>
         </div>

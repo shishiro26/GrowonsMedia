@@ -8,6 +8,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import FileDownload from "../../admin/_components/file-download";
+import FileDialog from "../../admin/_components/file-dialog";
 
 type FeedbackProps = {
   fileName: string;
@@ -16,7 +17,7 @@ type FeedbackProps = {
   head: string;
 };
 
-const FeedbackDialog = ({ secure_url, head }: FeedbackProps) => {
+const FeedbackDialog = ({ secure_url, head, fileName }: FeedbackProps) => {
   return (
     <Dialog>
       <DialogTrigger>
@@ -25,8 +26,9 @@ const FeedbackDialog = ({ secure_url, head }: FeedbackProps) => {
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="mb-2">Files:</DialogTitle>
-          <div className="flex items-center justify-center">
-            <video src={secure_url} controls width={150} height={150} />
+          <div className="flex flex-row items-center">
+            <p className="capitalize font-bold">{fileName}</p>
+            <FileDownload secure_url={secure_url} fileName={fileName} />
           </div>
         </DialogHeader>
       </DialogContent>

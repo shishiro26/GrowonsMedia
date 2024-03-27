@@ -25,7 +25,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { addFeedback } from "@/actions/feedback";
 import { toast } from "sonner";
-import FeedbackFileForm from "./feedback-file-form";
+import { Input } from "@/components/ui/input";
 
 type User = {
   name: string;
@@ -53,25 +53,33 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders, userId }) => {
       userId: userId,
       orderId: "",
       feedback: "",
+      file: undefined,
     },
   });
 
   const onSubmit = (values: z.infer<typeof FeedbackSchema>) => {
     setError("");
-    startTransition(() => {
-      addFeedback(values).then((data) => {
-        if (data?.success) {
-          toast.success(data.success, {
-            action: {
-              label: "close",
-              onClick: () => console.log("Undo"),
-            },
-          });
-          form.reset();
-        }
 
-        if (data.error) {
-          setError(data?.error);
+    const formData = new FormData();
+    formData.append("userId", userId);
+    formData.append("orderId", values.orderId);
+    formData.append("feedback", values.feedback ?? "");
+    formData.append("fileName", values.file?.name ?? "");
+
+    for (const field of Object.keys(values) as Array<keyof typeof values>) {
+      if (field === "file") {
+        formData.append("file", values[field] ?? "");
+      }
+    }
+
+    startTransition(() => {
+      addFeedback(formData).then((data) => {
+        if (data?.error) {
+          setError(data.error);
+        }
+        if (data?.success) {
+          form.reset();
+          toast.success(data.success);
         }
       });
     });
@@ -138,6 +146,25 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders, userId }) => {
                 </FormItem>
               )}
             />
+            <FormField
+              control={form.control}
+              name="file"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Attach the file below:</FormLabel>
+                  <FormControl>
+                    <Input
+                      autoComplete="off"
+                      disabled={isPending}
+                      placeholder="Attach the file here"
+                      type="file"
+                      {...form.register("file")}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
           <FormError message={error} />
           <Button
@@ -149,9 +176,6 @@ const FeedbackForm: React.FC<FeedbackFormProps> = ({ orders, userId }) => {
           </Button>
         </form>
       </Form>
-      <div className="mt-3">
-        <FeedbackFileForm orders={orders} userId={userId} />
-      </div>
     </>
   );
 };
