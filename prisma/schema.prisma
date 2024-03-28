@@ -42,6 +42,7 @@ model User {
   ProUser     ProUser[]
   Feedback    Feedback[]
   BankDetails BankDetails[]
+  WalletFlow  WalletFlow[]
 }
 
 model BankDetails {
@@ -64,11 +65,10 @@ model BankDetails {
 model ProUser {
   id           String  @id @default(uuid()) @map("_id")
   amount_limit Int
-  amount       Int
   products     Json
   proRecharge  Boolean @default(false)
   isRecharged  Boolean @default(false)
-  User         User?   @relation(fields: [userId], references: [id])
+  User         User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId       String  @unique
 }
 
@@ -83,15 +83,26 @@ model Money {
   secure_url    String
   reason        String?
   status        MoneyStatus @default(PENDING)
-  User          User?       @relation(fields: [userId], references: [id])
+  User          User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
   createdAt     DateTime    @default(now()) @map("created_at")
+}
+
+model WalletFlow {
+  id        String   @id @default(uuid()) @map("_id")
+  moneyId   String   @unique
+  userId    String
+  user      User?    @relation(fields: [userId], references: [id])
+  amount    Int
+  purpose   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
 }
 
 model Product {
   id          String   @id @default(uuid()) @map("_id")
   userId      String?
-  user        User?    @relation(fields: [userId], references: [id])
+  User        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   productName String   @unique
   price       Int
   minProduct  Int
@@ -107,7 +118,7 @@ model Order {
   orderId   String      @unique
   name      String
   userId    String
-  user      User?       @relation(fields: [userId], references: [id])
+  User      User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
   products  Json
   files     Json?
   amount    Int
@@ -130,7 +141,7 @@ model Feedback {
   reply_public_id  String?
   reply_secure_url String?
   replyStatus      Boolean  @default(false)
-  User             User?    @relation(fields: [userId], references: [id])
+  User             User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt
 }
@@ -141,6 +152,6 @@ model News {
   content   String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
-  User      User?    @relation(fields: [userId], references: [id])
+  User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    String?
 }

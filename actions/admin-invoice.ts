@@ -48,6 +48,8 @@ export const acceptInvoice = async ({ userId, invoiceId }: ValuesProps) => {
   }
 
   revalidatePath("/admin/wallet");
+  revalidatePath("/admin/user/");
+
   return { success: "Invoice accepted" };
 };
 
@@ -68,5 +70,6 @@ export const rejectInvoice = async (
     return { error: "Error while rejecting the Invoice!" };
   }
   revalidatePath("/admin/wallet");
+  revalidatePath("/admin/user/");
   return { success: "Invoice rejected" };
 };

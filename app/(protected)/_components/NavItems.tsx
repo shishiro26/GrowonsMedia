@@ -28,6 +28,14 @@ const NavItems = async () => {
             </Link>
           </li>
           <li>
+            <Link
+              href={`/money/wallet-flow/${session?.user?.id}`}
+              className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 "
+            >
+              <span className="flex-1 ms-3 whitespace-nowrap">Wallet flow</span>
+            </Link>
+          </li>
+          <li>
             <SidebarItems userId={session?.user.id?.toString() ?? ""} />
           </li>
           <li>

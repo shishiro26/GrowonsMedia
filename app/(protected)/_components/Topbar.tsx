@@ -18,11 +18,6 @@ import { formatPrice } from "@/components/shared/formatPrice";
 
 const TopBar = async ({ title }: { title: string }) => {
   const session = await auth();
-  const proUser = await db.proUser.findUnique({
-    where: {
-      userId: session?.user.id,
-    },
-  });
   return (
     <nav className="md:flex md:items-center md:justify-between">
       <div className="hidden md:block ml-2 ">
@@ -41,22 +36,6 @@ const TopBar = async ({ title }: { title: string }) => {
             <TotalMoney />
           </p>
         </div>
-        {session?.user.role === "PRO" && (
-          <div className="flex items-center mr-2">
-            <Image
-              src={"/svgs/star.svg"}
-              width={5}
-              height={5}
-              alt="coin"
-              className="w-5 h-5 m-2"
-            />
-            <p>
-              <span className="font-semibold">
-                {formatPrice(proUser?.amount_limit ?? 0)}
-              </span>
-            </p>
-          </div>
-        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button

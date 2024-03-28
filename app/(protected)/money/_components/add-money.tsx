@@ -95,10 +95,10 @@ const AddMoneyForm = ({ bankDetails, userId }: AddMoneyFormProps) => {
                   <FormLabel>Enter the amount</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Enter the Amount"
                       autoComplete="off"
                       disabled={isPending}
                       {...field}
+                      type="number"
                     />
                   </FormControl>
                   <FormMessage />

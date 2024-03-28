@@ -10,15 +10,20 @@ type CopyButtonProps = {
 
 const CopyButton: React.FC<CopyButtonProps> = ({ text }) => {
   const handleCopy = () => {
-    navigator.clipboard.writeText(text).then((data) => {
-      toast.success("Copied to clipboard", {
-        action: {
-          label: "close",
-          onClick: () => console.log("Undo"),
-        },
+    try {
+      navigator.clipboard.writeText(text).then((data) => {
+        toast.success("Copied to clipboard", {
+          action: {
+            label: "close",
+            onClick: () => console.log("Undo"),
+          },
+        });
+        return { success: "Copied to clipboard!" };
       });
-      return { success: "Copied to clipboard!" };
-    });
+    } catch (err) {
+      console.log(err);
+      return { error: "Failed to copy!" };
+    }
   };
 
   return <Copy className="w-4 h-4 cursor-pointer" onClick={handleCopy} />;

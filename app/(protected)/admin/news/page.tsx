@@ -9,7 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { Button } from "@/components/ui/button";
 import { db } from "@/lib/db";
 import PaginationBar from "../../money/_components/PaginationBar";
 import RemoveNews from "../_components/delete-news";

@@ -71,6 +71,15 @@ export const AddMoney = async (formData: FormData) => {
         name: username ?? "",
       },
     });
+
+    await db.walletFlow.create({
+      data: {
+        amount: Number(formData.get("amount")),
+        moneyId: formData.get("transactionId") as string,
+        purpose: "Wallet recharge",
+        userId: formData.get("userId") as string,
+      },
+    });
   } catch (err: any) {
     console.log(err);
     return { error: "an error occurred. please try again later" };

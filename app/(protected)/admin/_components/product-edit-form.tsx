@@ -17,6 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormError } from "@/components/shared/form-error";
 import { editProduct } from "@/actions/products";
 import { useRouter } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 type Product = {
   id: string;
@@ -57,6 +58,7 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ product }) => {
         }
 
         if (data.success) {
+          revalidatePath("/admin/product/product-table")
           router.push("/admin/product/product-table");
         }
       });

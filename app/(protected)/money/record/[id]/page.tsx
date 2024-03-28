@@ -39,11 +39,6 @@ const page = async ({ params, searchParams }: RecordProps) => {
               Add Money here
             </Link>
           </Button>
-          {session?.user.role === "PRO" && (
-            <Button>
-              <Link href={`/pro-user/record/${params.id}`}>Pro wallet</Link>
-            </Button>
-          )}
         </div>
         <section>
           <MoneyTable

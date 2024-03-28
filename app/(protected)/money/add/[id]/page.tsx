@@ -2,12 +2,8 @@ import React from "react";
 import Image from "next/image";
 import AddMoneyForm from "../../_components/add-money";
 import DownloadButton from "@/components/shared/download";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { getNewsById } from "@/lib/news";
-import { getUserById } from "@/data/user";
 import { db } from "@/lib/db";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+
 import TopBar from "@/app/(protected)/_components/Topbar";
 import CopyButton from "@/components/shared/copy-button";
 
@@ -19,16 +15,6 @@ export const generateMetadata = () => {
 };
 
 const page = async ({ params }: { params: { id: string } }) => {
-  const news = await getNewsById();
-  const newsLength = (await getNewsById()).length;
-
-  const user = await getUserById(params.id.toString());
-  const proUser = await db.proUser.findUnique({
-    where: {
-      userId: params.id.toString(),
-    },
-  });
-
   const bankDetails = await db.bankDetails.findFirst({
     orderBy: {
       createdAt: "desc",
@@ -60,18 +46,14 @@ const page = async ({ params }: { params: { id: string } }) => {
                       <span className="block">UPI ID:</span>
                       <span className="font-semibold border-2 border-black p-1 rounded-lg flex items-center gap-x-2">
                         {bankDetails?.upiid}
-                        <span className="hidden md:block">
-                          <CopyButton text={bankDetails.upiid} />
-                        </span>
+                        <CopyButton text={bankDetails.upiid} />
                       </span>
                     </div>
                     <div>
                       <span className="block">UPI Number:</span>
                       <span className="font-semibold border-2 border-black p-1 rounded-lg flex items-center gap-x-2 justify-between">
                         {bankDetails?.upinumber}
-                        <span className="hidden md:block">
-                          <CopyButton text={bankDetails.upinumber} />
-                        </span>
+                        <CopyButton text={bankDetails.upinumber} />
                       </span>
                     </div>
                   </div>
@@ -143,42 +125,6 @@ const page = async ({ params }: { params: { id: string } }) => {
                 </span>
               </div>
             </div>
-            {newsLength === 0 ? (
-              <div className="m-2 font-serif">No News to show here</div>
-            ) : (
-              <>
-                <div className=" h-[45%] overflow-y-auto border-2 mt-4 mx-2 md:mt-5 border-black  p-2 rounded-lg">
-                  <span className="m-2">News and Notices</span>
-                  <div className="grid grid-rows-1 md:grid-rows-3 p-2">
-                    {news?.map((n) => {
-                      return (
-                        <Card key={n.id} className="m-2 md:w-full h-fit">
-                          <CardHeader>
-                            <CardTitle className="text-xl font-semibold capitalize">
-                              {n.title}
-                            </CardTitle>
-                          </CardHeader>
-                          <CardContent className="text-sm">
-                            {n.content.includes("https") ? (
-                              <Link
-                                href={n.content}
-                                target="_blank"
-                                className="text-[#3b49df] underline"
-                              >
-                                {n.content}
-                              </Link>
-                            ) : (
-                              <>{n.content}</>
-                            )}
-                          </CardContent>
-                        </Card>
-                      );
-                    })}
-                    
-                  </div>
-                </div>
-              </>
-            )}
           </div>
         </div>
       </section>

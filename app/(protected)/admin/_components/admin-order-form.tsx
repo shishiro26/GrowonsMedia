@@ -107,6 +107,7 @@ const AdminOrderForm = ({ id, amount, userId }: InvoiceProps) => {
               onClick: () => console.log("Undo"),
             },
           });
+          rejectForm.reset();
         }
         if (data?.error) {
           toast.error(data.error, {
@@ -169,7 +170,7 @@ const AdminOrderForm = ({ id, amount, userId }: InvoiceProps) => {
                 <DialogFooter>
                   <DialogClose asChild>
                     <Button type="submit" disabled={isPending}>
-                      ConfirmF
+                      Confirm
                     </Button>
                   </DialogClose>
                 </DialogFooter>

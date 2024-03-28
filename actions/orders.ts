@@ -31,7 +31,8 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
   });
 
   const orderId = Date.now() + Math.floor(Math.random() * 100000);
-  const money = user?.totalMoney;
+  if (!user) return { error: "User not found" };
+  const money = user.totalMoney;
 
   if (!user || user.role === "BLOCKED") {
     return { error: "You have been blocked contact admin to know more" };
@@ -43,6 +44,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
     const existingProduct = existingProducts.find(
       (p) => p.productName === product.name
     );
+
     //@ts-ignore
     const proProduct = subUser?.products?.find(
       (pp: any) => pp.name === product.name
@@ -123,30 +125,29 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
     return { error: errorMessages };
   }
 
-  try {
-    await db.order.create({
-      data: {
-        userId: id,
-        orderId: orderId.toString().slice(-10),
-        products: allProducts.map((product) => ({
-          name: product.name,
-          quantity: product.quantity,
-          productPrice: product.price,
-        })),
-        amount: price,
-        name: user.name,
-      },
-    });
-
-    allProducts.forEach(async (product) => {
-      await db.product.update({
-        where: { productName: product.name },
-        data: { stock: product.stock - product.quantity },
+  if (user.totalMoney === price || user.totalMoney > price) {
+    try {
+      const order = db.order.create({
+        data: {
+          userId: id,
+          orderId: orderId.toString().slice(-10),
+          products: allProducts.map((product) => ({
+            name: product.name,
+            quantity: product.quantity,
+            productPrice: product.price,
+          })),
+          amount: price,
+          name: user.name,
+        },
       });
-    });
 
-    if (user.totalMoney === price || user.totalMoney > price) {
-      await db.user.update({
+      const stock_updation = allProducts.forEach(async (product) => {
+        await db.product.update({
+          where: { productName: product.name },
+          data: { stock: product.stock - product.quantity },
+        });
+      });
+      const money_updation = db.user.update({
         where: {
           id,
         },
@@ -154,51 +155,120 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
           totalMoney: user.totalMoney - price,
         },
       });
-    }
 
-    if (user.totalMoney < price && user.role === "USER") {
-      return { error: "You don't have enough money!" };
-    }
+      const walletFlow_creation = db.walletFlow.create({
+        data: {
+          amount: Number(price),
+          moneyId: orderId.toString().slice(-10),
+          purpose: "Order placed",
+          userId: id,
+        },
+      });
 
-    if (user.totalMoney < price && user.role === "PRO") {
-      if (
-        user.totalMoney + (subUser?.amount_limit ?? 0) < price &&
-        user.role === "PRO"
-      ) {
-        return { error: "You have exceeded your limit!" };
+      await Promise.all([
+        order,
+        stock_updation,
+        money_updation,
+        walletFlow_creation,
+      ]);
+
+      revalidatePath(`/admin/orders`);
+      return { success: "Order added successfully!" };
+    } catch (error) {
+      return { error: "Error while adding order!" };
+    }
+  }
+
+  if (user.totalMoney < price && user.role === "USER") {
+    return { error: "You don't have enough money!" };
+  }
+
+  if (user.totalMoney < price && user.role === "PRO") {
+    if (!subUser) {
+      return { error: "You are not a proUser!" };
+    }
+    if (Math.sign(user.totalMoney) === -1) {
+      let userTotalMoney = Math.abs(user.totalMoney);
+      if (userTotalMoney + price > subUser.amount_limit) {
+        console.log("You don't have enough money!");
+        return { error: "You don't have enough money!" };
+      }
+    }
+    if (Math.sign(user.totalMoney) === 1) {
+      if (user.totalMoney < price) {
+        if (user.totalMoney + subUser.amount_limit < price) {
+          return { error: "You don't have enough money!" };
+        }
       }
     }
 
-    if (user.totalMoney < price && user.role === "PRO") {
-      if (
-        user.totalMoney + (subUser?.amount_limit ?? 0) > price ||
-        user.totalMoney + (subUser?.amount_limit ?? 0) === price
-      ) {
-        await db.user.update({
+    if (Math.sign(user.totalMoney) === 0) {
+      if (price > subUser.amount_limit) {
+        return { error: "You don't have enough money!" };
+      }
+    }
+  }
+  console.log("I am here");
+  if (money < price && user.role === "PRO") {
+    if (!subUser) {
+      return { error: "You are not a proUser!" };
+    }
+    if (
+      Math.abs(money) + subUser?.amount_limit > price ||
+      Math.abs(money) + subUser?.amount_limit === price
+    ) {
+      try {
+        const remainingPrice = money - price;
+        const orderCreation = db.order.create({
+          data: {
+            userId: id,
+            orderId: orderId.toString().slice(-10),
+            products: allProducts.map((product) => ({
+              name: product.name,
+              quantity: product.quantity,
+              productPrice: product.price,
+            })),
+            amount: price,
+            name: user.name,
+          },
+        });
+
+        const stock_updation = allProducts.forEach(async (product) => {
+          await db.product.update({
+            where: { productName: product.name },
+            data: { stock: product.stock - product.quantity },
+          });
+        });
+
+        const user_money_updation = db.user.update({
           where: {
             id: id,
           },
           data: {
-            totalMoney: 0,
+            totalMoney: remainingPrice,
           },
         });
 
-        const remainingPrice = price - user.totalMoney;
-
-        await db.proUser.update({
-          where: {
+        const walletFlow_updation = db.walletFlow.create({
+          data: {
+            amount: Number(price),
+            moneyId: orderId.toString().slice(-10),
+            purpose: "Order placed",
             userId: id,
           },
-          data: {
-            amount_limit: (subUser?.amount_limit ?? 0) - remainingPrice,
-          },
         });
-      }
-    }
-  } catch (error) {
-    return { error: "Error while adding order!" };
-  }
 
-  revalidatePath(`/admin/orders`);
-  return { success: "Order added successfully!" };
+        await Promise.all([
+          orderCreation,
+          stock_updation,
+          user_money_updation,
+          walletFlow_updation,
+        ]);
+      } catch (error) {
+        console.log("Error in createOrder");
+      }
+      revalidatePath(`/admin/orders`);
+      return { success: "Order added successfully!" };
+    }
+  }
 };

@@ -79,7 +79,7 @@ export const editProduct = async (
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
-  const { productName, price, minProduct, maxProduct, id } =
+  const { productName, price, minProduct, maxProduct, id, stock } =
     validatedFields.data;
 
   try {
@@ -93,6 +93,7 @@ export const editProduct = async (
         productName,
         price,
         minProduct,
+        stock,
         maxProduct,
       },
     });

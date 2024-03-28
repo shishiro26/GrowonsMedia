@@ -46,7 +46,6 @@ export const addProUser = async (values: z.infer<typeof ProUserSchema>) => {
 
     await db.proUser.create({
       data: {
-        amount: amount,
         amount_limit: amount,
         products: uniqueProducts,
         userId: userId,
@@ -156,7 +155,6 @@ export const editProUser = async (
     await db.proUser.update({
       where: { id: userId },
       data: {
-        amount: amount,
         amount_limit: amount,
         products: uniqueProducts,
       },

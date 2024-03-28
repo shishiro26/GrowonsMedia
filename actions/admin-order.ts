@@ -6,6 +6,12 @@ import { revalidatePath } from "next/cache";
 import * as z from "zod";
 import { v2 as cloudinary } from "cloudinary";
 
+type Product = {
+  name: string;
+  quantity: number;
+  stock: number;
+};
+
 export const rejectOrder = async (
   values: z.infer<typeof RejectOrderSchema>
 ) => {
@@ -14,25 +20,76 @@ export const rejectOrder = async (
     return { error: "Invalid fields!!" };
   }
 
+  const order = await db.order.findUnique({
+    where: { id: values.id },
+  });
+
+  const products = await db.product.findMany({
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  if (!order?.products) {
+    return { error: "Order not found!" };
+  }
+
+  const rejectedProducts: Product[] = (order.products as Product[]).map(
+    (product: Product) => {
+      const existingProduct = products.find(
+        (p) => p.productName === product.name
+      );
+
+      return {
+        name: product.name,
+        quantity: product.quantity,
+        stock: existingProduct?.stock ?? 0,
+      };
+    }
+  );
+
   try {
     await db.order.update({
       where: { id: values.id },
       data: { status: "FAILED", reason: values.reason },
     });
 
-    const user = await db.user.findUnique({ 
+    const user = await db.user.findUnique({
       where: { id: values.userId },
       select: {
         totalMoney: true,
       },
     });
 
-    await db.user.update({
+    const userMoney_updation = db.user.update({
       where: { id: values.userId },
       data: {
         totalMoney: (user?.totalMoney ?? 0) + values.amount,
       },
     });
+
+    const stock_updation = rejectedProducts.forEach(async (product) => {
+      await db.product.update({
+        where: { productName: product.name },
+        data: {
+          stock: product.stock + product.quantity,
+        },
+      });
+    });
+
+    const walletFlow_deletion = db.walletFlow.delete({
+      where: {
+        moneyId: order.orderId,
+      },
+    });
+
+    console.log(order.orderId);
+    1649898630
+    await Promise.all([
+      userMoney_updation,
+      stock_updation,
+      walletFlow_deletion,
+    ]);
   } catch (error) {
     console.log(error);
     return { error: "Error while rejecting the Invoice!" };
@@ -104,5 +161,6 @@ export const acceptOrder = async (formData: FormData) => {
   }
 
   revalidatePath("/admin/orders");
+  revalidatePath("/admin/user/");
   return { success: "Order accepted!" };
 };
