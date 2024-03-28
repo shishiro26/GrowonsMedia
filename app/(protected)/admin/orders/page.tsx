@@ -49,12 +49,11 @@ const AdminOrders = async ({
       createdAt: "desc",
     },
     include: {
-      user: true,
+      User: true,
     },
     skip: currentPage - 1,
     take: pageSize,
   });
-  
 
   revalidatePath("/admin/orders");
 
@@ -83,7 +82,7 @@ const AdminOrders = async ({
               return (
                 <TableRow key={order.id}>
                   <TableCell className="font-medium">
-                    {order.user?.name}
+                    {order.User?.name}
                   </TableCell>
                   <TableCell>
                     {Array.isArray(products) &&
