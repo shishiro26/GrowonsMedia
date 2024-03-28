@@ -71,6 +71,10 @@ export const EditUserSchema = z.object({
       message: "Phone number must be 10 characters",
     })
     .optional(),
+});
+
+export const updateMoneySchema = z.object({
+  userId: z.string(),
   amount: z.coerce
     .number()
     .nonnegative({

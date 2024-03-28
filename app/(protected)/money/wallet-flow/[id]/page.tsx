@@ -10,6 +10,7 @@ import { db } from "@/lib/db";
 import React from "react";
 import PaginationBar from "../../_components/PaginationBar";
 import { toast } from "sonner";
+import { formatPrice } from "@/components/shared/formatPrice";
 
 const WalletFlow = async ({
   searchParams,
@@ -69,11 +70,23 @@ const WalletFlow = async ({
             return (
               <TableRow key={flow.id}>
                 <TableCell>{flow.purpose}</TableCell>
-                <TableCell>{flow.moneyId}</TableCell>
                 <TableCell>
-                  {flow.purpose?.toLowerCase() === "wallet recharge"
-                    ? `+${Math.abs(flow.amount)}`
-                    : `-${Math.abs(flow.amount)}`}
+                  {flow.purpose === "ADMIN" ? <>-</> : flow.moneyId}
+                </TableCell>
+                <TableCell>
+                  {
+                    <>
+                      {flow.purpose === "ADMIN" ? (
+                        <span>{formatPrice(flow.amount)}</span>
+                      ) : (
+                        <span>
+                          {flow.purpose?.toLowerCase() === "wallet recharge"
+                            ? `+${formatPrice(Math.abs(flow.amount))}`
+                            : `-${formatPrice(Math.abs(flow.amount))}`}
+                        </span>
+                      )}
+                    </>
+                  }
                 </TableCell>
                 <TableCell>{flow.createdAt.toDateString()}</TableCell>
               </TableRow>

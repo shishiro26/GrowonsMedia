@@ -52,7 +52,6 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
     defaultValues: {
       id: user.id,
       name: user.name || "",
-      amount: user.totalMoney,
       email: user.email,
       number: user.number,
     },
@@ -136,31 +135,24 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={user.role === "BLOCKED" || isPending}
-                      placeholder=""
-                      type="number"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button asChild variant={"link"} type="button">
-              <Link
-                href={`/admin/user-update-password/${user.id}`}
-                target="_blank"
-              >
-                Update password
-              </Link>
-            </Button>
+            <div className="flex flex-col justify-start">
+              <Button asChild variant={"link"} type="button">
+                <Link
+                  href={`/admin/user/update-money/${user.id}`}
+                  target="_blank"
+                >
+                  Issue a refund
+                </Link>
+              </Button>
+              <Button asChild variant={"link"} type="button">
+                <Link
+                  href={`/admin/user-update-password/${user.id}`}
+                  target="_blank"
+                >
+                  Update password
+                </Link>
+              </Button>
+            </div>
             <FormError message={error} />
             {form.formState.errors || error !== "" ? (
               <Button
@@ -190,7 +182,11 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
         </SheetFooter>
         {user.role === "PRO" && (
           <Button variant={"link"}>
-            <Link href={`/admin/user/pro/${user.id}`} target="_blank" tabIndex={0}>
+            <Link
+              href={`/admin/user/pro/${user.id}`}
+              target="_blank"
+              tabIndex={0}
+            >
               Edit Pro user
             </Link>
           </Button>

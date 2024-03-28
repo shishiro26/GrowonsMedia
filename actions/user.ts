@@ -1,7 +1,11 @@
 "use server";
 
 import { db } from "@/lib/db";
-import { EditUserSchema, UpdatePasswordSchema } from "@/schemas";
+import {
+  EditUserSchema,
+  UpdatePasswordSchema,
+  updateMoneySchema,
+} from "@/schemas";
 import { revalidatePath } from "next/cache";
 import * as z from "zod";
 import bcrypt from "bcryptjs";
@@ -89,7 +93,7 @@ export const editUser = async (values: z.infer<typeof EditUserSchema>) => {
     return { error: "Invalid Fields" };
   }
 
-  const { id, name, number, amount, email } = validatedFields.data;
+  const { id, name, number, email } = validatedFields.data;
 
   const existingUser = await db.user.findFirst({
     where: {
@@ -116,7 +120,6 @@ export const editUser = async (values: z.infer<typeof EditUserSchema>) => {
       data: {
         name: name,
         number: number,
-        totalMoney: amount,
         email: email,
       },
     });
@@ -127,6 +130,56 @@ export const editUser = async (values: z.infer<typeof EditUserSchema>) => {
 
   revalidatePath("/admin/user");
   return { success: "User updated successfully" };
+};
+
+export const updateMoney = async (
+  values: z.infer<typeof updateMoneySchema>
+) => {
+  const validatedFields = updateMoneySchema.safeParse(values);
+
+  if (!validatedFields.success) {
+    return { error: "Invalid Fields" };
+  }
+
+  const { userId, amount } = validatedFields.data;
+
+  const user = await getUserById(userId);
+
+  if (!user) {
+    return { error: "User not found" };
+  }
+  let newAmount = user.totalMoney;
+
+  if (newAmount === amount) {
+    return { error: "No change in amount" };
+  }
+  try {
+    await db.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        totalMoney: amount,
+      },
+    });
+
+    const moneyId = Date.now() + Math.floor(Math.random() * 100000);
+
+    await db.walletFlow.create({
+      data: {
+        userId: userId,
+        moneyId: moneyId.toString().slice(-11),
+        amount: amount || 0,
+        purpose: "ADMIN",
+      },
+    });
+  } catch (error) {
+    return { error: "An error occurred. Please try again later." };
+  }
+
+  revalidatePath("/admin/user");
+  revalidatePath(`/admin/user/update-money/${userId}`);
+  return { success: "Amount updated successfully" };
 };
 
 export const updatePassword = async (

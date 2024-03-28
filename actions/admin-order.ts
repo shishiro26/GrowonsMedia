@@ -83,8 +83,6 @@ export const rejectOrder = async (
       },
     });
 
-    console.log(order.orderId);
-    1649898630
     await Promise.all([
       userMoney_updation,
       stock_updation,
