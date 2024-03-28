@@ -73,7 +73,6 @@ export default async function SearchUserPage({
       },
     },
     orderBy: { id: "desc" },
-    include: {},
     skip: (currentPage - 1) * pageSize,
     take: pageSize,
   });

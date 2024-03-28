@@ -36,7 +36,7 @@ const SearchOrder = async ({
         status: "PENDING",
       },
       include: {
-        user: true,
+        User: true,
       },
     })
   ).length;
@@ -53,7 +53,7 @@ const SearchOrder = async ({
       ],
     },
     include: {
-      user: {
+      User: {
         select: {
           name: true,
           email: true,

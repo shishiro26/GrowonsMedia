@@ -36,7 +36,7 @@ const SearchOrderHistory = async ({
         ],
       },
       include: {
-        user: true,
+        User: true,
       },
     })
   ).length;
@@ -53,7 +53,7 @@ const SearchOrderHistory = async ({
       ],
     },
     include: {
-      user: {
+      User: {
         select: {
           name: true,
           email: true,

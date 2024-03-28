@@ -3,8 +3,6 @@ import { db } from "@/lib/db";
 import FeedbackForm from "../../_components/feedback-form";
 import TopBar from "../../_components/Topbar";
 
-
-
 export const generateMetadata = () => {
   return {
     title: "Feedback | GrowonsMedia",
@@ -16,7 +14,7 @@ const FeedbackPage = async ({ params }: { params: { id: string } }) => {
   const orders = await db.order.findMany({
     where: { userId: params.id },
     include: {
-      user: { select: { name: true } },
+      User: { select: { name: true } },
     },
   });
 
