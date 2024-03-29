@@ -32,7 +32,7 @@ const ClientRecords = async ({
 }) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 7;
+  const pageSize = 6;
 
   const totalItemCount = await db.order.count();
 

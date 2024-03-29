@@ -135,13 +135,13 @@ const EditUser: React.FC<EditUserProps> = ({ user }) => {
                 </FormItem>
               )}
             />
-            <div className="flex flex-col justify-start">
+            <div className="flex  justify-start items-start flex-wrap">
               <Button asChild variant={"link"} type="button">
                 <Link
                   href={`/admin/user/update-money/${user.id}`}
                   target="_blank"
                 >
-                  Issue a refund
+                  Update wallet
                 </Link>
               </Button>
               <Button asChild variant={"link"} type="button">

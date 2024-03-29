@@ -44,7 +44,7 @@ const page = async ({ params }: { params: { id: string } }) => {
                   <div className="flex flex-col">
                     <div>
                       <span className="block">UPI ID:</span>
-                      <span className="font-semibold border-2 border-black p-1 rounded-lg flex items-center gap-x-2">
+                      <span className="font-semibold border-2 border-black p-1 rounded-lg flex items-center gap-x-2 justify-between">
                         {bankDetails?.upiid}
                         <CopyButton text={bankDetails.upiid} />
                       </span>

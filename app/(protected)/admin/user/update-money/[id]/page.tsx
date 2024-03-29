@@ -12,7 +12,7 @@ const UpdateMoney = async ({ params }: { params: { id: string } }) => {
   }
   return (
     <section className="p-2 m-2">
-      <h1 className="text-3xl my-3">Update password</h1>
+      <h1 className="text-3xl my-3">Update wallet</h1>
       <UpdateMoneyForm userId={user?.id} amount={user?.totalMoney} />
     </section>
   );

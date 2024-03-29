@@ -75,12 +75,7 @@ export const EditUserSchema = z.object({
 
 export const updateMoneySchema = z.object({
   userId: z.string(),
-  amount: z.coerce
-    .number()
-    .nonnegative({
-      message: "Amount must be greater than 0",
-    })
-    .optional(),
+  amount: z.coerce.number().optional(),
 });
 
 export const UpdatePasswordSchema = z
@@ -135,9 +130,14 @@ export const MoneySchema = z.object({
   }),
   upiid: z.string(),
   accountNumber: z.string(),
-  transactionId: z.string().min(1, {
-    message: "Transaction Id is required",
-  }),
+  transactionId: z
+    .string()
+    .min(1, {
+      message: "Transaction Id is required",
+    })
+    .refine((val) => !/\s/.test(val), {
+      message: "Transaction Id cannot contain space characters",
+    }),
   ifsccode: z.string().min(1, {
     message: "IFSC code is required",
   }),

@@ -9,6 +9,12 @@ type ProductError = {
   error: string;
 };
 
+interface OrderProduct {
+  name: string;
+  quantity: number;
+  productPrice: number;
+}
+
 export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
   const validatedFields = OrderSchema.safeParse(values);
 
@@ -60,6 +66,42 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
     };
   });
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const orders = await db.order.findMany({
+    where: {
+      userId: user.id,
+      createdAt: {
+        gte: today,
+      },
+    },
+    select: {
+      products: true,
+    },
+  });
+  //@ts-ignore
+  const allOrders: OrderProduct[] = orders.flatMap((order) => order.products);
+  const orderProducts: { name: string; totalQuantity: number }[] = [];
+
+  allProducts.forEach((product) => {
+    const productOrder = allOrders.filter(
+      (orderProduct) => orderProduct.name === product.name
+    );
+
+    if (productOrder.length > 0) {
+      const totalQuantity = productOrder.reduce(
+        (acc, curr) => acc + curr.quantity,
+        0
+      );
+      orderProducts.push({
+        name: product.name,
+        totalQuantity: totalQuantity + product.quantity,
+      });
+    } else {
+      orderProducts.push({ name: product.name, totalQuantity: 0 });
+    }
+  });
+
   allProducts.forEach((product) => {
     if (product.stock === 0) {
       errors.push({
@@ -88,6 +130,16 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
         });
       }
 
+      orderProducts.forEach((orderProduct) => {
+        if (orderProduct.name === product.name) {
+          if (orderProduct.totalQuantity > product.maxProduct) {
+            errors.push({
+              error: `you have already ordered ${orderProduct.totalQuantity} of ${product.name} and you can order at most ${product.maxProduct} per day`,
+            });
+          }
+        }
+      });
+
       if (product.maxProduct && product.quantity > product.maxProduct) {
         errors.push({
           error: `${product.name} must be at most ${product.maxProduct}`,
@@ -112,11 +164,15 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
         });
       }
 
-      if (product.maxProduct && product.quantity > product.maxProduct) {
-        errors.push({
-          error: `${product.name} must be at most ${product.maxProduct} `,
-        });
-      }
+      orderProducts.forEach((orderProduct) => {
+        if (orderProduct.name === product.name) {
+          if (orderProduct.totalQuantity > product.maxProduct) {
+            errors.push({
+              error: `you have already ordered ${orderProduct.totalQuantity} of ${product.name} and you can order at most ${product.maxProduct} per day`,
+            });
+          }
+        }
+      });
     }
   });
 
