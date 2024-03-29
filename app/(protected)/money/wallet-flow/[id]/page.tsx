@@ -22,7 +22,13 @@ const WalletFlow = async ({
   const currentPage = parseInt(searchParams.page) || 1;
 
   const pageSize = 5;
-  const totalItemCount = await db.walletFlow.count();
+  const totalItemCount = (
+    await db.walletFlow.findMany({
+      where: {
+        userId: params.id,
+      },
+    })
+  ).length;
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
 
