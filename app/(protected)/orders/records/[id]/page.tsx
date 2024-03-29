@@ -32,7 +32,7 @@ const ClientRecords = async ({
 }) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 6;
+  const pageSize = 10;
 
   const totalItemCount = await db.order.count();
 
@@ -52,81 +52,86 @@ const ClientRecords = async ({
       <div className="hidden md:block">
         <TopBar title="Order Records" />
       </div>
-      <Table className="my-2">
-        {totalItemCount === 0 && (
-          <TableCaption>A list of your recent Orders.</TableCaption>
-        )}
-        <TableHeader>
-          <TableRow>
-            <TableHead>OrderId</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Orders</TableHead>
-            <TableHead>Amount</TableHead>
-            <TableHead>Created on</TableHead>
-          </TableRow>
-        </TableHeader>
-        {totalItemCount === 0 && (
-          <TableFooter>
+      <div className="space-y-4 md:overflow-auto md:max-h-[84vh] w-full md:w-[100%] p-2">
+        <Table className="my-2">
+          {totalItemCount === 0 && (
+            <TableCaption>A list of your recent Orders.</TableCaption>
+          )}
+          <TableHeader>
             <TableRow>
-              <TableCell colSpan={6} className="text-center">
-                No invoices found
-              </TableCell>
+              <TableHead>OrderId</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Orders</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Created on</TableHead>
             </TableRow>
-          </TableFooter>
-        )}
-        <TableBody>
-          {Orders?.map((order, index) => {
-            return (
-              <TableRow key={index}>
-                <TableCell className="font-medium">{order.orderId}</TableCell>
-                <TableCell>
-                  {order.status === "FAILED" && order.reason !== null ? (
-                    <ReasonDialog status={order.status} reason={order.reason} />
-                  ) : (
-                    <BadgeStatus status={order.status} />
-                  )}
+          </TableHeader>
+          {totalItemCount === 0 && (
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={6} className="text-center">
+                  No orders found
                 </TableCell>
-                <TableCell>
-                  <ViewProducts
-                    products={JSON.parse(JSON.stringify(order.products))}
-                  />
-                </TableCell>
-                <TableCell>{formatPrice(order.amount)}</TableCell>
-                <TableCell className="flex flex-col">
-                  <span>{order.createdAt.toDateString()}</span>
-                  <span>
-                    {order.createdAt.toLocaleTimeString("en-IN", {
-                      timeZone: "Asia/Kolkata",
-                      hour12: false,
-                      timeZoneName: "shortGeneric",
-                    })}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  {order.status === "SUCCESS" && (
-                    <FileDialog
-                      status={order.status}
-                      files={JSON.parse(JSON.stringify(order.files))}
+              </TableRow>
+            </TableFooter>
+          )}
+          <TableBody>
+            {Orders?.map((order, index) => {
+              return (
+                <TableRow key={index}>
+                  <TableCell className="font-medium">{order.orderId}</TableCell>
+                  <TableCell>
+                    {order.status === "FAILED" && order.reason !== null ? (
+                      <ReasonDialog
+                        status={order.status}
+                        reason={order.reason}
+                      />
+                    ) : (
+                      <BadgeStatus status={order.status} />
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    <ViewProducts
+                      products={JSON.parse(JSON.stringify(order.products))}
                     />
+                  </TableCell>
+                  <TableCell>{formatPrice(order.amount)}</TableCell>
+                  <TableCell className="flex flex-col">
+                    <span>{order.createdAt.toDateString()}</span>
+                    <span>
+                      {order.createdAt.toLocaleTimeString("en-IN", {
+                        timeZone: "Asia/Kolkata",
+                        hour12: false,
+                        timeZoneName: "shortGeneric",
+                      })}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    {order.status === "SUCCESS" && (
+                      <FileDialog
+                        status={order.status}
+                        files={JSON.parse(JSON.stringify(order.files))}
+                      />
+                    )}
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+          {totalItemCount !== 0 && (
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={3}>Total</TableCell>
+                <TableCell>
+                  {formatPrice(
+                    Orders?.reduce((acc, order) => acc + order.amount, 0) ?? 0
                   )}
                 </TableCell>
               </TableRow>
-            );
-          })}
-        </TableBody>
-        {totalItemCount !== 0 && (
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={3}>Total</TableCell>
-              <TableCell>
-                {formatPrice(
-                  Orders?.reduce((acc, order) => acc + order.amount, 0) ?? 0
-                )}
-              </TableCell>
-            </TableRow>
-          </TableFooter>
-        )}
-      </Table>
+            </TableFooter>
+          )}
+        </Table>
+      </div>
 
       {totalPages > 1 && (
         <PaginationBar totalPages={totalPages} currentPage={currentPage} />

@@ -60,7 +60,7 @@ const AdminWallet = async ({
           <DateRangeFilter />
         </div>
       </div>
-      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[82vh] w-full md:w-[100%] p-2">
+      <section className="space-y-4 md:overflow-auto md:max-h-[84vh] w-full md:w-[100%] p-2">
         <Table>
           <TableHeader>
             <TableRow>

@@ -9,8 +9,8 @@ import {
 import { db } from "@/lib/db";
 import React from "react";
 import PaginationBar from "../../_components/PaginationBar";
-import { toast } from "sonner";
 import { formatPrice } from "@/components/shared/formatPrice";
+import TopBar from "@/app/(protected)/_components/Topbar";
 
 const WalletFlow = async ({
   searchParams,
@@ -21,7 +21,7 @@ const WalletFlow = async ({
 }) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 5;
+  const pageSize = 15;
   const totalItemCount = (
     await db.walletFlow.findMany({
       where: {
@@ -41,69 +41,75 @@ const WalletFlow = async ({
 
   if (totalItemCount === 0) {
     return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Type</TableHead>
-            <TableHead>Transaction/Order-ID</TableHead>
-            <TableHead>Money</TableHead>
-            <TableHead>Date created</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          <TableRow>
-            <TableCell colSpan={4} className="text-center">
-              No records found
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+      <section>
+        <TopBar title="Wallet flow" />
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Type</TableHead>
+              <TableHead>Transaction/Order-ID</TableHead>
+              <TableHead>Money</TableHead>
+              <TableHead>Date created</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell colSpan={4} className="text-center">
+                No records found
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
+      </section>
     );
   }
   return (
-    <>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Type</TableHead>
-            <TableHead>Transaction/Order-id</TableHead>
-            <TableHead>Money</TableHead>
-            <TableHead>Date created</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {walletFlow.map((flow) => {
-            return (
-              <TableRow key={flow.id}>
-                <TableCell>{flow.purpose}</TableCell>
-                <TableCell>
-                  {flow.purpose === "ADMIN" ? <>-</> : flow.moneyId}
-                </TableCell>
-                <TableCell>
-                  {
-                    <>
-                      {flow.purpose === "ADMIN" ? (
-                        <span>{formatPrice(flow.amount)}</span>
-                      ) : (
-                        <span>
-                          {flow.purpose?.toLowerCase() === "wallet recharge"
-                            ? `+${formatPrice(Math.abs(flow.amount))}`
-                            : `-${formatPrice(Math.abs(flow.amount))}`}
-                        </span>
-                      )}
-                    </>
-                  }
-                </TableCell>
-                <TableCell>{flow.createdAt.toDateString()}</TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
+    <section>
+      <TopBar title="Wallet flow" />
+      <div className="space-y-4 md:overflow-auto md:max-h-[85vh] w-full md:w-[100%] p-2">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Type</TableHead>
+              <TableHead>Transaction/Order-id</TableHead>
+              <TableHead>Money</TableHead>
+              <TableHead>Date created</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {walletFlow.map((flow) => {
+              return (
+                <TableRow key={flow.id}>
+                  <TableCell>{flow.purpose}</TableCell>
+                  <TableCell>
+                    {flow.purpose === "ADMIN" ? <>-</> : flow.moneyId}
+                  </TableCell>
+                  <TableCell>
+                    {
+                      <>
+                        {flow.purpose === "ADMIN" ? (
+                          <span>{formatPrice(flow.amount)}</span>
+                        ) : (
+                          <span>
+                            {flow.purpose?.toLowerCase() === "wallet recharge"
+                              ? `+${formatPrice(Math.abs(flow.amount))}`
+                              : `-${formatPrice(Math.abs(flow.amount))}`}
+                          </span>
+                        )}
+                      </>
+                    }
+                  </TableCell>
+                  <TableCell>{flow.createdAt.toDateString()}</TableCell>
+                </TableRow>
+              );
+            })}
+          </TableBody>
+        </Table>
+      </div>
       {totalPages > 1 && (
         <PaginationBar totalPages={totalPages} currentPage={currentPage} />
       )}
-    </>
+    </section>
   );
 };
 

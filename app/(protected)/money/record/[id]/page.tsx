@@ -25,7 +25,7 @@ const page = async ({ params, searchParams }: RecordProps) => {
       <div className="hidden md:block">
         <TopBar title="Wallet Records" />
       </div>
-      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[90vh] w-full md:w-[100%] p-2">
+      <section className="space-y-4 md:max-h-[90vh] w-full md:w-[100%] p-2">
         <div className="flex items-center gap-x-2">
           <Button className="flex items-center " asChild>
             <Link href={`/money/add/${session?.user.id}`} className="inline">

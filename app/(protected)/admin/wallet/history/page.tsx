@@ -31,7 +31,7 @@ const AdminWallet = async ({
 }) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 5;
+  const pageSize = 10;
   const totalItemCount = await db.money.count();
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
@@ -49,7 +49,7 @@ const AdminWallet = async ({
       <div className="p-1 m-1 w-[50%]">
         <Search fileName="wallet-history" />
       </div>
-      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[75vh] w-full md:w-[100%] p-2">
+      <section className="space-y-4 md:overflow-auto md:max-h-[75vh] w-full md:w-[100%] p-2">
         <Table>
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>

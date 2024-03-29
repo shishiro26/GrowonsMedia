@@ -33,7 +33,7 @@ type AdminHistoryProps = {
 const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 7;
+  const pageSize = 12;
   const totalItemCount = await db.order.count();
 
   const totalPages = Math.ceil(totalItemCount / pageSize);
@@ -51,7 +51,7 @@ const AdminWallet = async ({ searchParams }: AdminHistoryProps) => {
       <div className="m-1 p-1">
         <Search fileName="order-history" />
       </div>
-      <section className="ml-2 mt-4 space-y-4 md:overflow-auto md:max-h-[85vh] w-full md:w-[100%]">
+      <section className="space-y-4 md:overflow-auto md:max-h-[75vh] w-full md:w-[100%]">
         <Table>
           <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>

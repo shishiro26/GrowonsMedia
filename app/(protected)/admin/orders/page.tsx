@@ -31,7 +31,7 @@ const AdminOrders = async ({
 }) => {
   const currentPage = parseInt(searchParams.page) || 1;
 
-  const pageSize = 8;
+  const pageSize = 12;
 
   const totalItemCount = (
     await db.order.findMany({
