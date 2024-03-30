@@ -2,6 +2,7 @@ import React from "react";
 import Link from "next/link";
 import MobileNv from "./MobileNav";
 import NavItems from "./NavItems";
+import Image from "next/image";
 
 const Sidebar = () => {
   return (
@@ -17,7 +18,17 @@ const Sidebar = () => {
             href={"/"}
             className="flex items-center p-2 text-gray-900 rounded-lg"
           >
-            <span className="ms-3 font-bold text-2xl">GrowonsMedia</span>
+            <div className="w-64 h-20">
+              <Image
+                src={"/svgs/logo.webp"}
+                alt="GrowonsMedia"
+                width={150}
+                height={10}
+                priority
+                quality={100}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </Link>
           <NavItems />
         </div>

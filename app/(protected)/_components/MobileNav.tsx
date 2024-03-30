@@ -8,6 +8,7 @@ import {
 import React from "react";
 import NavItems from "./NavItems";
 import TopBar from "./Topbar";
+import Image from "next/image";
 
 const MobileNv = () => {
   return (
@@ -35,7 +36,17 @@ const MobileNv = () => {
           side={"left"}
         >
           <SheetTitle>
-            <h1 className="text-2xl font-bold">GrowonsMedia</h1>
+            <div className="w-64 h-20">
+              <Image
+                src={"/svgs/logo.webp"}
+                alt="GrowonsMedia"
+                width={150}
+                height={10}
+                priority
+                quality={100}
+                className="w-full h-full object-cover"
+              />
+            </div>
           </SheetTitle>
           <Separator className="border border-gray-50" />
           <NavItems />
