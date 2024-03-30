@@ -46,6 +46,7 @@ const page = async ({ params }: { params: { id: string } }) => {
       minProduct: proUserProduct?.minProduct ?? product.minProduct,
       maxProduct: proUserProduct?.maxProduct ?? product.maxProduct,
       price: proUserProduct?.price ?? product.price,
+      description: product.description,
     };
   });
 

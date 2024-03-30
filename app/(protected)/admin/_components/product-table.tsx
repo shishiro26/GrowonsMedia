@@ -13,6 +13,7 @@ import ProductRemove from "./product-remove";
 import PaginationBar from "../../money/_components/PaginationBar";
 import { formatPrice } from "@/components/shared/formatPrice";
 import { revalidatePath } from "next/cache";
+import DescriptionDialog from "./description-dialog";
 
 export const revalidate = 3600;
 
@@ -41,6 +42,7 @@ const ProductTable = async ({
       stock: true,
       minProduct: true,
       maxProduct: true,
+      description: true,
       createdAt: true,
     },
     skip: (currentPage - 1) * pageSize,
@@ -55,6 +57,7 @@ const ProductTable = async ({
         <TableHeader>
           <TableRow>
             <TableHead>Product Name</TableHead>
+            <TableHead>Description</TableHead>
             <TableHead>Price</TableHead>
             <TableHead>Stock</TableHead>
             <TableHead>Minimum</TableHead>
@@ -76,6 +79,9 @@ const ProductTable = async ({
             <TableRow key={product.id}>
               <TableCell className="capitalize">
                 {product.productName}
+              </TableCell>
+              <TableCell>
+                <DescriptionDialog description={product.description} />
               </TableCell>
               <TableCell>{formatPrice(product.price)}</TableCell>
               <TableCell>{product.stock}</TableCell>

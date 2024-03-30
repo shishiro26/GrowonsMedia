@@ -104,6 +104,7 @@ model Product {
   userId      String?
   User        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   productName String   @unique
+  description String
   price       Int
   minProduct  Int
   maxProduct  Int

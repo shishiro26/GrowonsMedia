@@ -267,6 +267,10 @@ export const ProductSchema = z.object({
       message: "Product name is required",
     })
     .toLowerCase(),
+  description: z
+    .string()
+    .min(1, { message: "Description is required" })
+    .toLowerCase(),
   price: z.coerce
     .number()
     .min(1, {
@@ -422,6 +426,10 @@ export const EditProductFormSchema = z.object({
       message: "Product name is required",
     })
     .toLowerCase()
+    .optional(),
+  description: z
+    .string()
+    .min(1, { message: "Description is required" })
     .optional(),
   price: z.coerce
     .number()

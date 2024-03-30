@@ -64,7 +64,7 @@ const Feedbacks = async ({
 
   return (
     <>
-      <nav>
+      <nav className="hidden md:block">
         <TopBar title="Feedbacks" />
       </nav>
       <Table>

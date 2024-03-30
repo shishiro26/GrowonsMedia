@@ -22,7 +22,9 @@ const page = async ({ params, searchParams }: RecordProps) => {
   const session = await auth();
   return (
     <>
-      <TopBar title="All Feedbacks" />
+      <nav className="hidden md:block">
+        <TopBar title="All Feedbacks" />
+      </nav>
       <section className="ml-2 mt-4 space-y-4">
         <Button className="flex items-center " asChild>
           <Link href={`/feedback/${session?.user.id}`} className="inline">

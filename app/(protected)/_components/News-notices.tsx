@@ -18,6 +18,8 @@ const NewsNotices = async () => {
     },
   });
   const newsLength = (await getNewsById()).length;
+  const urlPattern =
+    /^(?:(?:ftp|http|https):\/\/|www\.)|(?:[\w-]+\.)+[a-z]{2,}(?:\/[^]*)?$/i;
 
   return (
     <div className="border-2 mt-4 mx-2 md:mt-10 border-black  p-2 rounded-lg">
@@ -36,14 +38,20 @@ const NewsNotices = async () => {
                     </CardTitle>
                   </CardHeader>
                   <CardContent className="text-sm">
-                    {n.content.includes("https") ? (
-                      <Link
-                        href={n.content}
+                    {n.content.match(urlPattern) ? (
+                      <a
+                        href={
+                          n.content.startsWith("http") ||
+                          n.content.startsWith("www")
+                            ? n.content
+                            : `http://${n.content}`
+                        }
                         target="_blank"
+                        rel="noopener noreferrer"
                         className="text-[#3b49df] underline"
                       >
                         {n.content}
-                      </Link>
+                      </a>
                     ) : (
                       <>{n.content}</>
                     )}

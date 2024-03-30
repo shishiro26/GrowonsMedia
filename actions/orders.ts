@@ -74,6 +74,7 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
       createdAt: {
         gte: today,
       },
+      OR: [{ status: "PENDING" }, { status: "SUCCESS" }],
     },
     select: {
       products: true,
@@ -98,7 +99,10 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
         totalQuantity: totalQuantity + product.quantity,
       });
     } else {
-      orderProducts.push({ name: product.name, totalQuantity: 0 });
+      orderProducts.push({
+        name: product.name,
+        totalQuantity: 0 + product.quantity,
+      });
     }
   });
 
@@ -134,7 +138,11 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
         if (orderProduct.name === product.name) {
           if (orderProduct.totalQuantity > product.maxProduct) {
             errors.push({
-              error: `you have already ordered ${orderProduct.totalQuantity} of ${product.name} and you can order at most ${product.maxProduct} per day`,
+              error: `you have already ordered ${
+                orderProduct.totalQuantity - product.quantity
+              } of ${product.name} and you can order at most ${
+                product.maxProduct
+              } per day`,
             });
           }
         }
@@ -168,7 +176,11 @@ export const addOrder = async (values: z.infer<typeof OrderSchema>) => {
         if (orderProduct.name === product.name) {
           if (orderProduct.totalQuantity > product.maxProduct) {
             errors.push({
-              error: `you have already ordered ${orderProduct.totalQuantity} of ${product.name} and you can order at most ${product.maxProduct} per day`,
+              error: `you have already ordered ${
+                orderProduct.totalQuantity - product.quantity
+              } of ${product.name} and you can order at most ${
+                product.maxProduct
+              } per day`,
             });
           }
         }

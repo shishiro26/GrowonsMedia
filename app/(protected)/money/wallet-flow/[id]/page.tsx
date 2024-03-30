@@ -42,7 +42,9 @@ const WalletFlow = async ({
   if (totalItemCount === 0) {
     return (
       <section>
-        <TopBar title="Wallet flow" />
+        <div className="hidden md:block">
+          <TopBar title="Wallet flow" />
+        </div>
         <Table>
           <TableHeader>
             <TableRow>
@@ -65,7 +67,9 @@ const WalletFlow = async ({
   }
   return (
     <section>
-      <TopBar title="Wallet flow" />
+      <div className="hidden md:block">
+        <TopBar title="Wallet flow" />
+      </div>
       <div className="space-y-4 md:overflow-auto md:max-h-[85vh] w-full md:w-[100%] p-2">
         <Table>
           <TableHeader>

@@ -22,6 +22,7 @@ import { revalidatePath } from "next/cache";
 type Product = {
   id: string;
   productName: string;
+  description: string;
   price: number;
   minProduct: number;
   maxProduct: number;
@@ -43,6 +44,7 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ product }) => {
       id: product?.id,
       productName: product?.productName,
       price: product?.price,
+      description: product?.description,
       minProduct: product?.minProduct,
       maxProduct: product?.maxProduct,
       stock: product?.stock,
@@ -58,7 +60,6 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ product }) => {
         }
 
         if (data.success) {
-          revalidatePath("/admin/product/product-table")
           router.push("/admin/product/product-table");
         }
       });
@@ -82,6 +83,23 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ product }) => {
                       {...field}
                       disabled={isPending}
                       placeholder="Product Name"
+                      type="text"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      disabled={isPending}
+                      placeholder="Product Description"
                       type="text"
                     />
                   </FormControl>

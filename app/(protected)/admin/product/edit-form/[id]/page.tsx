@@ -16,6 +16,7 @@ const page = async ({ params }: { params: { id: string } }) => {
     select: {
       id: true,
       productName: true,
+      description: true,
       price: true,
       minProduct: true,
       maxProduct: true,

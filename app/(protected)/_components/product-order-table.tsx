@@ -19,6 +19,9 @@ const ProductOrderTable = async ({ products }: { products: any[] }) => {
             className="p-2 mt-4 border-2 border-gray-300 rounded-lg"
           >
             <div className="text-lg capitalize">{product.name}</div>
+            <span className="text-xs capitalize text-gray-500">
+              {product.description}
+            </span>
             <div>
               <Table>
                 <TableHeader>

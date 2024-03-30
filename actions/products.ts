@@ -8,10 +8,18 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>) => {
   const validatedFields = ProductSchema.safeParse(values);
 
   if (!validatedFields.success) {
+    console.log(validatedFields.error);
     return { error: "Invalid fields!" };
   }
-  const { userId, productName, price, minProduct, maxProduct, stock } =
-    validatedFields.data;
+  const {
+    userId,
+    productName,
+    price,
+    minProduct,
+    maxProduct,
+    stock,
+    description,
+  } = validatedFields.data;
 
   if (minProduct > maxProduct) {
     return { error: "Minimum quantity must be less than maximum quantity" };
@@ -30,6 +38,7 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>) => {
       data: {
         userId,
         productName,
+        description,
         price,
         minProduct: minProduct,
         maxProduct: maxProduct,
@@ -79,7 +88,7 @@ export const editProduct = async (
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
-  const { productName, price, minProduct, maxProduct, id, stock } =
+  const { productName, price, minProduct, maxProduct, id, stock, description } =
     validatedFields.data;
 
   try {
@@ -91,9 +100,10 @@ export const editProduct = async (
       where: { id },
       data: {
         productName,
+        description,
         price,
-        minProduct,
         stock,
+        minProduct,
         maxProduct,
       },
     });
