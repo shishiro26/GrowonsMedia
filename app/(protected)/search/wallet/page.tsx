@@ -100,9 +100,7 @@ const SearchWallet = async ({
               <TableCell>
                 <div className="flex gap-1 items-center">
                   {invoice.transactionId}
-                  <span className="hidden md:block">
-                    <CopyButton text={invoice.transactionId} />
-                  </span>
+                  <CopyButton text={invoice.transactionId} />
                 </div>
               </TableCell>
               <TableCell>{formatPrice(Number(invoice.amount))}</TableCell>

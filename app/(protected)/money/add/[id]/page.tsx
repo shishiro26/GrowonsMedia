@@ -73,44 +73,28 @@ const page = async ({ params }: { params: { id: string } }) => {
                 <span>Name:</span>
                 <span className="font-semibold p-2 rounded-lg flex items-center gap-x-2">
                   {bankDetails?.name}
-                  {bankDetails && (
-                    <span className="hidden md:block">
-                      <CopyButton text={bankDetails.name} />
-                    </span>
-                  )}
+                  {bankDetails && <CopyButton text={bankDetails.name} />}
                 </span>
               </div>
               <div className="flex items-center">
                 <span>IFSC Code:</span>
                 <span className="font-semibold p-2 rounded-lg flex items-center gap-x-2">
                   {bankDetails?.ifsccode}
-                  {bankDetails && (
-                    <span className="hidden md:block">
-                      <CopyButton text={bankDetails.ifsccode} />
-                    </span>
-                  )}
+                  {bankDetails && <CopyButton text={bankDetails.ifsccode} />}
                 </span>
               </div>
               <div className="flex items-center">
                 <span>Account type:</span>
                 <span className="font-semibold p-2 rounded-lg flex items-center gap-x-2">
                   {bankDetails?.accountType}
-                  {bankDetails && (
-                    <span className="hidden md:block">
-                      <CopyButton text={bankDetails.accountType} />
-                    </span>
-                  )}
+                  {bankDetails && <CopyButton text={bankDetails.accountType} />}
                 </span>
               </div>
               <div className="flex items-center">
                 <span>Bank Name:</span>
                 <span className="font-semibold p-2 rounded-lg flex items-center gap-x-2">
                   {bankDetails?.bankName}
-                  {bankDetails && (
-                    <span className="hidden md:block">
-                      <CopyButton text={bankDetails.bankName} />
-                    </span>
-                  )}
+                  {bankDetails && <CopyButton text={bankDetails.bankName} />}
                 </span>
               </div>
               <div className="flex items-center">
@@ -118,9 +102,7 @@ const page = async ({ params }: { params: { id: string } }) => {
                 <span className="font-semibold p-2 rounded-lg flex items-center gap-x-2">
                   {bankDetails?.accountDetails}
                   {bankDetails && (
-                    <span className="hidden md:block">
-                      <CopyButton text={bankDetails.accountDetails} />
-                    </span>
+                    <CopyButton text={bankDetails.accountDetails} />
                   )}
                 </span>
               </div>
