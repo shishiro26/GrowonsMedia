@@ -18,7 +18,7 @@ export default async function Home() {
           <span className="ml-1 text-lg font-semibold">Overview</span>
         </p>
         <div className="flex flex-wrap">
-          <BalanceCard />
+          {session?.user.role !== "ADMIN" && <BalanceCard />}
           {session?.user.role === "ADMIN" && <BankDetails />}
           {session?.user.role === "ADMIN" && <SupportLink />}
         </div>

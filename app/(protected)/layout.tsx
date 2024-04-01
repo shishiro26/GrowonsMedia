@@ -35,15 +35,20 @@ const ProtectedLayout = async ({ children }: ProtectedLayoutProps) => {
             {children}
           </div>
         </div>
-        <div className="bg-white/55 h-14 w-14 rounded-full flex items-center justify-center cursor-pointer absolute right-0 md:right-3 md:bottom-3 z-50">
-          <Link href={link?.link ?? ""} target="_blank">
+        <div className="bg-white/55 h-14 w-14 rounded-full flex items-center justify-center cursor-pointer absolute right-0 md:right-3 md:bottom-3 z-50 ">
+          <Link
+            href={link?.link ?? "https://leads.growonsmedia.com/"}
+            target="_blank"
+            className="flex items-center justify-center flex-col"
+          >
             <Image
               src={"/svgs/whatsapp.svg"}
               alt="whatsapp"
               width={35}
               height={35}
-              className="cursor-pointer"
+              className="cursor-pointer hover:scale-110 transition-all"
             />
+            <p className="font-bold text-[10px] text-nowrap">Talk to us</p>
           </Link>
         </div>
       </div>

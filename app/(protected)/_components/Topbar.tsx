@@ -24,18 +24,20 @@ const TopBar = async ({ title }: { title: string }) => {
         <h1 className="text-nowrap text-xl">{title}</h1>
       </div>
       <div className="flex items-center justify-end">
-        <div className="flex items-center mr-2">
-          <Image
-            src={"/svgs/coin.svg"}
-            width={5}
-            height={5}
-            alt="coin"
-            className="w-6 h-6 m-2"
-          />
-          <p className="font-semibold">
-            <TotalMoney />
-          </p>
-        </div>
+        {session?.user.role !== "ADMIN" && (
+          <div className="flex items-center mr-2">
+            <Image
+              src={"/svgs/coin.svg"}
+              width={5}
+              height={5}
+              alt="coin"
+              className="w-6 h-6 m-2"
+            />
+            <p className="font-semibold">
+              <TotalMoney />
+            </p>
+          </div>
+        )}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
