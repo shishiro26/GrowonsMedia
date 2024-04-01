@@ -88,7 +88,7 @@ const WalletFlow = async ({
                   <TableCell>
                     {flow.purpose === "ADMIN" ? <>-</> : flow.moneyId}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-nowrap">
                     {
                       <>
                         {flow.purpose === "ADMIN" ? (

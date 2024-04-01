@@ -43,6 +43,7 @@ model User {
   Feedback    Feedback[]
   BankDetails BankDetails[]
   WalletFlow  WalletFlow[]
+  Support     Support[]
 }
 
 model BankDetails {
@@ -95,6 +96,15 @@ model WalletFlow {
   user      User?    @relation(fields: [userId], references: [id])
   amount    Int
   purpose   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt
+}
+
+model Support {
+  id        String   @id @default(uuid()) @map("_id")
+  userId    String   @unique
+  User      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  link      String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt
 }

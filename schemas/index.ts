@@ -558,3 +558,10 @@ export const ReplyFileSchema = z.object({
     })
     .pipe(z.custom<File>()),
 });
+
+export const AddSupportLinkForm = z.object({
+  userId: z.string(),
+  link: z.string().includes("https://").min(1, {
+    message: "Please enter the support link",
+  }),
+});
