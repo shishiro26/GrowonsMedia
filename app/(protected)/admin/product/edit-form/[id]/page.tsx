@@ -21,6 +21,7 @@ const page = async ({ params }: { params: { id: string } }) => {
       minProduct: true,
       maxProduct: true,
       stock: true,
+      sheetLink:true,
     },
   });
 

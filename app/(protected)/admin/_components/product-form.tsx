@@ -33,6 +33,7 @@ const ProductForm = ({ userId }: { userId: string }) => {
       minProduct: 0,
       maxProduct: 1,
       stock: 0,
+      sheetLink: "",
     },
   });
 
@@ -140,6 +141,25 @@ const ProductForm = ({ userId }: { userId: string }) => {
                     <FormLabel>Maximum Product</FormLabel>
                     <FormControl>
                       <Input {...field} disabled={isPending} type="number" />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="sheetLink"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sheets Link</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="Google Sheets Link"
+                        type="url"
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

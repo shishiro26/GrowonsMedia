@@ -32,10 +32,13 @@ type InvoiceProps = {
   id: string;
   userId: string;
   amount: number;
+  numLines: number;
 };
 
-const AdminOrderForm = ({ id, amount, userId }: InvoiceProps) => {
+const AdminOrderForm = ({ id, amount, userId, numLines }: InvoiceProps) => {
   const [isPending, startTransition] = useTransition();
+
+  const numOfLines = numLines;
 
   const rejectForm = useForm<z.infer<typeof RejectOrderSchema>>({
     resolver: zodResolver(RejectOrderSchema),
@@ -57,10 +60,10 @@ const AdminOrderForm = ({ id, amount, userId }: InvoiceProps) => {
 
   const handleAccept = async (values: z.infer<typeof AcceptOrderSchema>) => {
     const formData = new FormData();
-
     formData.append("id", values.id);
-
-    if (values.files) {
+    console.log("abcd");
+    if (values.files && values.files.length > 0) {
+      // If files are provided by the user, append them
       for (let i = 0; i < values.files.length; i++) {
         console.log(values.files[i]);
         formData.append(`files[${i}]`, values.files[i] ?? "");
@@ -72,6 +75,33 @@ const AdminOrderForm = ({ id, amount, userId }: InvoiceProps) => {
           `fileType[${i}][fileType]`,
           values?.files[i]?.type ?? ""
         );
+      }
+    } else {
+      console.log("abcde");
+      try {
+        const response = await fetch(
+          `https://leads-growns.onrender.com/download-leads?spreadsheetName=${encodeURIComponent(
+            "Leads"
+          )}&sheetName=${encodeURIComponent("Sheet1")}&numLines=${numOfLines}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to download leads file");
+        }
+        const blob = await response.blob();
+        const file = new File([blob], "downloaded_leads.csv", {
+          type: blob.type,
+        });
+        formData.append(`files[0]`, file);
+        formData.append(`fileName[0][fileName]`, file.name);
+        formData.append(`fileType[0][fileType]`, file.type);
+      } catch (error) {
+        toast.error("Failed to fetch the file: ", {
+          action: {
+            label: "close",
+            onClick: () => console.log("Undo"),
+          },
+        });
+        return;
       }
     }
 
@@ -142,7 +172,7 @@ const AdminOrderForm = ({ id, amount, userId }: InvoiceProps) => {
                   name="files"
                   render={({ field: { onChange, onBlur, name } }) => (
                     <FormItem>
-                      <FormLabel>Attach the file below:</FormLabel>
+                      <FormLabel>Attach the file below (optional):</FormLabel>
                       <FormControl>
                         <Input
                           autoComplete="off"

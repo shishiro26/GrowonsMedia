@@ -18,6 +18,7 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>) => {
     minProduct,
     maxProduct,
     stock,
+    sheetLink,
     description,
   } = validatedFields.data;
 
@@ -43,6 +44,7 @@ export const addProduct = async (values: z.infer<typeof ProductSchema>) => {
         minProduct: minProduct,
         maxProduct: maxProduct,
         stock: stock,
+        sheetLink:sheetLink,
         createdAt: new Date(),
       },
     });
@@ -88,7 +90,7 @@ export const editProduct = async (
   if (!validatedFields.success) {
     return { error: "Invalid fields!" };
   }
-  const { productName, price, minProduct, maxProduct, id, stock, description } =
+  const { productName, price, minProduct, maxProduct, id, stock, description, sheetLink } =
     validatedFields.data;
 
   try {
@@ -105,6 +107,7 @@ export const editProduct = async (
         stock,
         minProduct,
         maxProduct,
+        sheetLink,
       },
     });
 

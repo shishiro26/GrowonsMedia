@@ -119,6 +119,7 @@ model Product {
   minProduct  Int
   maxProduct  Int
   stock       Int
+  sheetLink   String
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt
   orderId     String?

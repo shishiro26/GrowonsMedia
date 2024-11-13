@@ -102,6 +102,7 @@ const AdminOrders = async ({
                       userId={order.userId}
                       id={order.id}
                       amount={order.amount}
+                      numLines={10}
                     />
                   </TableCell>
                 </TableRow>

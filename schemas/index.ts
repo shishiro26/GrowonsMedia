@@ -295,6 +295,12 @@ export const ProductSchema = z.object({
       message: "Daily stock must be greater than 0",
     })
     .nonnegative(),
+  sheetLink: z
+    .string()
+    .url({ message: "A valid URL for the sheet link is required" })
+    .regex(/^https:\/\/docs\.google\.com\/spreadsheets\/d\/[a-zA-Z0-9-_]+/, {
+      message: "Sheet link must be a valid Google Sheets URL",
+    }),
 });
 
 export const OrderSchema = z.object({
@@ -408,7 +414,8 @@ export const AcceptOrderSchema = z.object({
     .refine((files) => files.length > 0, {
       message: "At least one file must be provided",
       path: ["files"],
-    }),
+    })
+    .optional(),
 });
 
 export const RejectOrderSchema = z.object({
@@ -441,6 +448,13 @@ export const EditProductFormSchema = z.object({
   stock: z.coerce.number().nonnegative(),
   minProduct: z.coerce.number().nonnegative().optional(),
   maxProduct: z.coerce.number().nonnegative().optional(),
+  sheetLink: z.coerce
+    .string()
+    .url({ message: "A valid URL for the sheet link is required" })
+    .regex(/^https:\/\/docs\.google\.com\/spreadsheets\/d\/[a-zA-Z0-9-_]+/, {
+      message: "Sheet link must be a valid Google Sheets URL",
+    })
+    .optional(),
 });
 
 export const NewsSchema = z.object({
