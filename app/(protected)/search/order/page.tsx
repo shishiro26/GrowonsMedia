@@ -132,6 +132,7 @@ const SearchOrder = async ({
                       userId={order.userId}
                       id={order.id}
                       amount={order.amount}
+                      numLines={0}
                     />
                   </TableCell>
                 </TableRow>
