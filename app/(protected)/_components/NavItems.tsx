@@ -31,6 +31,16 @@ const NavItems = async () => {
           </li>
           <li>
             <Link
+              href={`/withdraw/record/${session?.user?.id}`}
+              className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 "
+            >
+              <span className="flex-1 ms-3 whitespace-nowrap">
+                Request Refund
+              </span>
+            </Link>
+          </li>
+          <li>
+            <Link
               href={`/orders/${session?.user.id}`}
               className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100"
             >

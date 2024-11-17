@@ -192,6 +192,84 @@ export const MoneySchema = z.object({
     .pipe(z.custom<File>()),
 });
 
+export const WithdrawMoneySchema = z.object({
+  accountNumber: z
+    .string()
+    .nonempty("Account Number is required")
+    .min(8, "Account Number must be at least 8 characters"),
+  ifscCode: z
+    .string()
+    .nonempty("IFSC Code is required")
+    .regex(/^[A-Za-z]{4}\d{7}$/, "Invalid IFSC Code format"),
+  beneficiaryName: z
+    .string()
+    .nonempty("Beneficiary Name is required")
+    .min(2, "Beneficiary Name must be at least 2 characters"),
+  withdrawAmount: z.coerce.number().min(1, {
+    message: "Amount must be greater than 0",
+  }),
+  transactionId: z
+    .string()
+    .optional()
+    .refine((val) => !/\s/.test(val || ""), {
+      message: "Transaction ID cannot contain space characters",
+    }),
+  reason: z.string().optional(),
+  secure_url: z.string().optional(),
+  public_id: z.string().optional(),
+});
+
+export const AcceptWithdrawalSchema = z.object({
+  transactionId: z
+    .string()
+    .min(1, "Transaction ID is required")
+    .refine((val) => !/\s/.test(val), {
+      message: "Transaction ID cannot contain spaces",
+    }),
+  image: z
+    .custom<FileList>()
+    .transform((val) => {
+      if (val instanceof File) return val;
+      if (val instanceof FileList) return val[0];
+      return null;
+    })
+    .superRefine((file, ctx) => {
+      if (!(file instanceof File)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          fatal: true,
+          message: "Not a file",
+        });
+
+        return z.NEVER;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Max file size allowed is 5MB",
+        });
+      }
+
+      if (
+        !["image/jpeg", "image/png", "image/webp", "image/jpg"].includes(
+          file.type
+        )
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "File must be an image (jpeg, jpg, png, webp)",
+        });
+      }
+    })
+    .pipe(z.custom<File>()),
+});
+
+export const RejectWithdrawalSchema = z.object({
+  id: z.string(),
+  reason: z.string().min(10, { message: "Minimum of 10 characters required" }),
+});
+
 export const BankDetailsSchema = z.object({
   userId: z.string(),
   upiid: z.string().min(1, {

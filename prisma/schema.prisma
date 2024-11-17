@@ -20,6 +20,12 @@ enum MoneyStatus {
   FAILED
 }
 
+enum RequestStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
 enum OrderStatus {
   PENDING
   SUCCESS
@@ -27,23 +33,24 @@ enum OrderStatus {
 }
 
 model User {
-  id          String        @id @default(uuid()) @map("_id")
-  email       String        @unique
-  name        String        @unique
-  number      String        @unique
-  password    String
-  totalMoney  Int           @default(0)
-  role        UserRole      @default(USER)
-  createdAt   DateTime      @default(now()) @map("created_at")
-  money       Money[]
-  Order       Order[]
-  Product     Product[]
-  News        News[]
-  ProUser     ProUser[]
-  Feedback    Feedback[]
-  BankDetails BankDetails[]
-  WalletFlow  WalletFlow[]
-  Support     Support[]
+  id                String              @id @default(uuid()) @map("_id")
+  email             String              @unique
+  name              String              @unique
+  number            String              @unique
+  password          String
+  totalMoney        Int                 @default(0)
+  role              UserRole            @default(USER)
+  createdAt         DateTime            @default(now()) @map("created_at")
+  money             Money[]
+  withdrawalRequest WithdrawalRequest[]
+  Order             Order[]
+  Product           Product[]
+  News              News[]
+  ProUser           ProUser[]
+  Feedback          Feedback[]
+  BankDetails       BankDetails[]
+  WalletFlow        WalletFlow[]
+  Support           Support[]
 }
 
 model BankDetails {
@@ -87,6 +94,24 @@ model Money {
   User          User?       @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId        String
   createdAt     DateTime    @default(now()) @map("created_at")
+}
+
+model WithdrawalRequest {
+  id              String        @id @default(uuid()) @map("_id")
+  userId          String
+  name            String
+  accountNumber   String
+  ifscCode        String
+  beneficiaryName String
+  withdrawAmount  String
+  transactionId   String?
+  secure_url      String?
+  public_id       String?
+  reason          String?
+  status          RequestStatus @default(PENDING)
+  User            User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt       DateTime      @default(now()) @map("created_at")
+  updatedAt       DateTime      @updatedAt
 }
 
 model WalletFlow {

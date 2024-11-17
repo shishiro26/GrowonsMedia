@@ -88,11 +88,31 @@ export const AdminSidebar = () => {
         </li>
         <li>
           <Link
+            href={`/admin/withdraw_funds `}
+            className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 "
+          >
+            <span className="flex-1 ms-3 whitespace-nowrap">
+              Withdrawal Requests
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link
             href={`/admin/wallet/history`}
             className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 "
           >
             <span className="flex-1 ms-3 whitespace-nowrap">
               Invoices history
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            href={`/admin/withdraw_funds/history`}
+            className="flex items-center p-2 text-gray-900 rounded-lg  hover:bg-gray-100 "
+          >
+            <span className="flex-1 ms-3 whitespace-nowrap">
+              Refunds history
             </span>
           </Link>
         </li>
