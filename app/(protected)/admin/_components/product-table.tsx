@@ -44,6 +44,7 @@ const ProductTable = async ({
       maxProduct: true,
       description: true,
       sheetLink: true,
+      sheetName: true,
       createdAt: true,
     },
     skip: (currentPage - 1) * pageSize,
@@ -63,6 +64,7 @@ const ProductTable = async ({
             <TableHead>Stock</TableHead>
             <TableHead>Minimum</TableHead>
             <TableHead>Maximum</TableHead>
+            <TableHead>Sheet Name</TableHead>
             <TableHead>Google Sheet link</TableHead>
             <TableHead>Created_At</TableHead>
           </TableRow>
@@ -89,6 +91,7 @@ const ProductTable = async ({
               <TableCell>{product.stock}</TableCell>
               <TableCell>{product.minProduct}</TableCell>
               <TableCell>{product.maxProduct}</TableCell>
+              <TableCell>{product.sheetName}</TableCell>
               <TableCell>
                 <a
                   href={product.sheetLink}

@@ -34,6 +34,7 @@ const ProductForm = ({ userId }: { userId: string }) => {
       maxProduct: 1,
       stock: 0,
       sheetLink: "",
+      sheetName: "",
     },
   });
 
@@ -146,7 +147,6 @@ const ProductForm = ({ userId }: { userId: string }) => {
                   </FormItem>
                 )}
               />
-
               <FormField
                 control={form.control}
                 name="sheetLink"
@@ -159,6 +159,24 @@ const ProductForm = ({ userId }: { userId: string }) => {
                         disabled={isPending}
                         placeholder="Google Sheets Link"
                         type="url"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sheetName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sheet Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="Sheet Name"
+                        type="text"
                       />
                     </FormControl>
                     <FormMessage />

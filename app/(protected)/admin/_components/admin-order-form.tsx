@@ -64,7 +64,6 @@ const AdminOrderForm = ({ id, amount, userId, numLines }: InvoiceProps) => {
     formData.append("id", values.id);
     console.log("abcd");
     if (values.files && values.files.length > 0) {
-      // If files are provided by the user, append them
       for (let i = 0; i < values.files.length; i++) {
         console.log(values.files[i]);
         formData.append(`files[${i}]`, values.files[i] ?? "");
@@ -81,7 +80,7 @@ const AdminOrderForm = ({ id, amount, userId, numLines }: InvoiceProps) => {
       console.log("abcde");
       try {
         const response = await fetch(
-          `https://leads-growns.onrender.com/download-leads?spreadsheetName=${encodeURIComponent(
+          `https://leads-growns.onrender.com/api/download-leads?spreadsheetName=${encodeURIComponent(
             "Leads"
           )}&sheetName=${encodeURIComponent("Sheet1")}&numLines=${numOfLines}`
         );

@@ -145,6 +145,7 @@ model Product {
   maxProduct  Int
   stock       Int
   sheetLink   String
+  sheetName   String
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt
   orderId     String?

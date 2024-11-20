@@ -28,6 +28,7 @@ type Product = {
   maxProduct: number;
   stock: number;
   sheetLink: string;
+  sheetName: string;
 } | null;
 
 type ProductEditFormProps = {
@@ -50,6 +51,7 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ product }) => {
       maxProduct: product?.maxProduct,
       stock: product?.stock,
       sheetLink: product?.sheetLink ,
+      sheetName: product?.sheetName
     },
   });
 
@@ -174,6 +176,24 @@ const ProductEditForm: React.FC<ProductEditFormProps> = ({ product }) => {
                         disabled={isPending}
                         placeholder="Enter Google Sheets link"
                         type="url"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="sheetName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Sheet Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder="Enter Sheet Name"
+                        type="text"
                       />
                     </FormControl>
                     <FormMessage />

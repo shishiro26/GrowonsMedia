@@ -379,6 +379,7 @@ export const ProductSchema = z.object({
     .regex(/^https:\/\/docs\.google\.com\/spreadsheets\/d\/[a-zA-Z0-9-_]+/, {
       message: "Sheet link must be a valid Google Sheets URL",
     }),
+  sheetName: z.string().nonempty("Sheet Name is required"),
 });
 
 export const OrderSchema = z.object({
@@ -533,6 +534,7 @@ export const EditProductFormSchema = z.object({
       message: "Sheet link must be a valid Google Sheets URL",
     })
     .optional(),
+  sheetName: z.string().nonempty("Sheet Name is required"),
 });
 
 export const NewsSchema = z.object({
