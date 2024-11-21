@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Switch } from "@/components/ui/switch";
 import {
   fetchAutomationState,
   updateAutomationState,
