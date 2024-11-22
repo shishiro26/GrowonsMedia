@@ -1,7 +1,7 @@
 export const fetchAutomationState = async (): Promise<boolean> => {
   try {
     const response = await fetch(
-      `https://leads-growns.onrender.com/api/automatic-status`
+      `https://gmedia-leads-panel.uc.r.appspot.com/api/automatic-status`
     );
     if (!response.ok) {
       throw new Error("Failed to fetch automation state");
@@ -21,7 +21,7 @@ export const updateAutomationState = async (
 ): Promise<boolean> => {
   try {
     const response = await fetch(
-      `https://leads-growns.onrender.com/api/toggle-automatic`,
+      `https://gmedia-leads-panel.uc.r.appspot.com/api/toggle-automatic`,
       {
         method: "POST",
         headers: {
