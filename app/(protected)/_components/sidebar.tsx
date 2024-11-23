@@ -26,7 +26,7 @@ const Sidebar = () => {
                 height={10}
                 priority
                 quality={100}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
             </div>
           </Link>

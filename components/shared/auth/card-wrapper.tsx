@@ -43,7 +43,7 @@ const CardWrapper = ({
               height={10}
               priority
               quality={100}
-              className="w-full h-full object-cover"
+              className="w-full h-full object-contain"
             />
           </div>
           <p className="text-muted-foreground text-md">{headerLabel}</p>
