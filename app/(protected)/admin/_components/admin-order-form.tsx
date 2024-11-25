@@ -38,8 +38,6 @@ type InvoiceProps = {
 const AdminOrderForm = ({ id, amount, userId, products }: InvoiceProps) => {
   const [isPending, startTransition] = useTransition();
 
-
-
   const rejectForm = useForm<z.infer<typeof RejectOrderSchema>>({
     resolver: zodResolver(RejectOrderSchema),
     defaultValues: {
@@ -60,80 +58,79 @@ const AdminOrderForm = ({ id, amount, userId, products }: InvoiceProps) => {
   const handleAccept = async (values: z.infer<typeof AcceptOrderSchema>) => {
     const formData = new FormData();
     formData.append("id", values.id);
-  
-    try {
-      if (values.files && values.files.length > 0) {
-        for (let i = 0; i < values.files.length; i++) {
-          console.log(values.files[i]);
-          formData.append(`files[${i}]`, values.files[i] ?? "");
-          formData.append(
-            `fileName[${i}][fileName]`,
-            values?.files[i]?.name ?? ""
-          );
-          formData.append(
-            `fileType[${i}][fileType]`,
-            values?.files[i]?.type ?? ""
-          );
-        }
-      } else {
-        for (let j = 0; j < products.length; j++) {
-          const productName = products[j].name;
-          const productQunatity = products[j].quantity;
-          console.log(`Fetching file for product: ${productName}`);
-          console.log(`Fetching file for product: ${productQunatity}`);
-          const response = await fetch(
-            `https://gmedia-leads-panel.uc.r.appspot.com/api/download-leads?productname=${
-              productName
-            }&numofLines=${productQunatity}`
-          );
-  
-          if (!response.ok) {
-            throw new Error(`Failed to download leads file for product: ${productName}`);
+
+    startTransition(async () => {
+      try {
+        if (values.files && values.files.length > 0) {
+          for (let i = 0; i < values.files.length; i++) {
+            formData.append(`files[${i}]`, values.files[i] ?? "");
+            formData.append(
+              `fileName[${i}][fileName]`,
+              values?.files[i]?.name ?? ""
+            );
+            formData.append(
+              `fileType[${i}][fileType]`,
+              values?.files[i]?.type ?? ""
+            );
           }
-  
-          const blob = await response.blob();
-          const file = new File([blob], `${productName}_leads.csv`, {
-            type: blob.type,
+        } else {
+          for (let j = 0; j < products.length; j++) {
+            const productName = products[j].name;
+            const productQuantity = products[j].quantity;
+
+            console.log(`Fetching file for product: ${productName}`);
+            console.log(`Fetching file for quantity: ${productQuantity}`);
+
+            const response = await fetch(
+              `https://gmedia-leads-panel.uc.r.appspot.com/api/download-leads?productname=${productName}&numofLines=${productQuantity}`
+            );
+
+            if (!response.ok) {
+              throw new Error(
+                `Failed to download leads file for product: ${productName}`
+              );
+            }
+
+            const blob = await response.blob();
+            const file = new File([blob], `${productName}_leads.csv`, {
+              type: blob.type,
+            });
+
+            formData.append(`files[${j}]`, file);
+            formData.append(`fileName[${j}][fileName]`, file.name);
+            formData.append(`fileType[${j}][fileType]`, file.type);
+          }
+        }
+
+        const data = await acceptOrder(formData);
+
+        if (data?.success) {
+          toast.success(data.success, {
+            action: {
+              label: "close",
+              onClick: () => console.log("Undo"),
+            },
           });
-  
-          formData.append(`files[${j}]`, file);
-          formData.append(`fileName[${j}][fileName]`, file.name);
-          formData.append(`fileType[${j}][fileType]`, file.type);
+        } else if (data?.error) {
+          toast.error(data.error, {
+            action: {
+              label: "close",
+              onClick: () => console.log("Undo"),
+            },
+          });
         }
-      }
-  
-      startTransition(() => {
-        acceptOrder(formData).then((data) => {
-          if (data?.success) {
-            toast.success(data.success, {
-              action: {
-                label: "close",
-                onClick: () => console.log("Undo"),
-              },
-            });
-          }
-          if (data?.error) {
-            toast.error(data.error, {
-              action: {
-                label: "close",
-                onClick: () => console.log("Undo"),
-              },
-            });
-          }
+      } catch (error) {
+        const errorMessage =
+          error instanceof Error ? error.message : "An unknown error occurred";
+        toast.error(`Failed to process files: ${errorMessage}`, {
+          action: {
+            label: "close",
+            onClick: () => console.log("Undo"),
+          },
         });
-      });
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "An unknown error occurred";
-      toast.error(`Failed to process files: ${errorMessage}`, {
-        action: {
-          label: "close",
-          onClick: () => console.log("Undo"),
-        },
-      });
-    }
+      }
+    });
   };
-  
 
   const handleReject = async (values: z.infer<typeof RejectOrderSchema>) => {
     startTransition(() => {
