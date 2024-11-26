@@ -37,7 +37,7 @@ const MobileNv = () => {
         >
           <SheetTitle>
             <div className="w-64 h-20">
-              <Image
+              {/* <Image
                 src={"/svgs/logo.webp"}
                 alt="GrowonsMedia"
                 width={150}
@@ -45,7 +45,7 @@ const MobileNv = () => {
                 priority
                 quality={100}
                 className="w-full h-full object-contain"
-              />
+              /> */}
             </div>
           </SheetTitle>
           <Separator className="border border-gray-50" />
